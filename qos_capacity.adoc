@@ -1,47 +1,416 @@
-[[chapter2]]
-== The Second Chapter
+[[CC_QOS]]
+== Capacity-controller QoS Register Interface
 
-. The first item.
+Controllers, such as cache controllers, that support capacity allocation and
+capacity usage monitoring provide a memory-mapped register programming
+interface.
 
-. The second item.
-+
-.. The first sub item.
-
-.. The second sub item.
-+
-[CAUTION]
-====
-A moment of caution is required for this block of text must be read and apreciated for its importance.
-====
-
-. Yet another item.
-
-. Again, an item.
-
-.. A multi-line item.
-+
-This item has multiple lines.
-+
-By multiple lines, this is what we mean.
-+
-Seriously, multiple.
-
-=== An example table
-
-[cols="^1,^1,^1,^1,^3,^3",stripes=even,options="header"]
+.Capacity-Controller QoS register layout
+[width=100%]
+[%header, cols="^3,10,^3, 18, 5"]
 |===
-4+|Letters _and_ bits {set:cellbgcolor:green} 2+|A much longer area
-|L|R|W|X|Quarter 1|Quarter 2
-|{set:cellbgcolor:!} 0|0|0|0 2+|Rows alternate colors
-|0|0|0|1|Thing 1|Thing 2
-|1|0|0|0|Thing 3|Thing 4
-|1|1|1|1 2+|Span Thing 1 and 2
+|Offset|Name              |Size    |Description                 | Optional?
+|0     |`cc_capabilities` |8       |<<CC_CAP, Capabilities >>   | No
+|8     |`cc_mon_ctl`      |8       |<<CC_MCTL, Usage monitoring
+                                    control>>                   | Yes
+|16    |`cc_mon_ctr_val`  |8       |<<CC_MCTR, Monitoring
+                                    counter value>>             | Yes
+|24    |`cc_alloc_ctl`    |8       |<<CC_ALLOC, Capacity 
+                                    allocation control >>       | Yes
+|32    |`cc_block_mask`   |`M` * 8 |<<CC_BMASK, Capacity 
+                                    block mask >>               | Yes
 |===
 
-=== Sub section
+The size of the `cc_block_mask` register is determined by the `NCBLKS` field
+of the `cc_capabilities` register.
 
-Diam donec adipiscing tristique risus indexterm:[risus]. Nisl rhoncus mattis rhoncus urna. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Porta non pulvinar neque laoreet suspendisse interdum consectetur libero id. Massa vitae tortor condimentum lacinia quis vel. Donec ac odio tempor orci. Mi sit amet mauris commodo quis imperdiet massa tincidunt. Quis enim lobortis scelerisque fermentum dui. Lacus viverra vitae congue eu. Sed faucibus turpis in eu mi bibendum neque. Sit amet porttitor eget dolor. Aliquet eget sit amet tellus cras adipiscing enim. Id cursus metus aliquam eleifend mi. Vestibulum lorem sed risus ultricies tristique nulla aliquet.
+The reset value is 0 for the following registers fields.
 
-=== Yet another subsection
+* `cc_mon_ctl` - `BUSY` and `STATUS` fields
+* `cc_alloc_ctl` - `BUSY` and `STATUS` fields
 
-Quam lacus suspendisse faucibus interdum posuere lorem ipsum. Nulla aliquet enim tortor at auctor urna nunc id cursus. Massa massa ultricies mi quis hendrerit dolor magna. Integer enim neque volutpat ac tincidunt. Dolor magna eget est lorem ipsum dolor. Urna neque viverra justo nec. Neque gravida in fermentum et. Fringilla ut morbi tincidunt augue interdum velit euismod. Dolor sit amet consectetur adipiscing elit. Eu facilisis sed odio morbi. In cursus turpis massa tincidunt dui. Orci indexterm:[orci] phasellus egestas tellus rutrum tellus. Semper eget duis at tellus at urna condimentum. Orci porta non pulvinar neque laoreet suspendisse interdum consectetur.
+The reset value is `UNSPECIFIED` for all other registers and/or fields.
+
+The capacity controllers at reset must allocate all available capacity to `RCID`
+value of 0. When the capacity controller supports capacity allocation per
+access-type, then all available capacity is allocated to each supported
+access-type for `RCID=0`. The capacity allocation for all other `RCID` values
+is `UNSPECIFIED`. The behavior of handling a request with a non-zero `RCID`
+value before configuring the capacity controller with capacity allocation for
+that `RCID` is `UNSPECIFIED`.
+
+[[CC_CAP]]
+=== Capabilities (`cc_capabilities`)
+
+The `cc_capabilities` register is a read-only register that holds the
+capacity-controller capabilities.
+
+.Capabilities register fields
+[wavedrom, , ]
+....
+{reg: [
+  {bits:  8, name: 'VER'},
+  {bits: 16, name: 'NCBLKS'},
+  {bits:  1, name: 'FRCID'},
+  {bits: 31, name: 'reserved'},
+  {bits:  8, name: 'custom'},
+], config:{lanes: 4, hspace:1024}}
+....
+
+The `VER` field holds the version of the specification implemented by the
+capacity controller. The low nibble is used to hold the minor version of the
+specification and the upper nibble is used to hold the major version of the
+specification. For example, an implementation that supports version 1.0 of the
+specification reports 0x10.
+
+The `NCBLKS` field holds the total number of allocatable capacity blocks in 
+the controller. The capacity represented by an allocatable capacity block is
+`UNSPECIFIED`. The capacity controllers support allocating capacity in multiples
+of an allocatable capacity block.
+
+[NOTE]
+====
+For example, a cache controller that supports capacity allocation by ways may
+report the number of ways as the number of allocatable capacity blocks.
+====
+
+If `FRCID` is 1, the controller supports an operation to flush and deallocate
+the capacity blocks occupied by an `RCID`.
+
+[[CC_MCTL]]
+=== Usage monitoring control (`cc_mon_ctl`)
+
+The `cc_mon_ctl` register is used to control monitoring of capacity usage by a
+`MCID`. When the controller does not support capacity usage monitoring the
+`cc_mon_ctl` register is read-only zero.
+
+.Usage monitoring control (`cc_mon_ctl`)
+[wavedrom, , ]
+....
+{reg: [
+  {bits:  5, name: 'OP (WARL)'},
+  {bits:  3, name: 'AT (WARL)'},
+  {bits: 12, name: 'MCID (WARL)'},
+  {bits:  8, name: 'EVT_ID (WARL)'},
+  {bits:  1, name: 'ATV (WARL)'},
+  {bits:  3, name: 'WPRI'},
+  {bits:  7, name: 'STATUS (RO)'},
+  {bits:  1, name: 'BUSY (RO)'},
+  {bits: 24, name: 'WPRI'},
+], config:{lanes: 8, hspace:1024}}
+....
+
+Capacity controllers that support capacity usage monitoring implement a usage
+monitoring counter for each supported `MCID`. The usage monitoring counter may
+be configured to count a monitoring event. When an event matching the event 
+configured for the `MCID` occurs then the monitoring counter is updated. The 
+event matching may optionally be filtered by the access-type.
+
+The `OP` field is used to instruct the controller to perform an operation
+listed in <<CC_MON_OP>>.
+
+The `EVT_ID` field is used to program the identifier of the event to count in
+the monitoring counter selected by `MCID`. The `AT` field is used to program the
+access-type to count.
+
+When the `EVT_ID` for a `MCID` is selected as 0, the counter retains its
+current value but stops counting. When `EVT_ID` is programmed with a non-zero
+and legal value, the counter resets to 0 and starts counting the programmed
+events for requests with matching `MCID` and `AT`(if `ATV` is 1). When `ATV` is 0,
+the counter counts requests with all access-types and the `AT` value is ignored.
+
+A controller that does not support monitoring by access-type may hardwire the
+`ATV` and `AT` fields to 0.
+
+[[CC_MON_OP]]
+.Usage monitoring operations (`OP`)
+[width=100%]
+[%header, cols="16,^12,70"]
+|===
+|Operation     | Encoding ^| Description
+|--            | 0         | Reserved for future standard use.
+|`CONFIG_EVENT`| 1         | Configure the counter selected by `MCID` to count
+                             the event selected by `EVT_ID`, `AT`, and `ATV`.
+                             The `EVT_ID` encodings are listed in <<CC_EVT_ID>>.
+|`READ_COUNTER`| 2         | Snapshot the value of the counter selected by
+                             `MCID` into `cc_mon_ctr_val` register. The
+                             `EVT_ID`, `AT` and `ATV` fields are not used by
+                             this operation.
+| --           | 3-23      | Reserved for future standard use.
+| --           | 24-31     | Designated for custom use.
+|===
+
+
+[[CC_EVT_ID]]
+.Usage monitoring event ID (`EVT_ID`)
+[width=100%]
+[%header, cols="12,^12,70"]
+|===
+|Event ID      | Encoding ^| Description
+|`None`        | 0         | Counter does not count and retains its value.
+|`Occupancy`   | 1         | Counter is incremented by 1 when a request with a
+                             matching `MCID` and `AT` allocates a capacity
+                             block. The counter is decremented by 1 when that
+                             capacity block is de-allocated.
+| --           | 2-127     | Reserved for future standard use.
+| --           | 127-128   | Designated for custom use.
+|===
+
+When the `cc_mon_ctl` is written, the controller may need to perform several
+actions that may not complete synchronously with the write. A write to the
+`cc_mon_ctl` sets the `BUSY` bit to 1 indicating the controller is performing
+the requested operation. When the `BUSY` bit reads 0 the operation is complete
+and the `STATUS` field provides a status value (<<CC_MON_STS>>) of the
+requested operation.
+
+[[CC_MON_STS]]
+.`cc_mon_ctl.STATUS` field encodings
+[width=100%]
+[%header, cols="12,70"]
+|===
+|`STATUS` | Description
+| 0       | Reserved
+| 1       | Operation was successfully completed.
+| 2       | Invalid operation (`OP`) requested.
+| 3       | Operation requested for an invalid `MCID`.
+| 4       | Operation requested for an invalid `EVT_ID`.
+| 5       | Operation requested for an invalid `AT`.
+| 6-63    | Reserved for future standard use.
+| 64-127  | Designated for custom use.
+|===
+
+Behavior of writes to the `cc_mon_ctl` when `BUSY` is 1 is `UNSPECIFIED`. Some
+implementations may ignore the second write and others may perform the
+operation determined by the second write. Software must verify that `BUSY` is 0
+before writing `cc_mon_ctl`.
+
+[[CC_MCTR]]
+=== Monitoring counter value (`cc_mon_ctr_val`)
+
+The `cc_mon_ctr_val` is a read-only register that holds a snapshot of the
+counter requested by `READ_COUNTER` operation.
+
+.Usage monitoring counter value (`cc_mon_ctr_val`)
+[wavedrom, , ]
+....
+{reg: [
+  {bits:  63, name: 'CTR'},
+  {bits:  1, name: 'INVALID'},
+], config:{lanes: 4, hspace:1024}}
+....
+
+The counter is valid if the `INVALID` field is 0. The counter may be marked
+`INVALID` if it underflows or the controller for `UNSPECIFIED` reasons determine
+the count to be not valid. The counters marked `INVALID` may become valid in
+future.
+
+[NOTE]
+====
+A counter may underflow when capacity blocks are de-allocated following a reset
+of the counter to 0. This may be due to the `MCID` being reallocated to a new
+workload while the capacity controller still holds capacity blocks allocated by
+the workload to which the `MCID` was previously allocated. The counter value
+should typically stabilize to reflect the usage of the new workload after
+the workload has executed for a short duration following the counter reset.
+====
+
+[NOTE]
+====
+Some implementations may not store the `MCID` of the request that caused the 
+capacity block to be allocated with every capacity block in the controller to
+optimize on the storage overheads. Such controllers may in turn rely on 
+statistical sampling to report the capacity usage by tagging only a subset
+of the capacity blocks.
+
+Techniques such as set-sampling in caches have been shown to provide
+statistically accurate cache occupancy information with a relatively small
+sample size such as 10% cite:[SSAMPLE].
+
+When the controller has not observed enough samples to provide an accurate
+value in the monitoring counter the controller may report the counter as being
+`INVALID` till more accurate measurements are available.
+====
+
+[[CC_ALLOC]]
+=== Capacity allocation control (`cc_alloc_ctl`)
+
+The `cc_alloc_ctl` register is used to control allocation of capacity to a
+`RCID` per `AT`. If a controller does not support capacity allocation then the
+register is read-only zero. If the controller does not support capacity
+allocation per access-type then the `AT` field is read-only zero.
+
+.Capacity allocation control (`cc_alloc_ctl`)
+[wavedrom, , ]
+....
+{reg: [
+  {bits:  5, name: 'OP (WARL)'},
+  {bits:  3, name: 'AT (WARL)'},
+  {bits: 12, name: 'RCID (WARL)'},
+  {bits: 12, name: 'WPRI'},
+  {bits:  7, name: 'STATUS (RO)'},
+  {bits:  1, name: 'BUSY (RO)'},
+  {bits: 24, name: 'WPRI'},
+], config:{lanes: 8, hspace:1024}}
+....
+
+The `OP` field is used to instruct the capacity controller to perform an
+operation listed in <<CC_ALLOC_OP>>. The `cc_alloc_ctl` register is used in
+conjuction with the `cc_block_mask` register to perform capacity allocation
+operations. When the requested operation uses the operands configured in
+`cc_block_mask`, software must first program the `cc_block_mask` register with
+the operands for the operation before requesting the operation.
+
+[[CC_ALLOC_OP]]
+.Capacity allocation operations (`OP`)
+[width=100%]
+[%header, cols="16,^12,70"]
+|===
+|Operation     | Encoding ^| Description
+|--            | 0         | Reserved for future standard use.
+|`CONFIG_LIMIT`| 1         | The `CONFIG_LIMIT` operation is used to establish
+                             a limit for capacity allocation for requests by
+                             `RCID` and of access-type `AT`. The capacity
+                             allocation is specified in `cc_block_mask`
+                             register.
+|`READ_LIMIT`  | 2         | The `READ_LIMIT` operation is used to read back
+                             the previously configured allocation limits for
+                             requests by `RCID` and of type `AT`. The current
+                             configured allocation limit is written to 
+                             `cc_block_mask` register on completion of the
+                             operation.
+|`FLUSH_RCID`  | 3         | The `FLUSH_RCID` operation requests the controller
+                             to deallocate the capacity allocated for use by
+                             the specified `RCID` for access-type specified by
+                             `AT`. The `cc_block_mask` register is not used for
+                             this operation.
+| --           | 4-23      | Reserved for future standard use.
+| --           | 24-31     | Designated for custom use.
+|===
+
+Capacity controllers enumerate the allocatable capacity blocks in `NCBLKS` field
+of the `cc_capabilities` register. The `cc_block_mask` register is programmed
+with a bit-mask where each bit represents a capacity block to be allocated.
+
+A capacity allocation must be configured for each supported access-type by 
+the controller. Identical limits may be configured for two or more access-types
+if different capacity allocation per access-type is not required. The behavior
+is `UNSPECIFIED` if capacity is not allocated for each access-type supported by
+the controller.
+
+[NOTE]
+====
+A cache controller that supports capacity allocation indicates the number of
+allocatable capacity blocks in `cc_capabilities.NCBLKS` field. For example,
+consider a cache with `NCBLKS=8`. In this example, the `RCID=5` has been 
+allocated capacity blocks numbered 0 and 1 for requests with access-type `AT=0`
+and has been allocated capacity blocks numbered 2 for requests with access-type
+`AT=1`. The `RCID=3` in this example has been allocated capacity blocks
+numbered 3 and 4 for both `AT=0` and `AT=1` access-types as separate capacity
+allocation by access-type is not required for this workload. Further in this
+example, the `RCID=6` has been configured with the same capacity block
+allocations as `RCID=3`. This implies that they share a common capacity
+allocation in this cache but have been associated with different `RCID` to allow
+differentiated treatment in another capacity and/or bandwidth controller.
+
+[width=100%]
+[%header, cols="4,^1,^1,^1,^1,^1,^1,^1,^1"]
+|===
+|                  |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0
+| `RCID=3`, `AT=0` | `0` | `0` | `0` | `1` | `1` | `0` | `0` | `0`
+| `RCID=3`, `AT=1` | `0` | `0` | `0` | `1` | `1` | `0` | `0` | `0`
+| `RCID=5`, `AT=0` | `0` | `0` | `0` | `0` | `0` | `0` | `1` | `1`
+| `RCID=5`, `AT=1` | `0` | `0` | `0` | `0` | `0` | `1` | `0` | `0`
+| `RCID=6`, `AT=0` | `0` | `0` | `0` | `1` | `1` | `0` | `0` | `0`
+| `RCID=6`, `AT=1` | `0` | `0` | `0` | `1` | `1` | `0` | `0` | `0`
+|===
+====
+
+The `FLUSH_RCID` operation may incur long latency to complete. New requests to
+the controller by the `RCID` being flushed are allowed. The controller is
+allowed to deallocate capacity blocks that were allocated after the operation
+was initiated.
+
+[NOTE]
+====
+For cache controllers, the `FLUSH_RCID` operation may perfom an operation
+similar to that performed by the RISC-V `CBO.FLUSH` instruction on each cache
+block that is part of the allocation configured for the `RCID`.
+
+The `FLUSH_RCID` operation may be used as part of reclaiming a previously 
+allocated `RCID` and associating it with a new workload. When such a
+reallocation is performed the capacity controllers may have capacity blocks
+allocated by the old workload and thus for a short warmup duration the capacity
+controller may be enforcing capacity limits that reflect the usage by the old
+workload. Such warmup durations are typically not statistically significant but
+if that is not desired then the `FLUSH_RCID` operation may be used to flush and
+evict capacity allocated to the old workload.
+====
+
+When the `cc_alloc_ctl` is written, the controller may need to perform several
+actions that may not complete synchronously with the write. A write to the
+`cc_alloc_ctl` sets the `BUSY` bit to 1 indicating the controller is performing
+the requested operation. When the `BUSY` bit reads 0 the operation is complete
+and the `STATUS` field provides a status value (<<CC_ALLOC_STS>>) of the
+requested operation.
+
+[[CC_ALLOC_STS]]
+.`cc_alloc_ctl.STATUS` field encodings
+[width=100%]
+[%header, cols="12,70"]
+|===
+|`STATUS` | Description
+| 0       | Reserved
+| 1       | Operation was successfully completed.
+| 2       | Invalid operation (`OP`) requested.
+| 3       | Operation requested for an invalid `RCID`.
+| 4       | Operation requested for an invalid `AT`.
+| 5       | Invalid capacity block mask specified.
+| 6-63    | Reserved for future standard use.
+| 64-127  | Designated for custom use.
+|===
+
+Behavior of writes to the `cc_alloc_ctl` or `cc_block_mask` when `BUSY` is 1 is
+`UNSPECIFIED`. Some implementations may ignore the second write and others may
+perform the operation determined by the second write. Software must verify that
+`BUSY` is 0 before writing `cc_alloc_ctl` or `cc_block_mask`.
+
+[[CC_BMASK]]
+=== Capacity block mask (`cc_block_mask`)
+
+The `cc_block_mask` is a WARL register. When the controller does not support
+capacity allocation i.e. `NCBLKS` is 0, then this register is read-only 0.
+
+The register has `NCBLKS` <<CC_CAP>> bits each corresponding to one allocatable
+capacity block in the controller. The width of this register is variable but
+always a multiple of 64 bits. The width in bits is determined as
+
+[latexmath]
+++++
+    BMW = \frac{ NCBLKS + 63 }{64} x 64
+++++
+
+Bits `NCBLKS-1:0` are read-write and the bits `BMW-1:NCBLKS` are read-only zero.
+
+To configure capacity allocation limit for an `RCID` and `AT`, the
+`cc_block_mask` is first programmed with a bit-mask identifying the capacity
+blocks to be allocated and then the `cc_alloc_ctl` register written to request a
+`CONFIG_LIMIT` operation for the `RCID` and `AT`. Once a capacity allocation
+limit has been established, a request may be allocated a capacity block if the
+capacity block mask programmed for `RCID` and `AT` associated the request has
+the corresponding bit set to 1 in the capacity block mask. At least one capacity
+block must be allocated using `cc_block_mask` when allocating capacity.
+Allocating overlapping capacity block masks among `RCID` and `AT` is allowed.
+
+[NOTE]
+====
+A set-associative cache controller that supports capacity allocation by ways
+may advertize `NCBLKS` to be the number of ways per set in the cache. Allocating
+capacity in such a cache for an `RCID` and `AT` involves selecting a subset of
+ways and programming the mask of the selected ways in `cc_block_mask` when
+requesting the `CONFIG_LIMIT` operation.
+====
+
+To read out the capacity allocation limit for an `RCID` and `AT`, the 
+`READ_LIMIT` operation is requested using `cc_alloc_ctl`. On successful
+completion of the operation the `cc_block_mask` holds the configured capacity
+allocation limit.

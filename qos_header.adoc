@@ -1,8 +1,8 @@
 [[header]]
-:description: RISC-V Capacity and Bandwidth QoS
+:description: RISC-V Capacity and Bandwidth Controller QoS Register Interface
 :company: RISC-V.org
 :revdate: 11/2022
-:revnumber: 1.0
+:revnumber: 0.1
 :revremark: This document is in development. Assume everything can change. See http://riscv.org/spec-state for details.
 :url-riscv: http://riscv.org
 :doctype: book
@@ -17,9 +17,9 @@
 // needs to be changed? bug discussion started
 //:WaveDromEditorApp: app/wavedrom-editor.app
 :imagesoutdir: images
-:bibtex-file: example.bib
-:bibtex-order: alphabetical
-:bibtex-style: apa
+:bibtex-file: qos.bib
+:bibtex-order: appearance
+:bibtex-style: ieee
 :icons: font
 :lang: en
 :listing-caption: Listing
@@ -36,7 +36,7 @@ endif::[]
 :footnote:
 :xrefstyle: short
 
-= RISC-V Capacity and Bandwidth QoS
+= RISC-V Capacity and Bandwidth QoS Register Interface
 RISC-V CMQRI Task Group
 
 // Preamble
@@ -58,9 +58,10 @@ https://creativecommons.org/licenses/by/4.0/.
 Copyright 2022 by RISC-V International.
 
 [preface]
-include::contributors.adoc[]
+include::qos_contributors.adoc[]
 
 include::qos_intro.adoc[]
+include::qos_identifiers.adoc[]
 include::qos_capacity.adoc[]
 include::qos_bandwidth.adoc[]
 //the index must precede the bibliography

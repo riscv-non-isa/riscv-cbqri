@@ -1,10 +1,19 @@
-= RISC-V docs-spec-template
+= RISC-V Capacity and Bandwidth Controller QoS Register Interface
 
-This repository is used to prime GitHub repos for the RISC-V organization which will be used
-to create specifications.
+This document is capturing discussions at the CMQRI TG and attempts to document the baseline.
+This is not official specification and everything in this document may change. 
 
-**If you are reading this in a specification repo, please update the title for this section and
-provide your introduction to your repository.**
+Quality of Service (QoS) is the minimal end-to-end performance that is guaranteed in advance
+by a service level agreement (SLA) to an application.
+
+System software needs additional tools to control interference to an application and thereby
+reduce the variability in performance experienced by one application due to other application's
+cache capacity usage, memory bandwidth usage, interconnect bandwidth usage, power usage, etc.
+through a capacity and bandwidth allocation extension.
+
+Effective use of the capacity and bandwidth allocation extension requires hardware to provide a
+capacity and bandwidth monitoring extension by which the resource requirements of an application
+needed to meet a certain performance goal can be characterized.
 
 = License
 

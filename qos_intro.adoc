@@ -1,15 +1,123 @@
 [[intro]]
 == Introduction
 
-Lorem ipsum indexterm:[Lorem ipsum] dolor sit amet, consectetur adipiscing elit, sed do *eiusmod tempor* incididunt ut labore et dolore magna aliqua. Felis imperdiet proin fermentum leo vel orci porta. Volutpat lacus laoreet non curabitur indexterm:[curabitur] gravida indexterm:[gravida]. Posuere urna nec tincidunt praesent semper feugiat nibh. Elit ``ullamcorper`` dignissim cras tincidunt lobortis. Malesuada fames ac turpis egestas integer eget. Tristique sollicitudin nibh sit amet commodo. Sed felis eget velit aliquet. Sit amet aliquam id diam maecenas ultricies mi. Consectetur purus ut faucibus pulvinar. Lectus urna duis convallis convallis tellus id. Fermentum iaculis eu non diam. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Urna nec tincidunt praesent semper feugiat nibh.
+Quality of Service (QoS) is the minimal end-to-end performance that is
+guaranteed in advance by a service level agreement (SLA) to an workload. The 
+performance may be measured in the form of metrics such as instructions per
+cycle (IPC), latency of servicing work, etc.
 
-Commodo viverra maecenas accumsan lacus. Vulputate odio ut enim blandit indexterm:[blandit] volutpat maecenas volutpat blandit. Urna porttitor rhoncus dolor purus non. Tellus mauris a diam maecenas sed. Vitae auctor eu augue ut lectus. Ridiculus mus mauris vitae ultricies leo integer. Consequat semper viverra nam *libero* justo laoreet sit amet. Pellentesque pulvinar pellentesque habitant morbi tristique senectus et netus et. Ac placerat vestibulum lectus mauris ``ultrices`` eros in cursus turpis. Accumsan in nisl nisi scelerisque eu ultrices vitae. Cras ornare arcu dui vivamus. Vitae congue mauris rhoncus aenean. Consequat mauris nunc congue nisi vitae suscipit tellus. Tempus egestas sed sed risus pretium quam vulputate dignissim. Quis varius quam quisque id diam vel. Mattis nunc sed blandit libero volutpat sed cras ornare arcu. Amet mauris commodo quis imperdiet massa tincidunt nunc.
+Various factors such as the available cache capacity, memory bandwidth,
+interconnect bandwidth, CPU cycles, system memory, etc. affect the performance
+in a computing system that runs multiple workloads concurrently. Further when
+there is arbitration for shared resources, the prioritization of the workloads
+requests against other competing requests may also affect the performance of
+the workload. Such interference due to resource sharing may lead to
+unpredictable workload performance cite:[PTCAMP].
+
+When multiple workloads are running concurrently on modern processors with large
+core counts, multiple cache hierarchies, and multiple memory controllers, the
+performance of an workload becomes less deterministic or even non-deterministic
+as the performance depends on the behavior of all the other workloads in the
+machine that contend for the shared resources leading to interference. In many
+deployment scenarios such as public cloud servers the workload owner may not be
+in control of the type and placement of other workloads in the platform.
 
 [NOTE]
 ====
-The name RISC-V indexterm:[RISC-V] was chosen to represent the fifth major RISC ISA design from UC Berkeley (RISC-I cite:[riscI-isca1981], RISC-II cite:[Katevenis:1983], SOAR cite:[Ungar:1984], and SPUR cite:[spur-jsscc1989] were the first four). We also pun on the use of the Roman numeral "V" to signify "variations" and "vectors", as support for a range of architecture research, including various data-parallel accelerators, is an explicit goal of the ISA design.
+A workload may be a single application, a group of application, a virtual
+machine, a group of virtual machines, or some combination of above.
 ====
 
-=== Sub Section of Introduction
+System software can control some of these resources available to the workload
+such as the number of hardware threads made available for execution, the amount
+of system memory allocated to the workload, the number of CPU cycles provided
+for execution, etc. 
 
-Pellentesque habitant morbi *tristique* senectus et netus et. Aliquam purus sit amet luctus. Odio eu ``feugiat`` pretium nibh ipsum consequat nisl vel. Euismod lacinia at quis risus sed vulputate odio ut. Eu sem integer vitae justo eget. Cursus euismod quis viverra nibh. Tempus egestas sed sed risus. Quis imperdiet massa tincidunt nunc pulvinar. Id venenatis a condimentum vitae sapien pellentesque habitant.
+System software needs additional tools to control interference to a workload
+and thereby reduce the variability in performance experienced by one workload
+due to other workload’s cache capacity usage, memory bandwidth usage,
+interconnect bandwidth usage, etc. through a resource allocation extension. The
+resource allocation extension enables system software to reserve capacity and/or
+bandwidth to meet the performance goals of the workload. Such controls enable
+improving the utilization of the system by colocating workloads while minimizing
+the interference caused by one workload to another cite:[HERACLES].
+
+Effective use of the resource allocation extension requires hardware to provide
+a resource monitoring extension by which the resource requirements of a
+workload needed to meet a certain performance goal can be characterized. A
+typical use model involves profiling the resource usage of the workload using
+the resource monitoring extensions and to establish resource allocations for the
+workload using the resource allocation extensions.
+
+The allocation may be in the form of capacity or bandwidth depending on the type
+of resource. For caches and directories, the resource allocation is in the form
+of storage capacity. For interconnects and memory controllers the resource
+allocation is in the form of bandwidth.
+
+Workloads typically generate a different types of accesses to shared resources.
+For example, some of the requests may be for accessing instructions and others
+may be to access data operated on by the workload. Certain data accesses may
+not have temporal locality whereas others may have a high probability of reuse.
+In some cases it is desirable to provide differentiated treatment to each type
+of access by providing unique resource allocation to each access type.
+
+RISC-V Capacity and Bandwidth Controller QoS Register Interface (CBQRI) 
+extension specifies:
+
+. QoS identifiers to identify workloads that originate requests to the shared
+  resources. These QoS identifiers include an identifier for resource allocation
+  configuration and an identifier for the monitoring counters used to monitor
+  resource usage. These identifiers accompany each request made by the workload
+  to the shared resource. <<QOS_ID>> specfies the mechanism to associate the
+  identfiers with workloads.
+. Access-type identifiers to accompany request to access a shared resource to
+  allow differentiated treatment of each access-type (e.g., code vs. data,
+  etc.). The access-types are defined in <<QOS_ID>>
+. Register interface for capacity allocation in capacity controllers such as
+  shared caches and directories. The capacity allocation register interface is
+  specified in <<CC_QOS>>.
+. Register interface for capacity usage monitoring. The capacity usage
+  monitoring register interface is specified in <<CC_QOS>>.
+. Register interface for bandwidth allocation in bandwidth controllers such as
+  interconnect and memory controllers. The bandwidth allocation register
+  interface is specfied in <<BC_QOS>>.
+. Register interface for bandwidth usage monitoring. The bandwidth
+  usage monitoring register interface is specified in <<BC_QOS>>.
+
+The capacity and bandwidth controller register interfaces for resource
+allocation and usage monitoring are defined as memory-mapped registers. Each
+controller that supports the CBQRI extension provides a set of registers that
+are located at a range of physical address space that is a multiple of 4-KiB
+and the lowest address of the range is aligned to 4-KiB. The memory-mapped
+registers may be accessed using naturally aligned 4-byte or 8-byte memory
+accesses. The controller behavior for register accesses where the address is
+not aligned to the size of the access, or if the access spans multiple
+registers, of if the size of the access is not 4-bytes or 8-bytes, is
+`UNSPECIFIED`. The atomicity of access to an 8-byte register is `UNSPECIFIED`.
+The implementation may observe the 8-byte access as two 4-byte accesses. A
+4-byte access to a register must be single-copy atomic.
+
+[NOTE]
+====
+If an implementation may observe a 8-byte register access as two 4-byte
+accesses then such implementations must preserve the semantics of the 8-byte
+access and must cause any side effects only after both accesses have been
+observed.
+====
+
+The controller registers have little-endian byte order (even for systems where
+all harts are big-endian-only).
+
+[NOTE]
+====
+Big-endian-configured harts that make use of the register interface are
+expected to implement the `REV8` byte-reversal instruction defined by the Zbb
+extension. If `REV8` is not implemented, then endianness conversion may be
+implemented using a sequence of instructions.
+====
+
+A controller may support a subset of capabilities defined by CBQRI. When a 
+capability is not supported the registers and/or fields used to configure and/or
+control such capabilities are hardwired to 0. Each controller supports a
+capabilities register to enumerate the supported capabilities.
+
