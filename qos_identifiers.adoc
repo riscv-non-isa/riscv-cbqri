@@ -1,0 +1,191 @@
+[[QOS_ID]]
+== QoS Identifiers 
+
+Monitoring or allocation of resources requires a way to identify the originator
+of the request to access the resource.
+
+The CBQRI extension provides a mechanism by which a workload can be associated
+with a resource control ID (`RCID`) and a monitoring counter ID (`MCID`) that
+accompany each request made by the workload to shared resources.
+
+To provide differentiated services to workloads, the CBQRI extension defines
+a mechanism to configure resource usage limits, in the form of capacity or
+bandwidth, and optionally a priority for an `RCID` in the resource controllers
+that control accesses to such shared resources.
+
+To monitor the resource utilization by a workload  the CBQRI extension defines
+a mechanism to configure counters identified by the `MCID` to count events in
+the resource controllers that control accesses to such shared resources.
+
+=== Associating `RCID` and `MCID` with requests
+
+==== RISC-V hart initiated requests
+
+The `sqoscfg` CSR is a 32-bit S/HS-mode read/write register to configure a
+resource control ID (`RCID`) and a monitoring counter ID (`MCID`). The `RCID`
+and `MCID` accompany each request made by the hart to shared resources such
+as interconnects, caches, memory, etc.
+
+.`sqoscfg` register for RV32 and RV64
+
+[wavedrom, , ]
+....
+{reg: [
+  {bits: 12, name: 'RCID (WARL)'},
+  {bits:  4, name: 'WPRI'},
+  {bits: 12, name: 'MCID (WARL)'},
+  {bits:  4, name: 'WPRI'},
+], config:{lanes: 1, hspace:1024}}
+....
+
+[NOTE]
+====
+The type of request made to the shared resource controller depends on the type
+of shared resource. In case of resources such as caches or memory these may be
+a memory access request. In case of resources such as CPU dispatch slots and
+retirement bandwidth the request may be to allocate such resources for
+execution.
+====
+
+The `RCID` in the request is used by the resource controllers to determine the
+resource allocations (e.g., cache occupancy limits, memory bandwidth limits,
+etc.) to enforce. The `MCID` in the request is used by the resource controllers
+to identify the ID of a counter to monitor resource usage (e.g., cache
+occupancy, memory bandwidth, etc.).
+
+Access to `sqoscfg` when `V=1` causes a virtual-instruction exception.
+
+At reset it is suggested that the `RCID` field of `sqoscfg` be set to 0 as
+typically the resource controllers in the SoC default to a reset behavior
+of associating all capacity or bandwidth to the `RCID` value of 0.
+
+The value of `MCID` at reset, unlike the `RCID`, does not affect functional
+behavior. Implementations may choose a convenient legal value for the `MCID`
+reset value.
+
+The `RCID` and `MCID` configured in the `sqoscfg` CSR apply to all privilege
+modes of software execution on that hart.
+
+In a typical implementation the number of `RCID` bits implemented (e.g., to
+support 10s of `RCIDs`) may be smaller than the number of `MCID` bits
+implemented (e.g., to support 100s of `MCIDs`). It is a typical usage to
+associate a group of applications/VMs with a common `RCID`. The group being
+associated with a common `RCID` thus shares a common pool of resource
+allocations. The resource allocation for the `RCID` is established to meet the
+SLA objectives of all members of the group. If SLA objectives of one or more
+members of the group stop being met, the resource usage of one or more members
+of the group may be monitored by associating them with a unique `MCID` and this
+iterative analysis process use to determine the optimal strategy - increasing
+resources allocated to the `RCID`, moving some members to a different `RCID`,
+migrating some members away to another machine, etc. - for restoring the SLA.
+Having a sufficiently large pool of `MCID` speeds up this analysis. The usage
+motivates separate IDs for allocation and monitoring.
+
+Typically, the contents of the `sqoscfg` CSR is updated with a new `RCID`
+and/or `MCID` by the HS/S-mode scheduler if the `RCID` and/or `MCID` of the
+new process/VM is not same as that of the old process/VM.
+
+The `RCID` and `MCID` configured in `sqoscfg` also apply to execution in
+S/HS-mode but is typically not an issue. Usually, S/HS-mode execution occurs to
+provide services, such as through the SBI, to software executing at lower
+privilege. Since the S/HS-mode invocation was to provide a service for the
+lower privilege mode, the S/HS-mode software may not modify the `sqoscfg` CSR.
+
+If a use case requires use of separate `RCID` and/or `MCID` for software
+execution in S/HS-mode, then the S/HS-mode SW may update the `sqoscfg` CSR and
+restore it prior to returning to the lower privilege mode execution.
+
+Usually for virtual machines the resource allocations are configured by the
+hypervisor. Usually the Guest OS in a virtual machine does not participate in
+the QoS flows as the Guest OS does not know the physical capabilities of the
+platform or the resource allocations for other virtual machines in the system.
+If a use case requires it, a hypervisor may virtualize the QoS capability to a
+VM by virtualizing the memory-mapped CBQRI register interface and using the
+virtual-instruction exception on access to `sqoscfg` CSR.
+
+[NOTE]
+====
+If the use of directly selecting among a set of `RCID` and/or `MCID` by a VM
+becomes more prevalent and the overhead of virtualizing the `sqoscfg` CSR using
+the virtual instruction exception is not acceptable then a future extension may
+be introduced where the `RCID`/`MCID` attempted to be written by VS mode are
+used as a selector for a set of `RCID`/`MCID` that the hypervisor configures in
+a set of HS mode CSRs.
+====
+
+A Hypervisor may cause a context switch from one virtual machine to another. The
+context switch usually involves saving the context associated with the VM being
+switched away from and restoring the context of the VM being switched to. Such
+context switch may be invoked in response to an explicit call from the VM (i.e,
+as a function of an `ECALL` invocation) or may be done asynchronously (e.g., in
+response to a timer interrupt). In such cases the hypervisor may want to execute
+with the `sqoscfg` configurations of the VM being switched away from such that
+the execution is attributed to the VM being switched from and then prior to
+executing the context switch code associated with restoring the new VMs context
+first switch to the `sqoscfg` appropriate for the new VM being switched to such
+that all of that execution is attributed to the new VM. Further in this context
+switch process, if the hypervisor intends some of the execution to be attributed
+to neither the outgoing VM nor the incoming VM, then the hypervisor may switch
+to a new configuration that is different from the configuration of either of the
+VMs for the duration of such execution. QoS extensions are statistical in
+nature and the small duration, such as the few instructions in the hypervisor
+trap handler entrypoint, for which the HS-mode may execute with the `RCID`/
+`MCID` established for lower privilege mode operation may not be statistically
+significant.
+
+The `RCID` and `MCID` configured in `sqoscfg` also apply to execution in M-mode
+but is typically not an issue. Usually, M-mode execution occurs to provide
+services, such as through the SBI interface, to software executing at lower
+privilege. Since the M-mode invocation was to provide a service for the lower
+privilege mode, the M-mode software may not modify the `sqoscfg` CSR. If a use
+case requires use of a separate `RCID` and/or `MCID` for software execution in
+M-mode, then the M-mode SW may update the `sqoscfg` CSR and restore it prior to
+returning to lower privilege mode execution.
+
+==== Device initiated requests
+
+Devices may be configured with an `RCID` and `MCID` for requests originated 
+from the device if the device implementation supports such capability. The 
+method to configure the QoS identifiers into devices is `UNSPECIFIED`.
+
+Where the device does not natively support being configured with an `RCID`
+and `MCID`, the implementation may provide a shim at the device interface that
+may be configured with the `RCID` and `MCID` that are associated with requests
+originating from the device. The method to configure such QoS identifiers into
+a shim is `UNSPECIFIED`.
+
+If the system supports an IOMMU, then the IOMMU may be configured with the
+`RCID` and `MCID` to associate requests from the device with the QoS
+indetifiers. The RISC-V IOMMU specification may support a future standard
+extension to support this configuration.
+
+=== Access-type (`AT`)
+
+In some usages, in addition to providing differentiated service among workloads,
+the ability to differentiate between resource usage for accesses made by the
+same workload may be required. For example, the capacity allocated in a shared
+cache for code storage may be differentiated from the capacity allocated for
+data storage and thereby avoid code from being evicted from such shared cache
+due to a data access.
+
+When differentiation based on access type (e.g. code vs. data) is supported the
+requests also carry an access-type (`AT`) indicator. The resource controllers
+may be configured with separate capacity and/or bandwidth allocations for each
+supported access-type. The CBQRI extension defines a 3-bit `AT` field, encoded
+as specified in <<AT_ENC>>, in the register interface to configure
+differentiated resource allocation and monitoring for each `AT`.
+
+[[AT_ENC]]
+.Encodings of `AT` field
+[width=75%]
+[%header, cols="5,5,20"]
+|===
+|Value | Name     | Description
+| 0    | `Data`   | Requests to access data.
+| 1    | `Code`   | Requests for code execution.
+| 2-5  | Reserved | Reserved for future standard use.
+| 6-7  | Custom   | Designated for custom use.
+|===
+
+If a request is received with an unsupported `AT` value then the resource
+controller behaves as if the `AT` value was 0.
