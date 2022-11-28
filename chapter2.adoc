@@ -24,7 +24,7 @@ This item has multiple lines.
 +
 By multiple lines, this is what we mean.
 +
-Seriously, multiple.
+Seriously, multiple. 
 
 === An example table
 
