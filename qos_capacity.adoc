@@ -153,7 +153,7 @@ A controller that does not support monitoring by access-type may hardwire the
                              block. The counter is decremented by 1 when that
                              capacity block is de-allocated.
 | --           | 2-127     | Reserved for future standard use.
-| --           | 127-128   | Designated for custom use.
+| --           | 128-256   | Designated for custom use.
 |===
 
 When the `cc_mon_ctl` is written, the controller may need to perform several
