@@ -149,9 +149,9 @@ A controller that does not support monitoring by access-type may hardwire the
 |Event ID      | Encoding ^| Description
 |`None`        | 0         | Counter does not count and retains its value.
 |`Occupancy`   | 1         | Counter is incremented by 1 when a request with a
-                             matching `MCID` and `AT` allocates a capacity
-                             block. The counter is decremented by 1 when that
-                             capacity block is de-allocated.
+                             matching `MCID` and `AT` allocates a unit of
+                             capacity. The counter is decremented by 1 when a
+                             unit of capacity is de-allocated.
 | --           | 2-127     | Reserved for future standard use.
 | --           | 128-256   | Designated for custom use.
 |===
@@ -206,9 +206,9 @@ future.
 
 [NOTE]
 ====
-A counter may underflow when capacity blocks are de-allocated following a reset
+A counter may underflow when capacity is de-allocated following a reset
 of the counter to 0. This may be due to the `MCID` being reallocated to a new
-workload while the capacity controller still holds capacity blocks allocated by
+workload while the capacity controller still holds capacity allocated by
 the workload to which the `MCID` was previously allocated. The counter value
 should typically stabilize to reflect the usage of the new workload after
 the workload has executed for a short duration following the counter reset.
@@ -217,10 +217,10 @@ the workload has executed for a short duration following the counter reset.
 [NOTE]
 ====
 Some implementations may not store the `MCID` of the request that caused the 
-capacity block to be allocated with every capacity block in the controller to
+capacity to be allocated with every unit of capacity in the controller to
 optimize on the storage overheads. Such controllers may in turn rely on 
 statistical sampling to report the capacity usage by tagging only a subset
-of the capacity blocks.
+of the capacity units.
 
 Techniques such as set-sampling in caches have been shown to provide
 statistically accurate cache occupancy information with a relatively small
@@ -327,7 +327,7 @@ differentiated treatment in another capacity and/or bandwidth controller.
 
 The `FLUSH_RCID` operation may incur long latency to complete. New requests to
 the controller by the `RCID` being flushed are allowed. The controller is
-allowed to deallocate capacity blocks that were allocated after the operation
+allowed to deallocate capacity that was allocated after the operation
 was initiated.
 
 [NOTE]
@@ -338,7 +338,7 @@ block that is part of the allocation configured for the `RCID`.
 
 The `FLUSH_RCID` operation may be used as part of reclaiming a previously 
 allocated `RCID` and associating it with a new workload. When such a
-reallocation is performed the capacity controllers may have capacity blocks
+reallocation is performed the capacity controllers may have capacity
 allocated by the old workload and thus for a short warmup duration the capacity
 controller may be enforcing capacity limits that reflect the usage by the old
 workload. Such warmup durations are typically not statistically significant but
@@ -395,11 +395,12 @@ To configure capacity allocation limit for an `RCID` and `AT`, the
 `cc_block_mask` is first programmed with a bit-mask identifying the capacity
 blocks to be allocated and then the `cc_alloc_ctl` register written to request a
 `CONFIG_LIMIT` operation for the `RCID` and `AT`. Once a capacity allocation
-limit has been established, a request may be allocated a capacity block if the
-capacity block mask programmed for `RCID` and `AT` associated the request has
-the corresponding bit set to 1 in the capacity block mask. At least one capacity
-block must be allocated using `cc_block_mask` when allocating capacity.
-Allocating overlapping capacity block masks among `RCID` and `AT` is allowed.
+limit has been established, a request may be allocated capacity in a capacity
+block if the capacity block mask programmed for `RCID` and `AT` associated the
+request has the corresponding bit set to 1 in the capacity block mask. At least
+one capacity block must be allocated using `cc_block_mask` when allocating
+capacity. Allocating overlapping capacity block masks among `RCID` and `AT` is
+allowed.
 
 [NOTE]
 ====
