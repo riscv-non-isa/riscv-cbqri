@@ -17,20 +17,52 @@ resources allocated to the `RCID`, moving some members to a different `RCID`,
 migrating some members away to another machine, etc. - for restoring the SLA.
 Having a sufficiently large pool of `MCID` speeds up this analysis.
 
+=== Confidential/Secure computing
 
-=== Secure execution
+Confidential Computing protects data in use by performing computation in a
+hardware-based, attested Trusted Execution Environment (TEE). These secure and
+isolated environments prevent unauthorized access or modification of
+applications and data while in use, thereby increasing the security assurances
+for organizations that manage sensitive and regulated data.
 
-This section provides guidelines to supporting a secure execution mode in SoC
-that implement the resource controllers with CBQRI extension. Typically the
-resource accesses of the secure execution must not be observable using the
-resource monitoring extensions and the resource allocations for the secure
-execution must be established such that they cannot be tampered with by
-untrusted entities.
+This section provides guidelines to supporting a TEE in SoC that implement the
+resource controllers with CBQRI extension. 
+
+The resource accesses from a TEE must not be observable using the resource
+usage monitoring extensions and the resource allocations for the TEE must be
+established by a TEE security monitor that manages the TEE.
+
+The resource controllers in such SoC support configuration of separate resource
+allocations and resourse usage monitoring for requests from originating from
+TEEs.
+
+The number of `RCID` and `MCID` available for use by TEEs is implementation
+specific and is defined by the requirements of the implementation. The number of
+IDs available for TEE usage may be fewer, the same, or more than that available
+for non-TEE usage. When a TEE is scheduled for execution on the hart, the TEE
+security manager configures the QoS IDs associated that TEE into the `sqoscfg`
+CSR.
+
+:wq
+
+
+
+To differential requests to shared resources originating from TEEs from
+non-TEEs a TEE-indicator accompanies requests made to the shared resources. The
+resource controller may then use the TEE-indicator to 
 
 Supporting secure execution thus requires following additional capabilities:
 
+* A secure access indication
 * A secure register programming interface
-* Method to signal requests as originating from a secure execution environment
+
+==== Secure access indication
+
+Requests to shared resources originating from secure execution environments
+should carry a secure access indicator along with the `RCID`, `MCID`, and `AT`.
+
+The 
+
 
 ==== Secure register programming interface
 
