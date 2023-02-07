@@ -54,7 +54,7 @@ bandwidth-controller capabilities.
 ....
 
 The `VER` field holds the version of the specification implemented by the
-capacity controller. The low nibble is used to hold the minor version of the
+bandwidth controller. The low nibble is used to hold the minor version of the
 specification and the upper nibble is used to hold the major version of the
 specification. For example, an implementation that supports version 1.0 of the
 specification reports 0x10.
@@ -90,8 +90,8 @@ the bandwidth controller with handle such transient inaccuracies.
 [[BC_MCTL]]
 === Usage monitoring control (`bc_mon_ctl`)
 
-The `bc_mon_ctl` register is used to control monitoring of capacity usage by a
-`MCID`. When the controller does not support capacity usage monitoring the
+The `bc_mon_ctl` register is used to control monitoring of bandwidth usage by a
+`MCID`. When the controller does not support bandwidth usage monitoring the
 `bc_mon_ctl` register is read-only zero.
 
 .Usage monitoring control (`bc_mon_ctl`)
@@ -263,8 +263,8 @@ operation.
 === Bandwidth Allocation control (`bc_alloc_ctl`)
 
 The `bc_alloc_ctl` register is used to control allocation of bandwidth to a
-`RCID` per `AT`. If a controller does not support capacity allocation then the
-register is read-only zero. If the controller does not support capacity
+`RCID` per `AT`. If a controller does not support bandwidth allocation then the
+register is read-only zero. If the controller does not support bandwidth
 allocation per access-type then the `AT` field is read-only zero.
 
 .Bandwidth allocation control (`bc_alloc_ctl`)
@@ -389,7 +389,7 @@ of unused bandwidth made available to `RCID=x` when it contents with another
 
 [latexmath]
 ++++
-    P = \frac{Wweight_{x}}{\sum_{r=1}^{r=n} Mweight_{r}}
+    P = \frac{Weight_{x}}{\sum_{r=1}^{r=n} Mweight_{r}}
 ++++
 
 [NOTE]
