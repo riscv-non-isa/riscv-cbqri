@@ -47,8 +47,9 @@ bandwidth-controller capabilities.
 {reg: [
   {bits:  8, name: 'VER'},
   {bits: 16, name: 'NBWBLKS'},
-  {bits:  7, name: 'MRBWB'},
-  {bits: 25, name: 'reserved:'},
+  {bits:  8, name: 'reserved'},
+  {bits: 16, name: 'MRBWB'},
+  {bits:  8, name: 'reserved'},
   {bits:  8, name: 'custom'},
 ], config:{lanes: 4, hspace:1024}}
 ....
@@ -65,15 +66,9 @@ the controller. The bandwidth represented by an available bandwidth block is
 multiples of a bandwidth block and thereby support proportional allocation of
 bandwidth.
 
-Bandwidth controllers may limit the maximum bandwidth that may be reserved by
-allocating to workloads to a fraction of the `NBWBLKS`. The `MRBWB` field holds
-a number between 1 and 100 to represent this fraction. This number is termed as
-`MaxRsvdBWBlocks`. 
-
-[latexmath]
-++++
-    MaxRsvdBWBlocks = \round \left(  \frac{ MRBWB x NBWBLKS }{100} \right)
-++++
+Bandwidth controllers may limit the maximum bandwidth that may be reserved to
+to be smaller than `NBWBLLKS`. The `MRBWB` field reports the maximum banwidth
+blocks that may be reserved.
 
 [NOTE]
 ====
@@ -344,9 +339,9 @@ requested operation.
 The `bc_bw_alloc` is used to program reserved bandwidth blocks (`Rbwb`) for an
 `RCID` for requests of access-type `AT`. The bandwidth is allocated in
 multiples of bandwidth blocks and the value in `Rbwb` must be at least 1 and
-must not exceed `MaxRsvdBWBlocks` else the operation fails with
-`STATUS=5`. The sum of `Rbwb` allocated across all `RCID` must not exceed
-`MaxRsvdBWBlocks` else the operation fails with `STATUS=5`.
+must not exceed `MRBWB` else the operation fails with `STATUS=5`. The sum of
+`Rbwb` allocated across all `RCID` must not exceed `MRBWB` else the operation
+fails with `STATUS=5`.
 
 .Bandwidth allocation (`bc_bw_alloc`)
 [wavedrom, , ]
