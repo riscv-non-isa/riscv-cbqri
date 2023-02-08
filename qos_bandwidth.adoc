@@ -384,7 +384,7 @@ of unused bandwidth made available to `RCID=x` when it contents with another
 
 [latexmath]
 ++++
-    P = \frac{Weight_{x}}{\sum_{r=1}^{r=n} Mweight_{r}}
+    P = \frac{Mweight_{x}}{\sum_{r=1}^{r=n} Mweight_{r}}
 ++++
 
 [NOTE]
