@@ -337,11 +337,15 @@ requested operation.
 === Bandwidth allocation (`bc_bw_alloc`)
 
 The `bc_bw_alloc` is used to program reserved bandwidth blocks (`Rbwb`) for an
-`RCID` for requests of access-type `AT`. The bandwidth is allocated in
-multiples of bandwidth blocks and the value in `Rbwb` must be at least 1 and
-must not exceed `MRBWB` else the operation fails with `STATUS=5`. The sum of
-`Rbwb` allocated across all `RCID` must not exceed `MRBWB` else the operation
-fails with `STATUS=5`.
+`RCID` for requests of access-type `AT` using the `CONFIG_LIMIT` operation. 
+
+The `bc_bw_alloc` holds the previously configured values for an `RCID` and `AT`
+on successful completion of the `READ_LIMIT` operation.
+
+The bandwidth is allocated in multiples of bandwidth blocks and the value in
+`Rbwb` must be at least 1 and must not exceed `MRBWB` else the `CONFIG_LIMIT`
+operation fails with `STATUS=5`. The sum of `Rbwb` allocated across all `RCID`
+must not exceed `MRBWB` else the `CONFIG_LIMIT` operation fails with `STATUS=5`.
 
 .Bandwidth allocation (`bc_bw_alloc`)
 [wavedrom, , ]
@@ -350,9 +354,9 @@ fails with `STATUS=5`.
   {bits: 16, name: 'Rbwb (WARL)'},
   {bits:  4, name: 'WPRI'},
   {bits:  8, name: 'Mweight (WARL)'},
-  {bits:  1, name: 'isDef (WARL)'},
-  {bits:  1, name: 'useDef (WARL)'},
-  {bits: 34, name: 'WPRI'},
+  {bits:  3, name: 'sharedAT (WARL)'},
+  {bits:  1, name: 'useShared (WARL)'},
+  {bits: 32, name: 'WPRI'},
 ], config:{lanes: 8, hspace:1024}}
 ....
 
@@ -397,16 +401,33 @@ computed among the `RCIDs` that are actively generating requests in that
 accounting interval.
 ====
 
-When `isDef` is 1, the bandwidth allocation programmed for that access-type is
-considered the default bandwidth allocation. If unique bandwidth allocation is
-not required for an access-type then the `useDef` may be used to indicate that
-requests of this access-type share bandwidth allocated for the default
-access-type. Only one access-type may be designated as the default access-type.
-The `isDef` and `useDef` fields are reserved if the controller does not support
-bandwidth allocation per access-type. If more than one access-types have been
-configured with `isDef` programmed to 1 then the implementation may associate
-an access-type programmed with `useDef` with any of those but the behavior is
-otherwise well defined. If an access-type is configured with `useDef` as 1 but
-no other access-type is configured to be the default access-type then the 
-implementation may select any of the access-types as the default access-type but
-the behavior is otherwise well defined.
+If unique bandwidth allocation is not required for an access-type then the
+`useShared` may be set to 1 for `CONFIG_LIMIT` operation. When `useShared` is
+set to 1, the `sharedAT` field specifies the access-type with which the
+bandwidth allocation is shared by the access-type in `bc_alloc_ctl.AT`. When
+`useShared` is 1, `Rbwb` and `Mweight` fields are ignored and the configurations
+of access-type in `sharedAT` apply. If the access-type specified by `sharedAT`
+does not have unique bandwidth allocation then the behavior is `UNSPECIFIED`.
+
+The `useShared` and `sharedAT` fields are reserved if the bandwidth controller
+does not support bandwidth allocation per access-type.
+
+[NOTE]
+====
+When unique bandwidth allocation for an access-type is not required then one or
+more access-types may be configured with a shared bandwidth allocation. For
+example, consider a bandwidth controller that supports 3 access-types. The
+access-type 0 and 1 of `RCID` 3 are configured with unique bandwidth allocations
+and the access-type 2 is configured to share bandwidth allocation with
+access-type 1. The example configuration is illustrated as follows:
+
+[width=100%]
+[%header, cols="4,^1,^1,^1,^1"]
+|===
+|                  |  `Rbwb`  |  `Mweight`  |  `useShared`  |  `sharedAT`
+| `RCID=3`, `AT=0` | `100`    |    `16`     |      `0`      |     `N/A`
+| `RCID=3`, `AT=1` | `50`     |    `16`     |      `0`      |     `N/A`
+| `RCID=3`, `AT=2` | `N/A`    |    `N/A`    |      `1`      |      `1`
+|===
+
+====
