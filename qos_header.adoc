@@ -64,6 +64,7 @@ include::qos_intro.adoc[]
 include::qos_identifiers.adoc[]
 include::qos_capacity.adoc[]
 include::qos_bandwidth.adoc[]
+include::qos_guidelines.adoc[]
 //the index must precede the bibliography
 include::qos_index.adoc[]
 include::qos_biblio.adoc[]

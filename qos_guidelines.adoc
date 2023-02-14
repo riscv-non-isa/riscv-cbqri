@@ -5,28 +5,33 @@
 
 In a typical implementation the number of `RCID` bits implemented (e.g., to
 support 10s of `RCIDs`) may be smaller than the number of `MCID` bits
-implemented (e.g., to support 100s of `MCIDs`). It is a typical usage to
-associate a group of applications/VMs with a common `RCID`. The group being
-associated with a common `RCID` thus shares a common pool of resource
-allocations. The resource allocation for the `RCID` is established to meet the
-SLA objectives of all members of the group. If SLA objectives of one or more
-members of the group stop being met, the resource usage of one or more members
-of the group may be monitored by associating them with a unique `MCID` and this
-iterative analysis process use to determine the optimal strategy - increasing
-resources allocated to the `RCID`, moving some members to a different `RCID`,
-migrating some members away to another machine, etc. - for restoring the SLA.
-Having a sufficiently large pool of `MCID` speeds up this analysis.
+implemented (e.g., to support 100s of `MCIDs`). 
 
-=== Confidential/Secure computing
+It is a typical usage to associate a group of applications/VMs with a common
+`RCID` and thus sharing a common pool of resource allocations. The resource
+allocations for the `RCID` is established to meet the SLA objectives of all
+members of the group. If SLA objectives of one or more members of the group
+stop being met, the resource usage of one or more members of the group may be
+monitored by associating them with a unique `MCID` and this iterative analysis
+process use to determine the optimal strategy - increasing resources allocated
+to the `RCID`, moving some members to a different `RCID`, migrating some members
+away to another machine, etc. - for restoring the SLA. Having a sufficiently
+large pool of `MCID` speeds up this analysis.
+
+[NOTE]
+====
+To support maximal flexibility in allocation of QoS IDs to workloads it is
+recommended for all resource controllers in the system to support an identical
+number of `RCID` and `MCID`.
+====
+
+=== Confidential computing
 
 Confidential Computing protects data in use by performing computation in a
 hardware-based, attested Trusted Execution Environment (TEE). These secure and
 isolated environments prevent unauthorized access or modification of
 applications and data while in use, thereby increasing the security assurances
 for organizations that manage sensitive and regulated data.
-
-This section provides guidelines to supporting a TEE in SoC that implement the
-resource controllers with CBQRI extension. 
 
 The resource accesses from a TEE must not be observable using the resource
 usage monitoring extensions and the resource allocations for the TEE must be
@@ -36,33 +41,18 @@ The resource controllers in such SoC support configuration of separate resource
 allocations and resourse usage monitoring for requests from originating from
 TEEs.
 
-The number of `RCID` and `MCID` available for use by TEEs is implementation
-specific and is defined by the requirements of the implementation. The number of
-IDs available for TEE usage may be fewer, the same, or more than that available
-for non-TEE usage. When a TEE is scheduled for execution on the hart, the TEE
-security manager configures the QoS IDs associated that TEE into the `sqoscfg`
-CSR.
-
-:wq
-
-
-
 To differential requests to shared resources originating from TEEs from
-non-TEEs a TEE-indicator accompanies requests made to the shared resources. The
-resource controller may then use the TEE-indicator to 
+non-TEEs a confidential-access indicator accompanies requests made to the shared
+resources. 
 
-Supporting secure execution thus requires following additional capabilities:
+The resource controller may then use the confidential-access indicator along
+with the QoS identifiers that accompany the request to determine the resource
+allocations and the monitoring counters to use.
 
-* A secure access indication
+Supporting confidential computing thus requires following additional capabilities:
+
 * A secure register programming interface
-
-==== Secure access indication
-
-Requests to shared resources originating from secure execution environments
-should carry a secure access indicator along with the `RCID`, `MCID`, and `AT`.
-
-The 
-
+* A confidential-access indicator (`C`)
 
 ==== Secure register programming interface
 
@@ -75,82 +65,68 @@ specified in this specification.
 Access to the secure register programming interfaces should be restricted to the
 secure execution supervisor (e.g., secure M-mode) using the PMP.
 
+The resource controllers that support confidential computing thus support two
+set of resource allocation configurations - confidential and non-confidential -
+for each `RCID` and `AT`. The confidential resource allocation configurations
+may on only be accesssed through the secure register programming interface.
 
-HW requirements
-1. The QoS capable controllers may provide a second register
-    programming interface that may be reserved for use to
-    program QoS policies for secure execution.
+The resource controllers that support confidential computing thus support two
+set of resource usage monitoring events and counters - confidential and
+non-confidential - for each `MCID` and `AT`. The confidential monitoring events
+and counters may on only be accesssed through the secure register programming
+interface.
 
-    This interface, if implemented, must have identical register
-    layout and behavior as specified in this specification. The
-    following rules apply to implementations that provide such a
-    secure register interface.
+An implementation may restrict number of `RCID` and `MCID` that may be used for
+confidential computing and thereby implement a smaller number of entries in the
+configuration tables that may be programmed through the secure register
+programming interface.
 
-2. Implementations must support a method to signal requests
-    originating from secure execution vs. non-secure execution
-    along with the request.
+[NOTE]
+====
+To support maximal flexibility in allocation of QoS IDs to TEEs it is
+recommended for all resource controllers in the system to support an identical
+number of `RCID` and `MCID` that may be associated with TEEs.
+====
 
-    Such requests may originate in the hart or from an IO device
-    or from other agents capable of originating requests to the
-    resource controllers.
+==== Confidential-access indication
 
-    This indicator may be determined at the originator of the
-    request and thus carried along with the request or may be
-    determined at the controller itself based on properties of
-    the address space accessed.
+Requests to access resources governed by QoS aware resource controllers is
+associated by a confidential-access indicator (`C`) along with `RCID`, `MCID`,
+and `AT`. 
 
-3. Implementations must make available a set of QoS IDs for
-    use by secure execution. The number of such IDs made
-    available need not be the same as that made available for
-    non-secure execution. It may be more or less depending on the
-    requirements targeted by such implementations.
+The `C` bit associated with the request indicates whether the access is to a
+confidential resources (`C=1`) or to a non-confidential resource. For memory
+controllers and caches, for example, the `C` bit may be determined as a property
+of the memory region accessed. 
 
-    Whereas the IDs made available for non-secure execution must
-    start at zero and be a contigous range, the IDs made available
-    for secure execution need not start at 0 or be a contigous
-    range.
+Execution in a TEE may generate requests associated with both settings of `C`
+bit. For example, when a TEE accesses its confidential memory the `C` bit
+associated with such requests will be 1 and when the TEE accesses
+non-confidential memory (e.g., memory buffers used by the TEE for communication
+with agents outside the TEE) then the `C` bit associated the request will be 0.
 
-    The IDs made available for secure execution may be identical
-    to the IDs used for non-secure execution.
+Execution outside of a TEE may only be requests with `C=0` as access to
+confidential resources is restricted to TEEs.
 
-    Irrespective of the IDs scheme supported by the
-    implementation the rule #4 must be enforced.
+For requests with `C=1`, resource controllers use the confidential resource
+allocation configurations that were established using the secure register
+programming interface for the associated `RCID` and `AT`. For requests with
+`C=0`, resource controllers use the configurations that were established using
+the non-secure register programming interface.
 
-    Further, all controllers in the implementation must follow
-    the same scheme and must support the same number of IDs for
-    secure as well as non-secure execution.
+For requests with `C=1`, the monitoring events programmed through the secure
+register programming events for the associated `MCID` and `AT` are triggered and
+are counted in monitoring counters that may only be accessed using the secure
+register programming interface.
 
-4. When a request is processed by the controller, it must use
-    the configurations established by the secure programming
-    interface if the request is determined to be a request from
-    secure execution and use the configurations established by
-    non-secure programming interface for non-secure requests.
+[NOTE]
+====
+The confidential-access indicator may be determined at the originator of the
+request and thus be carried along with the request or may be determined at the
+resource controller itself based on the properties of the address space
+accessed.
+====
 
-    Monitoring data collected by the controller for requests
-    originating from secure execution must not be accessible
-    through the non-secure register interface.
-
-    Configuration of resource allocation policies done through
-    the non-secure register interface must not affect the
-    processing of requests from secure execution.
-
-SW guidelines:
-1. Secure execution must protect the secure register programming
-    interface from read or write access by non-secure entities
-    and/or lower privileged entities. Methods such as PMPs, page
-    tables, etc. may be employed to implementation such protection
-    mechanisms.
-
-2. When multiple security domains exists the control of the
-    secure register programming interface must be retained by the
-    security manager that is in the TCB of the security domains.
-
-3. When multiple security domains exists, the security manager
-    of the security domains must not in general provide QoS
-    information about one security domain to another or allow one
-    security domain to affect the QoS configurations of another
-    security domain; unless an explicit security policy defined
-    by the security domain manager allows such sharing.
 == Software Guidelines
 
 === Context switching QoS Identifiers
@@ -218,77 +194,20 @@ case requires use of a separate `RCID` and/or `MCID` for software execution in
 M-mode, then the M-mode SW may update the `sqoscfg` CSR and restore it prior to
 returning to lower privilege mode execution.
 
-== Trusted execution environments
+=== Secure register programming interface
 
-Some implementations may support a secure/trusted execution environment. The 
+Security monitors such as the TEE security monitor must protect the secure
+register programming interface from read or write access by non-secure entities.
+Methods such as PMPs, page tables, etc. may be employed to implementation such
+protection mechanisms.
 
-Such components as a companion to the QoS ID support a register
-interface to setup the events to monitor and the allocation
-policies to enforce. For example, a memory controller, through
-its register interface would provide methods to reserve a
-fraction of the memory bandwidth for each RCID and implement
-counters and event selectors for each MCID. Further the register
-interface, when the monitoring extension is supported, allows
-reading out the accumulated counters. For example, the memory
-controller may provide an event selector for monitoring the read
-bandwidth or the write bandwidth or both.
+When multiple security domains exists the control of the secure register
+programming interface must be retained by the security monitor that is in the
+trust boundary of the security domains controlled by that monitor.
 
-When a secure M-mode is implemented, such controllers would
-provide a second register interface that is protected by the PMP
-such that the secure M-mode may establish policies for execution
-in secure M-mode and the PMP provides integrity to such
-policies.
-
-Accesses from the secure M-mode are then qualified as being
-secure, as programmed in the PMPs. Alternately, the
-confidentiality PMA proposed by the confidential computing group
-may provide such differentiation.
-
-Such accesses from the secure M-mode are only eligible to be
-counted in counters programmed through the M-mode register
-interface. The register interface itself being PMP protected
-provides confidentiality to those counters. The accesses from
-the secure M-mode are only subject to the allocation policies,
-e.g. cache capacity or memory bandwidth, as configured by the
-secure M-mode through the M-mode register interface.
-
-Though the IDs are selected through the same sqoscfg CSR, lower
-privilege modes selecting an ID that is also used by the M-mode
-would not provide any confidential information to the
-unprivileged mode since they are not counted in the unprivileged
-counters and are not affected by a resource limit configured by
-the unprivileged mode.
-
-Typically the number of RMID and MCID needed for the secure M-mode
-execution is much smaller than that needed for the unprivileged
-mode. For example, typically a secure M-mode may only need one
-RCID and one MCID for its use. Thus the controllers may only
-provide a subset of programmable IDs through the M-mode register
-interface as compared to that using the unprivileged interface.
-For example, if the controller supported 128 RCID and 512 MCID
-for unprivileged use, it may provide a "129"th RCID and a
-"513"th MCID for M-mode.
-
-Thus if the sqosid was configured with say MCID value of 5 when
-a trap occurs to secure M-mode and the secure M-mode uses MCID
-value of 0 for its private use, then for a short sequence of
-instructions before the secure M-mode reprogams the sqoscfg with
-the MCID value of 0, the monitors in the SoC that count the
-secure M-mode activity using the secure M-mode counter
-associated with MCID value of 0 will not count. But this is
-generally not an issue as the QoS extensions are statistical in
-nature and the short duration for which the secure counter with
-ID 0 does not count may not be statistically significant for
-secure M-mode monitoring. The counter corresponding to
-unprivileged ID of 5 also does not count but that would be the
-expected behavior following a trap to secure M-mode.
-
-This mechanism may not be very different than what an SoC may
-implement for example to prevent hardware performance monitors
-programmed by unprivileged modes from observing secure M-mode
-activity or trace monitors from tracing secure M-mode accesses.
-
-To conclude, I do not see a need for a M-mode privileged QoS ID
-CSR. Please let me know if I have addressed the question.
-
+When multiple security domains exists, the security manager of the security
+domains must not in general provide QoS information about one security domain to
+another or allow one security domain to affect the QoS configurations of another
+security domain; unless an explicit security policy defined by the security
+domain manager allows such sharing.
 
