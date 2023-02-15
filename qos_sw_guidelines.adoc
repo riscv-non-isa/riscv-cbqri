@@ -68,18 +68,12 @@ returning to lower privilege mode execution.
 
 === Secure register programming interface
 
-Security monitors such as the TEE security monitor must protect the secure
-register programming interface from read or write access by non-secure entities.
-Methods such as PMPs, page tables, etc. may be employed to implementation such
+The TEE Security Manager (TSM) must control and protect the secure register
+programming interface from read or write access by non-secure entities. Methods
+such as PMPs, page tables, etc. may be employed to implementation such
 protection mechanisms.
 
-When multiple security domains exists the control of the secure register
-programming interface must be retained by the security monitor that is in the
-trust boundary of the security domains controlled by that monitor.
-
-When multiple security domains exists, the security manager of the security
-domains must not in general provide QoS information about one security domain to
-another or allow one security domain to affect the QoS configurations of another
-security domain; unless an explicit security policy defined by the security
-domain manager allows such sharing.
+The TSM must not in general provide QoS information about one TEE to
+another or allow one TEE to affect the QoS configurations of another TEE;
+unless an explicit security policy defined by the TSM allows such sharing.
 

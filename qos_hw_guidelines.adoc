@@ -33,18 +33,21 @@ isolated environments prevent unauthorized access or modification of
 applications and data while in use, thereby increasing the security assurances
 for organizations that manage sensitive and regulated data.
 
-The resource accesses from a TEE must not be observable using the resource
-usage monitoring extensions to entities that are not trusted by the TEE. The
-resource allocations for the TEE must not be affected by entities that are not
-trusted by the TEE.
+Typically a TEE instance is used to deploy a workload (e.g., a VM, a process,
+etc.) that requires confidential computing. 
 
 Typically, a system may hosts multiple TEEs and one TEE may not include another
 TEE in its trust boundary. Typically, such systems that host multiple TEEs
-include a TEE security monitor (TSM) that is trusted by the TEEs and is the
+include a TEE security manager (TSM) that is trusted by the TEEs and is the
 supervisor that establishes the security policies for TEEs and enforces these
 policies using the hardware mechanism provided by the system. The TSM itself is
 isolated from the TEEs and from other untrusted execution environments in the
 system.
+
+The resource accesses from a TEE or the TSM must not be observable using the
+resource usage monitoring extensions to entities that are not trusted by the
+TEE. The resource allocations for the TEE must not be affected by entities that
+are not trusted by the TEE.
 
 Supporting confidential computing thus requires following additional
 capabilities:
@@ -52,34 +55,36 @@ capabilities:
 * A secure register programming interface
 * A confidential-access indicator (`C`)
 
-To differential requests to shared resources originating from TSM and TEEs from
-non-TEEs, a confidential-access indicator may be associated with requests made
-to the shared resources. When the request originates from the TSM or a TEE and
-is used to access a confidential resource then this indicator may be 1 and when
-the request originates from other untrusted execution environments the indicator
-may be set to 0.
+To differentiate requests to shared resources originating from TSM/TEEs from
+non-TEEs, a confidential-access indicator (`C`) may be associated with requests
+made to the shared resources. When the request originates from the TSM or a TEE
+and is used to access a confidential resource then this indicator may be 1 and
+when the request originates from other untrusted execution environments the
+indicator may be set to 0.
 
 ==== Secure register programming interface
 
 To support confidential computing a CBQRI capable controller must provide a
-second register programming interface that is used to establish resource
+second register programming interface that is memory mapped (similar to the
+normal register programming interface) that is used to establish resource
 allocations and resource usage monitoring for secure execution. The secure
 register programming interface has the same register layout and behavior defined
 as specified in this specification.
 
-Access to the secure register programming interfaces should be restricted to the
-TSM (e.g., secure M-mode) using the PMP.
+Access to the memory mapped secure register programming interfaces should be
+restricted to the TSM (e.g., secure M-mode) using mechanisms such as the PMP.
 
-The resource controllers that support confidential computing thus support two
-set of resource allocation configurations - confidential and non-confidential -
-for each `RCID` and `AT`. The confidential resource allocation configurations
-may on only be accesssed through the secure register programming interface.
+The resource controllers that support confidential computing thus support:
 
-The resource controllers that support confidential computing thus support two
-set of resource usage monitoring events and counters - confidential and
-non-confidential - for each `MCID` and `AT`. The confidential monitoring events
-and counters may on only be accesssed through the secure register programming
-interface.
+*  Two set of resource allocation configurations - confidential and 
+   non-confidential - for each `RCID` and `AT`. The confidential resource
+   allocation configurations may on only be accesssed through the secure
+   register programming interface.
+
+* Two set of resource usage monitoring events and counters - confidential and
+  non-confidential - for each `MCID` and `AT`. The confidential monitoring
+  events and counters may on only be accesssed through the secure register
+  programming interface.
 
 [NOTE]
 ====
@@ -107,32 +112,35 @@ when accessing a memory region, the `C` bit may be determined as a property of
 the memory region. When the memory region is associated with a TEE then the `C`
 bit for requests to such memory regions is 1 and is 0 otherwise.
 
-Execution in a TEE may generate requests associated with both settings of `C`
-bit. For example, when a TEE accesses its confidential memory the `C` bit
+Execution in a TEE/TSM may generate requests associated with both settings of
+`C` bit. For example, when a TEE accesses its confidential memory the `C` bit
 associated with such requests will be 1 and when the TEE accesses
 non-confidential memory (e.g., memory buffers used by the TEE for communication
 with agents outside the TEE) then the `C` bit associated the request will be 0.
 
-Execution outside of a TEE may only make requests with `C=0` as access to
+Execution in a non-TEE may only make requests with `C=0` as access to
 confidential resources is restricted to TEEs.
 
-For requests with `C=1`, resource controllers use the confidential resource
-allocation configurations that were established using the secure register
-programming interface for the associated `RCID` and `AT`.
+For requests with `C=1`:
 
-For requests with `C=0`, resource controllers use the configurations that were
-established using the non-secure register programming interface for the
-associated `RCID` and `AT`.
+* The resource controllers Use the confidential resource allocation
+  configurations that were established using the secure register programming
+  interface for the associated `RCID` and `AT`.
+* The monitoring events programmed through the secure register programming
+  interface for the associated `MCID` and `AT` are triggered and are counted in
+  monitoring counters that may only be accessed using the secure register
+  programming interface.
 
-For requests with `C=1`, the monitoring events programmed through the secure
-register programming interface for the associated `MCID` and `AT` are triggered
-and are counted in monitoring counters that may only be accessed using the
-secure register programming interface.
+For requests with `C=0`:
 
-For requests with `C=0`, the monitoring events programmed through the non-secure
-register programming interface for the associated `MCID` and `AT` are triggered
-and are counted in monitoring counters that may only be accessed using the
-non-secure register programming interface.
+* The resource controllers use the configurations that were established using
+  the non-secure register programming interface for the associated `RCID` and
+  `AT`.
+
+* The monitoring events programmed through the non-secure register programming
+  interface for the associated `MCID` and `AT` are triggered and are counted in
+  monitoring counters that may only be accessed using the non-secure register
+  programming interface.
 
 [NOTE]
 ====
