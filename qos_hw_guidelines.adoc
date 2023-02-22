@@ -159,9 +159,9 @@ in this example implements 4 counters; two for each MCID with one counter used
 to count confidential requests and one to count non-confidential requests. 
 
 [width=100%]
-[%header, cols="4,^4,^4,^4,^4"]
+[%header, cols="3,^7,^7,^3,^3"]
 |===
-|          |  `C=0` configuration | `C=1` configuration | `C=0` counter | `C=1 counter
+|          |  `C=0` configuration | `C=1` configuration | `C=0` counter | `C=1` counter
 | `MCID=0` | `EVT_ID=1`, `ATV=0`  | `EVT_ID=3`, `ATV=0` | `192`         | `384`
 | `MCID=1` | `EVT_ID=3`, `ATV=0`  | `EVT_ID=0`, `ATV=0` | `512`         | `0`
 |===
