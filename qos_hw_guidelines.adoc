@@ -150,3 +150,38 @@ resource controller itself based on the properties of the address space
 accessed.
 ====
 
+[NOTE]
+====
+
+The following table is an example of a bandwidth controller that supports
+confidential computing and two MCIDs for bandwidth monitoring. The controller
+in this example implements 4 counters; two for each MCID with one counter used
+to count confidential requests and one to count non-confidential requests. 
+
+[width=100%]
+[%header, cols="4,^4,^4,^4,^4"]
+|===
+|          |  `C=0` configuration | `C=1` configuration | `C=0` counter | `C=1 counter
+| `MCID=0` | `EVT_ID=1`, `ATV=0`  | `EVT_ID=3`, `ATV=0` | `192`         | `384`
+| `MCID=1` | `EVT_ID=3`, `ATV=0`  | `EVT_ID=0`, `ATV=0` | `512`         | `0`
+|===
+
+In this example, the `MCID` of value 0 is configured to count "Total Read and Write
+byte count" for non-confidential requests with `AT=0` and has been configured to
+count "Total write byte count" for confidential requests with any `AT`. The
+configurations to use for confidential requests were setup through the secure
+register programming interface and those for non-confidential requester using
+the regular register programming interface.
+
+
+Further, in this example, the confidential counter for `MCID=0` has a value of
+`384` and is the value that would be returned if the counter value for `MCID=0` is
+read using the secure register programming interface.
+
+Further, in this example, the non-confidential counter for `MCID=0` has a value of
+`384` and is the value that would be returned if the counter value for `MCID=0` is
+read using the regular register programming interface.
+
+====
+
+
