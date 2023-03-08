@@ -69,6 +69,11 @@ reset value.
 The `RCID` and `MCID` configured in the `sqoscfg` CSR apply to all privilege
 modes of software execution on that hart.
 
+The `QOSE` (bit 58) field of `menvcfg` (and `menvcfgh`) controls if the
+`sqoscfg` CSR is accessible in modes less privileged than M. When `QOSE` is 0,
+attempts to access `sqoscfg` CSR at privilege modes less privileged than M cause
+an illegal instruction exception.
+
 ==== Device initiated requests
 
 Devices may be configured with an `RCID` and `MCID` for requests originated 
