@@ -38,7 +38,7 @@ usage monitoring extensions and the resource allocations for the TEE must be
 established by a TEE security monitor that manages the TEE.
 
 The resource controllers in such SoC support configuration of separate resource
-allocations and resourse usage monitoring for requests from originating from
+allocations and resource usage monitoring for requests from originating from
 TEEs.
 
 To differential requests to shared resources originating from TEEs from
@@ -68,12 +68,12 @@ secure execution supervisor (e.g., secure M-mode) using the PMP.
 The resource controllers that support confidential computing thus support two
 set of resource allocation configurations - confidential and non-confidential -
 for each `RCID` and `AT`. The confidential resource allocation configurations
-may on only be accesssed through the secure register programming interface.
+may on only be accessed through the secure register programming interface.
 
 The resource controllers that support confidential computing thus support two
 set of resource usage monitoring events and counters - confidential and
 non-confidential - for each `MCID` and `AT`. The confidential monitoring events
-and counters may on only be accesssed through the secure register programming
+and counters may on only be accessed through the secure register programming
 interface.
 
 An implementation may restrict number of `RCID` and `MCID` that may be used for

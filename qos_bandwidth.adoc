@@ -73,13 +73,13 @@ blocks that may be reserved.
 [NOTE]
 ====
 The bandwidth controller needs to meter the bandwidth usage by a workload to
-determine if its exceeding its allocations and if required invoke necessary
+determine if it is exceeding its allocations and if required invoke necessary
 measures to throttle the bandwidth usage by the workload. The instantaneous
-bandwdith use by a workload may thus undershoot or overshoot the configured
+bandwidth used by a workload may thus undershoot or overshoot the configured
 allocation. The QoS capabilities are statistical in nature and are typically
 designed to enforce the configured bandwidth over larger time windows. Not
 allowing all available bandwidth blocks to be reserved for allocation may allow
-the bandwidth controller with handle such transient inaccuracies.
+the bandwidth controller to handle such transient inaccuracies.
 ====
 
 [[BC_MCTL]]
@@ -278,7 +278,7 @@ allocation per access-type then the `AT` field is read-only zero.
 
 The `OP` field is used to instruct the bandwidth controller to perform an
 operation listed in <<BC_ALLOC_OP>>. The `bc_alloc_ctl` register is used in
-conjuction with the `bc_bw_alloc` register to perform bandwidth allocation
+conjunction with the `bc_bw_alloc` register to perform bandwidth allocation
 operations. When the requested operation uses the operands configured in
 `bc_bw_alloc`, software must first program the `bc_bw_alloc` register with
 the operands for the operation before requesting the operation.

@@ -255,7 +255,7 @@ allocation per access-type then the `AT` field is read-only zero.
 
 The `OP` field is used to instruct the capacity controller to perform an
 operation listed in <<CC_ALLOC_OP>>. The `cc_alloc_ctl` register is used in
-conjuction with the `cc_block_mask` register to perform capacity allocation
+conjunction with the `cc_block_mask` register to perform capacity allocation
 operations. When the requested operation uses the operands configured in
 `cc_block_mask`, software must first program the `cc_block_mask` register with
 the operands for the operation before requesting the operation.
