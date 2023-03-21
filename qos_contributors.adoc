@@ -3,4 +3,4 @@
 This RISC-V specification has been contributed to directly or indirectly by:
 
 [%hardbreaks]
-Aaron Durbin, Allen Baum, Allison Randal, Ambika Krishnamoorthy, David Kruckemeyer, David Weaver, Derek Hower, Eric Shiu, Greg Favor, Ravi Sahita, Vedvyas Shanbhogue
+Aaron Durbin, Adrien Ricciardi, Allen Baum, Allison Randal, Ambika Krishnamoorthy, David Kruckemeyer, David Weaver, Derek Hower, Eric Shiu, Greg Favor, Ravi Sahita, Vedvyas Shanbhogue
