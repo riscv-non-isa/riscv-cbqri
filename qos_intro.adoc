@@ -2,7 +2,7 @@
 == Introduction
 
 Quality of Service (QoS) is the minimal end-to-end performance that is
-guaranteed in advance by a service level agreement (SLA) to an workload. The 
+guaranteed in advance by a service level agreement (SLA) to a workload. The 
 performance may be measured in the form of metrics such as instructions per
 cycle (IPC), latency of servicing work, etc.
 
@@ -16,7 +16,7 @@ unpredictable workload performance cite:[PTCAMP].
 
 When multiple workloads are running concurrently on modern processors with large
 core counts, multiple cache hierarchies, and multiple memory controllers, the
-performance of an workload becomes less deterministic or even non-deterministic
+performance of a workload becomes less deterministic or even non-deterministic
 as the performance depends on the behavior of all the other workloads in the
 machine that contend for the shared resources leading to interference. In many
 deployment scenarios such as public cloud servers the workload owner may not be
@@ -39,8 +39,8 @@ due to other workload’s cache capacity usage, memory bandwidth usage,
 interconnect bandwidth usage, etc. through a resource allocation extension. The
 resource allocation extension enables system software to reserve capacity and/or
 bandwidth to meet the performance goals of the workload. Such controls enable
-improving the utilization of the system by colocating workloads while minimizing
-the interference caused by one workload to another cite:[HERACLES].
+improving the utilization of the system by collocating workloads while
+minimizing the interference caused by one workload to another cite:[HERACLES].
 
 Effective use of the resource allocation extension requires hardware to provide
 a resource monitoring extension by which the resource requirements of a
@@ -68,8 +68,8 @@ extension specifies:
   resources. These QoS identifiers include an identifier for resource allocation
   configuration and an identifier for the monitoring counters used to monitor
   resource usage. These identifiers accompany each request made by the workload
-  to the shared resource. <<QOS_ID>> specfies the mechanism to associate the
-  identfiers with workloads.
+  to the shared resource. <<QOS_ID>> specifies the mechanism to associate the
+  identifiers with workloads.
 . Access-type identifiers to accompany request to access a shared resource to
   allow differentiated treatment of each access-type (e.g., code vs. data,
   etc.). The access-types are defined in <<QOS_ID>>
@@ -80,7 +80,7 @@ extension specifies:
   monitoring register interface is specified in <<CC_QOS>>.
 . Register interface for bandwidth allocation in bandwidth controllers such as
   interconnect and memory controllers. The bandwidth allocation register
-  interface is specfied in <<BC_QOS>>.
+  interface is specified in <<BC_QOS>>.
 . Register interface for bandwidth usage monitoring. The bandwidth
   usage monitoring register interface is specified in <<BC_QOS>>.
 
