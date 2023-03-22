@@ -378,13 +378,18 @@ interval then additional bandwidth may be made available to `RCID` that contend
 for that bandwidth. The non-reserved or unused bandwidth is proportionately
 shared by the contending RCIDs using the configured `Mweight`. The `Mweight`
 parameter is a number between 0 and 255. A larger weight implies a greater
-fraction of the bandwidth. The sharing of non-reserved bandwidth is not
-differentiated by access-type. The `Mweight` parameter must be programmed
-identically for all access-types. If this parameter is programmed differently
-for each access-type then the controller may use the parameter configured for
-any of the access-types but the behavior is otherwise well defined. The share
-of unused bandwidth made available to `RCID=x` when it contents with another 
-`RCID` is determined by the `Mweight` of `RCID=x` divided by the sum of
+fraction of the bandwidth. A weight of 0 implies that the configured limit is a
+hard limit and the use of unused or non-reserved bandwidth is not allowed.
+
+The sharing of non-reserved bandwidth is not differentiated by access-type.
+The `Mweight` parameter must be programmed identically for all access-types. If
+this parameter is programmed differently for each access-type then the
+controller may use the parameter configured for any of the access-types but the
+behavior is otherwise well defined.
+
+When the weight is not 0, the share of unused bandwidth made available to
+`RCID=x` when it contents with another `RCID` that is also allowed to use unused
+bandwidth is determined by the `Mweight` of `RCID=x` divided by the sum of
 `Mweight` of all other contending `RCID`. This ratio `P` is as follows:
 
 [latexmath]
@@ -394,12 +399,13 @@ of unused bandwidth made available to `RCID=x` when it contents with another
 
 [NOTE]
 ====
-The bandwidth enforcement is typically work-conserving and allows unused 
-bandwidth to be used by requestors even if they have consumed their `Rbwb`.
+The bandwidth enforcement is typically work-conserving and allows unused
+bandwidth to be used by requestors enabled to use unused bandwidth even if they
+have consumed their `Rbwb`.
 
 When contending for unused bandwidths the weighted share is typically 
 computed among the `RCIDs` that are actively generating requests in that
-accounting interval.
+accounting interval and have a non-zero weight programmed.
 ====
 
 If unique bandwidth allocation is not required for an access-type then the
