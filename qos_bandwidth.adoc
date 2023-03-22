@@ -207,7 +207,9 @@ before writing `bc_mon_ctl`.
 === Monitoring counter value (`bc_mon_ctr_val`)
 
 The `bc_mon_ctr_val` is a read-only register that holds a snapshot of the
-counter requested by `READ_COUNTER` operation.
+counter requested by `READ_COUNTER` operation. When the controller does not
+support bandwidth usage monitoring the `bc_mon_ctr_val` register is read-only
+zero.
 
 .Usage monitoring counter value (`bc_mon_ctr_val`)
 [wavedrom, , ]
@@ -338,7 +340,9 @@ requested operation.
 === Bandwidth allocation (`bc_bw_alloc`)
 
 The `bc_bw_alloc` is used to program reserved bandwidth blocks (`Rbwb`) for an
-`RCID` for requests of access-type `AT` using the `CONFIG_LIMIT` operation. 
+`RCID` for requests of access-type `AT` using the `CONFIG_LIMIT` operation. If a
+controller does not support bandwidth allocation then the `bc_bw_alloc` register
+is read-only zero.
 
 The `bc_bw_alloc` holds the previously configured values for an `RCID` and `AT`
 on successful completion of the `READ_LIMIT` operation.

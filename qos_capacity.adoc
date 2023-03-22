@@ -188,7 +188,9 @@ before writing `cc_mon_ctl`.
 === Monitoring counter value (`cc_mon_ctr_val`)
 
 The `cc_mon_ctr_val` is a read-only register that holds a snapshot of the
-counter requested by `READ_COUNTER` operation.
+counter requested by `READ_COUNTER` operation. When the controller does not
+support capacity usage monitoring the `cc_mon_ctr_val` register is read-only
+zero.
 
 .Usage monitoring counter value (`cc_mon_ctr_val`)
 [wavedrom, , ]
