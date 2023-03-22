@@ -13,7 +13,7 @@ allocations for the `RCID` is established to meet the SLA objectives of all
 members of the group. If SLA objectives of one or more members of the group
 stop being met, the resource usage of one or more members of the group may be
 monitored by associating them with a unique `MCID` and this iterative analysis
-process use to determine the optimal strategy - increasing resources allocated
+process used to determine the optimal strategy - increasing resources allocated
 to the `RCID`, moving some members to a different `RCID`, migrating some members
 away to another machine, etc. - for restoring the SLA. Having a sufficiently
 large pool of `MCID` speeds up this analysis.
@@ -29,7 +29,7 @@ number of `RCID` and `MCID`.
 === Sizing monitoring counters
 
 Typically software samples the monitoring counters periodically to monitor
-capacity and bandwidth usage. The width of the monitoring counters is is
+capacity and bandwidth usage. The width of the monitoring counters is
 recommended to be wide enough to not cause more than one overflow per sample
 when sampled at a frequency of 1 Hz.
 
