@@ -13,7 +13,7 @@ allocations for the `RCID` is established to meet the SLA objectives of all
 members of the group. If SLA objectives of one or more members of the group
 stop being met, the resource usage of one or more members of the group may be
 monitored by associating them with a unique `MCID` and this iterative analysis
-process use to determine the optimal strategy - increasing resources allocated
+process used to determine the optimal strategy - increasing resources allocated
 to the `RCID`, moving some members to a different `RCID`, migrating some members
 away to another machine, etc. - for restoring the SLA. Having a sufficiently
 large pool of `MCID` speeds up this analysis.

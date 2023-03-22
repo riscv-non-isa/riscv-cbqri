@@ -12,7 +12,7 @@ reported using these methods:
 * Location of the register programming interface for the controller
 * Placement and topology describing the hart and IO bridges that share the
   resources controlled by the controller
-* The number QoS identifiers supported by the controller
+* The number of QoS identifiers supported by the controller
 
 === Context switching QoS Identifiers
 
