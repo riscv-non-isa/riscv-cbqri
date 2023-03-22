@@ -101,8 +101,8 @@ The implementation may observe the 8-byte access as two 4-byte accesses. A
 ====
 If an implementation may observe a 8-byte register access as two 4-byte
 accesses then such implementations must preserve the semantics of the 8-byte
-access and must cause any effects of the access must only occur after both
-accesses have been observed.
+access and must cause any effects of the access after both accesses have been
+observed.
 ====
 
 The controller registers have little-endian byte order (even for systems where

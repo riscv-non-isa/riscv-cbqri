@@ -382,7 +382,8 @@ capacity allocation i.e. `NCBLKS` is 0, then this register is read-only 0.
 
 The register has `NCBLKS` <<CC_CAP>> bits each corresponding to one allocatable
 capacity block in the controller. The width of this register is variable but
-always a multiple of 64 bits. The width in bits is determined as
+always a multiple of 64 bits. The bitmap width in bits (`BMW`) is determined as
+follows. The division operation in this equation is an integer division.
 
 [latexmath]
 ++++
@@ -396,9 +397,9 @@ To configure capacity allocation limit for an `RCID` and `AT`, the
 blocks to be allocated and then the `cc_alloc_ctl` register written to request a
 `CONFIG_LIMIT` operation for the `RCID` and `AT`. Once a capacity allocation
 limit has been established, a request may be allocated capacity in a capacity
-block if the capacity block mask programmed for `RCID` and `AT` associated the
-request has the corresponding bit set to 1 in the capacity block mask. At least
-one capacity block must be allocated using `cc_block_mask` when allocating
+block if the capacity block mask programmed for `RCID` and `AT` associated with
+the request has the corresponding bit set to 1 in the capacity block mask. At
+least one capacity block must be allocated using `cc_block_mask` when allocating
 capacity. Allocating overlapping capacity block masks among `RCID` and `AT` is
 allowed.
 

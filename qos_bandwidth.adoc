@@ -30,9 +30,9 @@ The reset value is `UNSPECIFIED` for all other registers and/or fields.
 
 The bandwidth controllers at reset allocate all available bandwidth to `RCID`
 value of 0. When the bandwidth controller supports bandwidth allocation per
-access-type, one of the supported access-types for `RCID=0` is allocated all
-available bandwidth and all other access-types share the bandwidth allocation
-with that access-type. The bandwidth allocation for all other `RCID` values is
+access-type, `AT=0` of `RCID=0` is allocated all available bandwidth and all
+other access-types associated with that `RCID` share the bandwidth allocation
+with `AT=0`. The bandwidth allocation for all other `RCID` values is
 `UNSPECIFIED`.
 
 [[BC_CAP]]
@@ -116,8 +116,9 @@ matching the monitoring event as the requests go past the monitoring point.
 The `OP` field is used to instruct the controller to perform an operation
 listed in <<BC_MON_OP>>.
 
-The `EVT_ID` field and is to program the identifier of the event to count in
-the counter selected by `MCID`. The `AT` field is used to program the access-type to count. 
+The `EVT_ID` field is used to program the identifier of the event to count in
+the counter selected by `MCID`. The `AT` field is used to program the
+access-type to count. 
 
 When the `EVT_ID` for a `MCID` is selected as 0, the counter retains its
 current value but stops counting.
