@@ -87,9 +87,9 @@ originating from the device. The method to configure such QoS identifiers into
 a shim is `UNSPECIFIED`.
 
 If the system supports an IOMMU, then the IOMMU may be configured with the
-`RCID` and `MCID` to associate requests from the device with the QoS
-identifiers. The RISC-V IOMMU specification may support a future standard
-extension to support this configuration.
+`RCID` and `MCID` to associate requests from the device with QoS identifiers.
+The RISC-V IOMMU extension to support configuring QoS identifiers is specified
+in <<QOS_IOMMU>>.
 
 === Access-type (`AT`)
 
