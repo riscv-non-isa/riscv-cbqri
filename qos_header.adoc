@@ -1,7 +1,7 @@
 [[header]]
 :description: RISC-V Capacity and Bandwidth Controller QoS Register Interface
 :company: RISC-V.org
-:revdate: 11/2022
+:revdate: 03/2023
 :revnumber: 0.1
 :revremark: This document is in development. Assume everything can change. See http://riscv.org/spec-state for details.
 :url-riscv: http://riscv.org
@@ -68,5 +68,5 @@ include::qos_iommu.adoc[]
 include::qos_hw_guidelines.adoc[]
 include::qos_sw_guidelines.adoc[]
 //the index must precede the bibliography
-include::qos_index.adoc[]
+//include::qos_index.adoc[]
 include::qos_biblio.adoc[]

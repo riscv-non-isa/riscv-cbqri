@@ -3,7 +3,7 @@
 
 Monitoring or allocation of resources accessed by the IOMMU and devices governed
 by the IOMMU requires a way to assocaite QoS IDs with such requests. This
-section specifies a RISC-V IOMMU extension to:
+section specifies a RISC-V IOMMU cite:[IOMMU] extension to:
 
 * Configure and associate QoS IDs for device originated requests.
 * Configure and associate QoS IDs for IOMMU originated requests
