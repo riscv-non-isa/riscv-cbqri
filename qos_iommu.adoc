@@ -1,0 +1,171 @@
+[[QOS_IOMMU]]
+== IOMMU extension for QoS ID
+
+Monitoring or allocation of resources accessed by the IOMMU and devices governed
+by the IOMMU requires a way to assocaite QoS IDs with such requests. This
+section specifies a RISC-V IOMMU extension to:
+
+* Configure and associate QoS IDs for device originated requests.
+* Configure and associate QoS IDs for IOMMU originated requests
+
+=== Register layout
+
+A new IOMMU register - `iommu_qosid` - is defined to configure `RCID` and `MCID`
+associated with IOMMU originated requests.
+
+.IOMMU Memory-mapped register layout
+[width=100%]
+[%header, cols="^3,6,^3, 12, 10"]
+|===
+|Offset|Name            |Size|Description                     | Is Optional?
+|624   |`iommu_qosid`   |4   |QoS IDs for IOMMU requests.     | Yes
+|628   |Reserved        |60  |Reserved for future use (`WPRI`)| 
+|===
+
+=== Reset behavior
+
+If the reset value for `ddtp.iommu_mode` field is `Bare` then the following field
+must have a reset value of 0.
+
+* `iommu_qosid.RCID`
+
+[NOTE]
+====
+At reset it is suggested that the `RCID` field of `iommu_qosid` be set to 0 if
+the IOMMU will be in `Bare` mode as typically the resource controllers in the
+SoC default to a reset behavior of associating all capacity or bandwidth to the
+`RCID` value of 0.
+====
+
+==== IOMMU capabilities (`capabilities`)
+
+The IOMMU capabilities register is extended with a new field - `QOSID` - to enumerate
+support for associating QoS IDs with such requests.
+
+.IOMMU capabilities register fields
+[wavedrom, , ]
+....
+{reg: [
+  {bits: 8, name: 'version'},
+  {bits: 1, name: 'Sv32'},
+  {bits: 1, name: 'Sv39'},
+  {bits: 1, name: 'Sv48'},
+  {bits: 1, name: 'Sv57'},
+  {bits: 3, name: 'reserved'},
+  {bits: 1, name: 'Svpbmt'},
+  {bits: 1, name: 'Sv32x4'},
+  {bits: 1, name: 'Sv39x4'},
+  {bits: 1, name: 'Sv48x4'},
+  {bits: 1, name: 'Sv57x4'},
+  {bits: 2, name: 'reserved'},
+  {bits: 1, name: 'MSI_FLAT'},
+  {bits: 1, name: 'MSI_MRIF'},
+  {bits: 1, name: 'AMO'},
+  {bits: 1, name: 'ATS'},
+  {bits: 1, name: 'T2GPA'},
+  {bits: 1, name: 'END'},
+  {bits: 2, name: 'IGS'},
+  {bits: 1, name: 'HPM'},
+  {bits: 1, name: 'DBG'},
+  {bits: 6, name: 'PAS'},
+  {bits: 1, name: 'PD8'},
+  {bits: 1, name: 'PD17'},
+  {bits: 1, name: 'PD20'},
+  {bits: 1, name: 'QOSID'},
+  {bits: 14, name: 'reserved'},
+  {bits: 8, name: 'custom'},
+], config:{lanes: 8, hspace:1024}}
+....
+
+[width=100%]
+[%header, cols="1,2,1,5"]
+|===
+|Bits  |Field      |Attribute | Description
+|41    |`QOSID`    |RO        | Associating QoS IDs with requests is supported.
+|===
+
+==== IOMMU QoS ID (`iommu_qosid`)
+
+.`iommu_qosid` register fields
+
+[wavedrom, , ]
+....
+{reg: [
+  {bits: 12, name: 'RCID (WARL)'},
+  {bits:  4, name: 'WPRI'},
+  {bits: 12, name: 'MCID (WARL)'},
+  {bits:  4, name: 'WPRI'},
+], config:{lanes: 1, hspace:1024}}
+....
+
+[width=100%]
+[%header, cols="^1,2,^1,5"]
+|===
+|Bits  |Field      |Attribute | Description
+|11:0  |`RCID`     |WARL      | RCID for IOMMU initiated requests.
+|15:12 |reserved   |WPRI      | Reserved for standard use.
+|27:16 |`MCID`     |WARL      | MCID for IOMMU initiated requests.
+|31:28 |reserved   |WPRI      | Reserved for standard use.
+|===
+
+The `RCID` and `MCID` in `iommu_qosid` register are associated with following
+IOMMU initiated request to access following data structures:
+
+. Device directory table (`DDT`)
+. Fault queue (`FQ`)
+. Command queue (`CQ`)
+. Page-request queue (`PQ`)
+. IOMMU-originated MSIs
+
+When the `ddtp.iommu_mode == Bare`, all device originated requests are
+associated with the QoS IDs configured in `iommu_qosid` register.
+
+=== Device-context fields
+
+The translation attributes (`ta`) field is extended with two new fields `RCID`
+and `MCID` to configure the QoS IDs to associate with requests originated by the
+devices.
+
+.Translation attributes (`ta`) field
+[wavedrom, , ]
+....
+{reg: [
+  {bits: 12, name: 'reserved'},
+  {bits: 20, name: 'PSCID'},
+  {bits:  8, name: 'reserved'},
+  {bits: 12, name: 'RCID'},
+  {bits: 12, name: 'MCID'},
+], config:{lanes: 2, hspace: 1024, fontsize: 16}}
+....
+
+The `RCID` and `MCID` configured in `DC.ta` are associated with IOMMU initiated
+requests to access the following data structures:
+
+. Process directory table (`PDT`)
+. Second-stage page table
+. First-stage page table
+. MSI page table
+. Memory resident interrupt file (MRIF)
+
+The `RCID` and `MCID` configured in `DC.ta` are provided to the IO bridge on
+successful address translations. The IO bridge should associate these QoS IDs
+with device initiated requests.
+
+A `DC` with `DC.tc.V=1` is considered as misconfigured if any of the following
+conditions are true. If misconfigured then, stop and report "DDT entry
+misconfigured" (cause = 259).
+
+. If `capabilities.QOSID` is 1 and `DC.ta.RCID` or `DC.ta.MCID` is wider than
+  that supported by the IOMMU.
+
+=== IOMMU ATC capacity allocation and monitoring
+
+The IOMMU may support capacity allocation and usage monitoring in the IOMMU
+address translation cache (IOATC) by implementing a capacity controller register
+interface.
+
+Some IOMMU may support multiple IOATC where the capacity of each such IOATC may
+not be the same (e.g., corresponding each page sizes supported). When multiple
+IOATC are implemented, the IOMMU may implement a capacity controller register
+interface for each IOATC to enable capacity allocation in each IOATC.
+
