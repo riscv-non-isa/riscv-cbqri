@@ -4,18 +4,18 @@
 Monitoring or allocation of resources requires a way to identify the originator
 of the request to access the resource.
 
-The CBQRI extension provides a mechanism by which a workload can be associated
-with a resource control ID (`RCID`) and a monitoring counter ID (`MCID`) that
-accompany each request made by the workload to shared resources.
+CBQRI and the Ssqosid extension provides a mechanism by which a workload can
+be associated with a resource control ID (`RCID`) and a monitoring counter ID
+(`MCID`) that accompany each request made by the workload to shared resources.
 
-To provide differentiated services to workloads, the CBQRI extension defines
-a mechanism to configure resource usage limits, in the form of capacity or
-bandwidth, and optionally a priority for an `RCID` in the resource controllers
-that control accesses to such shared resources.
+To provide differentiated services to workloads, CBQRI defines a mechanism to
+configure resource usage limits, in the form of capacity or bandwidth, and
+optionally a priority for an `RCID` in the resource controllers that control
+accesses to such shared resources.
 
-To monitor the resource utilization by a workload  the CBQRI extension defines
-a mechanism to configure counters identified by the `MCID` to count events in
-the resource controllers that control accesses to such shared resources.
+To monitor the resource utilization by a workload  CBQRI defines a mechanism to
+configure counters identified by the `MCID` to count events in the resource
+controllers that control accesses to such shared resources.
 
 === Associating `RCID` and `MCID` with requests
 
@@ -107,9 +107,9 @@ due to a data access.
 When differentiation based on access type (e.g. code vs. data) is supported the
 requests also carry an access-type (`AT`) indicator. The resource controllers
 may be configured with separate capacity and/or bandwidth allocations for each
-supported access-type. The CBQRI extension defines a 3-bit `AT` field, encoded
-as specified in <<AT_ENC>>, in the register interface to configure
-differentiated resource allocation and monitoring for each `AT`.
+supported access-type. CBQRI defines a 3-bit `AT` field, encoded as specified in
+<<AT_ENC>>, in the register interface to configure differentiated resource
+allocation and monitoring for each `AT`.
 
 [[AT_ENC]]
 .Encodings of `AT` field

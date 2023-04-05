@@ -34,7 +34,7 @@ applications and data while in use, thereby increasing the security assurances
 for organizations that manage sensitive and regulated data.
 
 The resource accesses from a TEE must not be observable using the resource
-usage monitoring extensions and the resource allocations for the TEE must be
+usage monitoring capability and the resource allocations for the TEE must be
 established by a TEE security monitor that manages the TEE.
 
 The resource controllers in such SoC support configuration of separate resource
@@ -167,7 +167,7 @@ that all of that execution is attributed to the new VM. Further in this context
 switch process, if the hypervisor intends some of the execution to be attributed
 to neither the outgoing VM nor the incoming VM, then the hypervisor may switch
 to a new configuration that is different from the configuration of either of the
-VMs for the duration of such execution. QoS extensions are statistical in
+VMs for the duration of such execution. QoS capabilities are statistical in
 nature and the small duration, such as the few instructions in the hypervisor
 trap handler entrypoint, for which the HS-mode may execute with the `RCID`/
 `MCID` established for lower privilege mode operation may not be statistically

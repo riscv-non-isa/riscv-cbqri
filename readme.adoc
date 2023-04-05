@@ -9,10 +9,10 @@ by a service level agreement (SLA) to an application.
 System software needs additional tools to control interference to an application and thereby
 reduce the variability in performance experienced by one application due to other application's
 cache capacity usage, memory bandwidth usage, interconnect bandwidth usage, power usage, etc.
-through a capacity and bandwidth allocation extension.
+through a capacity and bandwidth allocation capability.
 
-Effective use of the capacity and bandwidth allocation extension requires hardware to provide a
-capacity and bandwidth monitoring extension by which the resource requirements of an application
+Effective use of the capacity and bandwidth allocation capability requires hardware to provide a
+capacity and bandwidth monitoring capability by which the resource requirements of an application
 needed to meet a certain performance goal can be characterized.
 
 = License

@@ -36,18 +36,18 @@ for execution, etc.
 System software needs additional tools to control interference to a workload
 and thereby reduce the variability in performance experienced by one workload
 due to other workload’s cache capacity usage, memory bandwidth usage,
-interconnect bandwidth usage, etc. through a resource allocation extension. The
-resource allocation extension enables system software to reserve capacity and/or
-bandwidth to meet the performance goals of the workload. Such controls enable
-improving the utilization of the system by collocating workloads while
+interconnect bandwidth usage, etc. through a resource allocation capability. The
+resource allocation capability enables system software to reserve capacity
+and/or bandwidth to meet the performance goals of the workload. Such controls
+enable improving the utilization of the system by collocating workloads while
 minimizing the interference caused by one workload to another cite:[HERACLES].
 
-Effective use of the resource allocation extension requires hardware to provide
-a resource monitoring extension by which the resource requirements of a
+Effective use of the resource allocation capability requires hardware to provide
+a resource monitoring capability by which the resource requirements of a
 workload needed to meet a certain performance goal can be characterized. A
 typical use model involves profiling the resource usage of the workload using
-the resource monitoring extensions and to establish resource allocations for the
-workload using the resource allocation extensions.
+the resource monitoring capability and to establish resource allocations for the
+workload using the resource allocation capability.
 
 The allocation may be in the form of capacity or bandwidth depending on the type
 of resource. For caches and directories, the resource allocation is in the form
@@ -62,7 +62,7 @@ In some cases it is desirable to provide differentiated treatment to each type
 of access by providing unique resource allocation to each access type.
 
 RISC-V Capacity and Bandwidth Controller QoS Register Interface (CBQRI) 
-extension specifies:
+specification specifies:
 
 . QoS identifiers to identify workloads that originate requests to the shared
   resources. These QoS identifiers include an identifier for resource allocation
@@ -86,16 +86,16 @@ extension specifies:
 
 The capacity and bandwidth controller register interfaces for resource
 allocation and usage monitoring are defined as memory-mapped registers. Each
-controller that supports the CBQRI extension provides a set of registers that
-are located at a range of physical address space that is a multiple of 4-KiB
-and the lowest address of the range is aligned to 4-KiB. The memory-mapped
-registers may be accessed using naturally aligned 4-byte or 8-byte memory
-accesses. The controller behavior for register accesses where the address is
-not aligned to the size of the access, or if the access spans multiple
-registers, of if the size of the access is not 4-bytes or 8-bytes, is
-`UNSPECIFIED`. The atomicity of access to an 8-byte register is `UNSPECIFIED`.
-The implementation may observe the 8-byte access as two 4-byte accesses. A
-4-byte access to a register must be single-copy atomic.
+controller that supports CBQRI provides a set of registers that are located at a
+range of physical address space that is a multiple of 4-KiB and the lowest
+address of the range is aligned to 4-KiB. The memory-mapped registers may be
+accessed using naturally aligned 4-byte or 8-byte memory accesses. The
+controller behavior for register accesses where the address is not aligned to
+the size of the access, or if the access spans multiple registers, of if the
+size of the access is not 4-bytes or 8-bytes, is `UNSPECIFIED`. The atomicity of
+access to an 8-byte register is `UNSPECIFIED`. The implementation may observe
+the 8-byte access as two 4-byte accesses. A 4-byte access to a register must be
+single-copy atomic.
 
 [NOTE]
 ====

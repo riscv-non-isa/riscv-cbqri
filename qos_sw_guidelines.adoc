@@ -74,7 +74,7 @@ privilege mode, the M-mode software may not modify the `sqoscfg` CSR.
 If a use case requires use of separate `RCID` and/or `MCID` for software
 execution in S/HS-mode or in M-mode, then the M/S/HS-mode SW may update the
 `sqoscfg` CSR and restore it prior to returning to the lower privilege mode
-execution. QoS extensions are statistical in nature and the small duration, such
-as the few instructions in the M/S/HW-mode trap handler entrypoint, for which
-the trap handler may execute with the `RCID`/ `MCID` established for lower
+execution. QoS capabilities are statistical in nature and the small duration,
+such as the few instructions in the M/S/HW-mode trap handler entrypoint, for
+which the trap handler may execute with the `RCID`/ `MCID` established for lower
 privilege mode operation may not be statistically significant.
