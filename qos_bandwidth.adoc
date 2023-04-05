@@ -67,7 +67,7 @@ multiples of a bandwidth block and thereby support proportional allocation of
 bandwidth.
 
 Bandwidth controllers may limit the maximum bandwidth that may be reserved to
-be smaller than `NBWBLLKS`. The `MRBWB` field reports the maximum bandwidth
+be smaller than `NBWBLKS`. The `MRBWB` field reports the maximum bandwidth
 blocks that may be reserved.
 
 [NOTE]
