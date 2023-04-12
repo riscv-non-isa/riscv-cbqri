@@ -9,9 +9,9 @@ be associated with a resource control ID (`RCID`) and a monitoring counter ID
 (`MCID`) that accompany each request made by the workload to shared resources.
 
 To provide differentiated services to workloads, CBQRI defines a mechanism to
-configure resource usage limits, in the form of capacity or bandwidth, for an
-`RCID` in the resource controllers that control accesses to such shared
-resources.
+configure resource usage limits, in the form of capacity or bandwidth,
+per supported access type, for an `RCID` in the resource controllers that
+control accesses to such shared resources.
 
 To monitor the resource utilization by a workload  CBQRI defines a mechanism to
 configure counters identified by the `MCID` to count events in the resource
