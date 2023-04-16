@@ -8,7 +8,7 @@ section specifies a RISC-V IOMMU cite:[IOMMU] extension to:
 * Configure and associate QoS IDs for device-originated requests.
 * Configure and associate QoS IDs for IOMMU-originated requests.
 
-=== Register layout
+=== IOMMU registers
 
 The specified memory-mapped register layout defines a new IOMMU register named
 `iommu_qosid`. This register is used to configure the Quality of Service (QoS)
@@ -25,7 +25,7 @@ region.
 |628   |Reserved        |60  |Reserved for future use (`WPRI`)| 
 |===
 
-=== Reset behavior
+==== Reset behavior
 
 If the reset value for `ddtp.iommu_mode` field is `Bare` then the
 `iommu_qosid.RCID` must have a reset value of 0.
