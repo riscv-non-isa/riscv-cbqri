@@ -4,7 +4,7 @@
 Quality of Service (QoS) is defined as the minimal end-to-end performance that
 is guaranteed in advance by a service level agreement (SLA) to a workload. A
 workload may be a single application, a group of application, a virtual machine,
-a group of virtual machines, or some combination of above. The performance may
+a group of virtual machines, or a combination of those. The performance may
 be measured in the form of metrics such as instructions per cycle (IPC), latency
 of servicing work, etc.
 
@@ -69,7 +69,7 @@ specification specifies:
   identifiers with workloads.
 . Access-type identifiers to accompany request to access a shared resource to
   allow differentiated treatment of each access-type (e.g., code vs. data,
-  etc.). The access-types are defined in <<QOS_ID>>
+  etc.). The access-types are defined in <<QOS_ID>>.
 . Register interface for capacity allocation in controllers such as shared
   caches, directories, etc. The capacity allocation register interface is
   specified in <<CC_QOS>>.
