@@ -270,7 +270,7 @@ operation.
 ====
 
 [[BC_ALLOC]]
-=== Bandwidth Allocation control (`bc_alloc_ctl`)
+=== Bandwidth allocation control (`bc_alloc_ctl`)
 
 The `bc_alloc_ctl` register is used to control the allocation of bandwidth to an
 `RCID` per `AT`. If a controller does not support bandwidth allocation, then the
@@ -355,7 +355,7 @@ the register. The `STATUS` field remains valid until a subsequent write to the
 |===
 
 [[BC_BMASK]]
-=== Bandwidth allocation control (`bc_bw_alloc`)
+=== Bandwidth allocation configuration (`bc_bw_alloc`)
 
 The `bc_bw_alloc` is used to program reserved bandwidth blocks (`Rbwb`) for an
 `RCID` for requests of access-type `AT` using the `CONFIG_LIMIT` operation. If a
@@ -371,7 +371,7 @@ operation fails with `STATUS=5`. Additionally, the sum of `Rbwb` allocated
 across all `RCID`s must not exceed `MRBWB`, or the `CONFIG_LIMIT` operation
 fails with `STATUS=5`.
 
-.Bandwidth allocation control (`bc_bw_alloc`)
+.Bandwidth allocation configuration (`bc_bw_alloc`)
 [wavedrom, , ]
 ....
 {reg: [

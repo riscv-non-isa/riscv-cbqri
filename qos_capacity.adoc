@@ -133,7 +133,7 @@ A controller that does not support monitoring by access-type can hardwire the
 all access-types.
 
 [[CC_MON_OP]]
-.Usage monitoring operations (`OP`)
+.Capacity usage monitoring operations (`OP`)
 [width=100%]
 [%header, cols="16,^12,70"]
 |===
@@ -152,7 +152,7 @@ all access-types.
 
 
 [[CC_EVT_ID]]
-.Usage monitoring event ID (`EVT_ID`)
+.Capacity usage monitoring event ID (`EVT_ID`)
 [width=100%]
 [%header, cols="12,^12,70"]
 |===
@@ -201,20 +201,20 @@ operation, software must first verify that the `BUSY` bit is 0 before writing
 the `cc_mon_ctl` register.
 
 [[CC_MCTR]]
-=== Monitoring counter value (`cc_mon_ctr_val`)
+=== Capacity usage monitoring counter value (`cc_mon_ctr_val`)
 
 The `cc_mon_ctr_val` is a read-only register that holds a snapshot of the
 counter selected by the `READ_COUNTER` operation. When the controller does not
 support capacity usage monitoring, the `cc_mon_ctr_val` register always reads as
 zero.
 
-.Usage monitoring counter value (`cc_mon_ctr_val`)
+.Capacity usage monitoring counter value (`cc_mon_ctr_val`)
 [wavedrom, , ]
 ....
 {reg: [
   {bits:  63, name: 'CTR'},
   {bits:   1, name: 'INV'},
-], config:{lanes: 1, hspace:1024}}
+], config:{lanes: 2, hspace:1024}}
 ....
 
 The counter is valid if the `INV` field is 0. The counter may be marked
@@ -433,7 +433,7 @@ always a multiple of 64 bits. The bitmap width in bits (`BMW`) is determined in
 [latexmath#eq-1,reftext="equation ({counter:eqs})"]
 ++++
 \begin{equation}
-BMW = \floor*{\frac{NCBLKS + 63}{64}} \times 64
+BMW = \floor{\frac{NCBLKS + 63}{64}} \times 64
 \end{equation}
 ++++
 
