@@ -25,7 +25,7 @@ The Ssqosid extension, introduces a read/write S/HS-mode register (`sqoscfg`) to
 configure QoS Identifiers to be used with requests made by the hart to shared
 resources.
 
-The `sqoscfg` CSR is a 32-bit S/HS-mode read/write register to configure a
+The `sqoscfg` CSR is a 32-bit S/HS-mode read/write WARL register to configure a
 resource control ID (`RCID`) and a monitoring counter ID (`MCID`). The `RCID`
 and `MCID` accompany each request made by the hart to shared resources such
 as interconnects, caches, memory, etc.
@@ -35,9 +35,9 @@ as interconnects, caches, memory, etc.
 [wavedrom, , ]
 ....
 {reg: [
-  {bits: 12, name: 'RCID (WARL)'},
+  {bits: 12, name: 'RCID'},
   {bits:  4, name: 'WPRI'},
-  {bits: 12, name: 'MCID (WARL)'},
+  {bits: 12, name: 'MCID'},
   {bits:  4, name: 'WPRI'},
 ], config:{lanes: 1, hspace:1024}}
 ....

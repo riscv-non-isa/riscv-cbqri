@@ -27,10 +27,8 @@ region.
 
 === Reset behavior
 
-If the reset value for `ddtp.iommu_mode` field is `Bare` then the following field
-must have a reset value of 0:
-
-* `iommu_qosid.RCID`
+If the reset value for `ddtp.iommu_mode` field is `Bare` then the
+`iommu_qosid.RCID` must have a reset value of 0.
 
 [NOTE]
 ====
@@ -141,7 +139,7 @@ devices.
   {bits:  8, name: 'reserved'},
   {bits: 12, name: 'RCID'},
   {bits: 12, name: 'MCID'},
-], config:{lanes: 1, hspace: 1024, fontsize: 16}}
+], config:{lanes: 2, hspace: 1024, fontsize: 16}}
 ....
 
 The `RCID` and `MCID` configured in `DC.ta` are associated with IOMMU-initiated

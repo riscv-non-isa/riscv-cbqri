@@ -43,12 +43,12 @@ value before configuring the capacity controller with capacity allocation for
 that `RCID` is `UNSPECIFIED`.
 
 [[CC_CAP]]
-=== Capabilities (`cc_capabilities`)
+=== Capacity-controller capabilities (`cc_capabilities`)
 
 The `cc_capabilities` register is a read-only register that holds the
 capacity-controller capabilities.
 
-.Capabilities register fields
+.Capacity-controller capabilities register fields
 [wavedrom, , ]
 ....
 {reg: [
@@ -56,7 +56,7 @@ capacity-controller capabilities.
   {bits: 16, name: 'NCBLKS'},
   {bits:  1, name: 'FRCID'},
   {bits: 39, name: 'WPRI'},
-], config:{lanes: 2, hspace:1024}}
+], config:{lanes: 4, hspace:1024}}
 ....
 
 The `VER` field holds the version of the specification implemented by the
@@ -213,14 +213,13 @@ zero.
 ....
 {reg: [
   {bits:  63, name: 'CTR'},
-  {bits:  1, name: 'INVALID'},
-], config:{lanes: 2, hspace:1024}}
+  {bits:   1, name: 'INV'},
+], config:{lanes: 1, hspace:1024}}
 ....
 
-The counter is valid if the `INVALID` field is 0. The counter may be marked
-`INVALID` if it underflows or the controller, for `UNSPECIFIED` reasons
-determine the count to be not valid. The counters marked `INVALID` may become
-valid in future.
+The counter is valid if the `INV` field is 0. The counter may be marked
+`INV` if it underflows or the controller, for `UNSPECIFIED` reasons determine
+the count to be not valid. The counters marked `INV` may become valid in future.
 
 [NOTE]
 ====
@@ -254,7 +253,7 @@ such as 10% or less, depending on the cache properties and sampling technique
 used.
 
 When the controller has not observed enough samples to provide an accurate
-value in the monitoring counter, it may report the counter as being `INVALID`
+value in the monitoring counter, it may report the counter as being `INV`
 until more accurate measurements are available. This helps to prevent inaccurate
 or misleading data from being used in capacity planning or other decision-making
 processes.
@@ -280,10 +279,12 @@ access-type then the `AT` field is read-only zero.
   {bits:  7, name: 'STATUS'},
   {bits:  1, name: 'BUSY'},
   {bits: 24, name: 'WPRI'},
-], config:{lanes: 1, hspace:1024}}
+], config:{lanes: 2, hspace:1024}}
 ....
 
-The `OP` is a WARL field used to instruct the capacity controller to perform an
+The `OP`, `AT`, and `RCID` are WARL fields.
+
+The `OP` field used to instruct the capacity controller to perform an
 operation listed in <<CC_ALLOC_OP>>. Some operations require specifying the capacity
 blocks to operate on. The capacity blocks, in the form of a bitmask, for such
 operations are specified in the `cc_block_mask` register. To request operations that
@@ -298,23 +299,24 @@ register.
 |===
 |Operation     | Encoding ^| Description
 |--            | 0         | Reserved for future standard use.
-|`CONFIG_LIMIT`| 1         | The `CONFIG_LIMIT` operation is used to configure
-                             a capacity allocation for requests by `RCID` and of
-                             access-type `AT`. The capacity allocation is specified
-                             in the `cc_block_mask` register.
-|`READ_LIMIT`  | 2         | The `READ_LIMIT` operation is used to read back
-                             the previously configured capacity allocation for
-                             requests by `RCID` and of type `AT`. The configured
-                             allocation is returned as a bit-mask in the
-                             `cc_block_mask` register on successful completion of
-                             the operation.
-|`FLUSH_RCID`  | 3         | The `FLUSH_RCID` operation requests the controller
-                             to deallocate the capacity used by the specified
-                             `RCID` and access-type `AT`. The `cc_block_mask`
-                             register is not used for this operation. The
-                             configured capacity allocation is not changed by
-                             this operation. This operation is supported if the
-                             `capabilities.FRCID` bit is 1.
+|`CONFIG_LIMIT`| 1         | Configure a capacity allocation for requests by
+                             `RCID` and of access-type `AT`. The capacity
+                             allocation is specified in the `cc_block_mask`
+                             register.
+|`READ_LIMIT`  | 2         | Read back the previously configured capacity
+                             allocation for requests by `RCID` and of
+                             access-type `AT`. The configured allocation is
+                             returned as a bit-mask in the `cc_block_mask`
+                             register on successful completion of the operation.
+|`FLUSH_RCID`  | 3         | Deallocate the capacity used by the specified
+                             `RCID` and access-type `AT`. This operation is
+                             supported if the `capabilities.FRCID` bit is 1.+
+                             +
+                             The `cc_block_mask` register is not used for this
+                             operation.+
+                             +
+                             The configured capacity allocation is not changed by
+                             this operation.
 | --           | 4-23      | Reserved for future standard use.
 | --           | 24-31     | Designated for custom use.
 |===
@@ -401,11 +403,11 @@ write to the `cc_alloc_ctl` register.
 |===
 |`STATUS` | Description
 | 0       | Reserved
-| 1       | Operation was successfully completed.
-| 2       | Invalid operation (`OP`) requested.
-| 3       | Operation requested for an invalid `RCID`.
-| 4       | Operation requested for an invalid `AT`.
-| 5       | Invalid capacity block mask specified.
+| 1       | The operation was successfully completed.
+| 2       | An invalid or unsupported operation (`OP`) requested.
+| 3       | An operation was requested for an invalid `RCID`.
+| 4       | An operation was requested for an invalid `AT`.
+| 5       | An invalid capacity block mask was specified.
 | 6-63    | Reserved for future standard use.
 | 64-127  | Designated for custom use.
 |===

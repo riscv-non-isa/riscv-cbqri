@@ -226,19 +226,19 @@ as zero.
 ....
 {reg: [
   {bits:  62, name: 'CTR'},
-  {bits:  1, name: 'INVALID'},
-  {bits:  1, name: 'OVF'},
+  {bits:   1, name: 'INV'},
+  {bits:   1, name: 'OVF'},
 ], config:{lanes: 2, hspace:1024}}
 ....
 
-The counter is valid if the `INVALID` field is 0. The counter may be marked
-`INVALID` if, for `UNSPECIFIED` reasons, the controllerdetermine the count to be
+The counter is valid if the `INV` field is 0. The counter may be marked
+`INV` if, for `UNSPECIFIED` reasons, the controllerdetermine the count to be
 not valid. Such counters may become valid in the future. Additionally, if an
 unsigned integer overflow of the counter occurs, then the `OVF` bit is set to 1.
 
 [NOTE]
 ====
-A counter may be marked as `INVALID` if the controller has not been able to 
+A counter may be marked as `INV` if the controller has not been able to 
 establish an accurate counter value for the monitored event.
 ====
 
@@ -288,7 +288,7 @@ allocation per access-type, then the `AT` field is also read-only zero.
   {bits:  7, name: 'STATUS'},
   {bits:  1, name: 'BUSY'},
   {bits: 24, name: 'WPRI'},
-], config:{lanes: 8, hspace:1024}}
+], config:{lanes: 2, hspace:1024}}
 ....
 
 The `OP` field instructs the bandwidth controller to perform an operation listed
@@ -381,7 +381,7 @@ fails with `STATUS=5`.
   {bits:  3, name: 'sharedAT'},
   {bits:  1, name: 'useShared'},
   {bits: 32, name: 'WPRI'},
-], config:{lanes: 2, hspace:1024}}
+], config:{lanes: 4, hspace:1024}}
 ....
 
 The `Rbwb`, `Mweight`, `sharedAT`, and `useShared` are all WARL fields.
