@@ -25,10 +25,10 @@ workload being switched away from and restoring the context of the workload
 being switched to. Such context switch may be invoked in response to an explicit
 call from the workload (i.e, as a function of an `ECALL` invocation) or may be
 done asynchronously (e.g., in response to a timer interrupt). In such cases the
-scheduler may want to execute with the `sqoscfg` configurations of the
+scheduler may want to execute with the `sqoscfg` configuration of the
 workload being switched away from such that this execution is attributed to the
 workload being switched away from and then prior to restoring the new workloads
-context, first switch to the `sqoscfg` configurations appropriate for the
+context, first switch to the `sqoscfg` configuration appropriate for the
 workload being switched to such that all of that execution is attributed to
 the new workload. Further in this context switch process, if the scheduler
 intends some of its execution to be attributed to neither the outgoing

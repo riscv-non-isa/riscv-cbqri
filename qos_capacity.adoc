@@ -423,14 +423,16 @@ the `cc_block_mask` register.
 The `cc_block_mask` is a WARL register. If the controller does not support
 capacity allocation i.e. `NCBLKS` is 0, then this register is read-only 0.
 
-The register has `NCBLKS` <<CC_CAP>> bits each corresponding to one allocatable
+The register has `NCBLKS` bits each corresponding to one allocatable
 capacity block in the controller. The width of this register is variable but
-always a multiple of 64 bits. The bitmap width in bits (`BMW`) is determined as
-follows. The division operation in this equation is an integer division.
+always a multiple of 64 bits. The bitmap width in bits (`BMW`) is determined in
+<<eq-1>>. The division operation in this equation is an integer division.
 
-[latexmath]
+[latexmath#eq-1,reftext="equation ({counter:eqs})"]
 ++++
-    BMW = \frac{ NCBLKS + 63 }{64} x 64
+\begin{equation}
+BMW = \frac{NCBLKS + 63}{64} \times 64
+\end{equation}
 ++++
 
 Bits `NCBLKS-1:0` are read-write, and the bits `BMW-1:NCBLKS` are read-only and

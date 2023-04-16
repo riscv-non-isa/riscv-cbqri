@@ -174,7 +174,7 @@ all access-types.
 |`Total Write
   byte count`  | 3         | Counter is incremented by the number of bytes
                              transferred by a matching write request as the
-                             requests go past the monitor
+                             requests go past the monitor.
 | --           | 4-127     | Reserved for future standard use.
 | --           | 128-256   | Designated for custom use.
 |===
@@ -245,13 +245,15 @@ establish an accurate counter value for the monitored event.
 The counter provides the number of bytes transferred by requests matching the
 `EVT_ID` as they go past the monitoring point. A bandwidth value may be
 determined by reading the byte count value at two instances of time `T1` and
-`T2`. If the value of the counter at time `T1` was `B1`, and at time `T2` is
-`B2`, then the bandwidth can be calculated as follows. The frequency of the
-time source is represented by latexmath:[T_{freq}].
+`T2`, see <<eq-2>>. If the value of the counter at time `T1` was `B1`, and at
+time `T2` is `B2`, then the bandwidth can be calculated as follows. The
+frequency of the time source is represented by latexmath:[T_{freq}].
 
-[latexmath]
+[latexmath#eq-2,reftext="equation ({counter:eqs})"]
 ++++
-    Bandwidth = T_{freq} \times \frac{ B2 - B1 }{T2 - T1}
+\begin{equation}
+Bandwidth = T_{freq} \times \frac{ B2 - B1 }{T2 - T1}
+\end{equation}
 ++++
 
 The width of the counter is `UNSPECIFIED`.
@@ -413,12 +415,14 @@ access-types, but the behavior is otherwise well defined.
 When the `Mweight` parameter is not set to 0, the amount of unused bandwidth
 allocated to `RCID=x` during contention with another `RCID` that is also
 permitted to use unused bandwidth is determined by dividing the `Mweight` of
-`RCID=x` by the sum of the `Mweight` of all other contending `RCID`s. This ratio
-`P` is as follows:
+`RCID=x` by the sum of the `Mweight` of all other contending `RCID`s. This
+ratio `P` is determined as in <<eq-3>>.
 
-[latexmath]
+[latexmath#eq-3,reftext="equation ({counter:eqs})"]
 ++++
-    P = \frac{Mweight_{x}}{\sum_{r=1}^{r=n} Mweight_{r}}
+\begin{equation}
+P = \frac{Mweight_{x}}{\sum_{r=1}^{r=n} Mweight_{r}}
+\end{equation}
 ++++
 
 [NOTE]
