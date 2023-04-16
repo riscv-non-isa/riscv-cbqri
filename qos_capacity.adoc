@@ -2,7 +2,8 @@
 == Capacity-controller QoS Register Interface
 
 Controllers, such as cache controllers, that support capacity allocation and
-usage monitoring provide a memory-mapped register programming interface.
+usage monitoring provide a memory-mapped capacity-controller QoS register
+interface.
 
 [[CC_REG]]
 .Capacity-controller QoS register layout
@@ -54,8 +55,8 @@ capacity-controller capabilities.
   {bits:  8, name: 'VER'},
   {bits: 16, name: 'NCBLKS'},
   {bits:  1, name: 'FRCID'},
-  {bits: 39, name: '0'},
-], config:{lanes: 1, hspace:1024}}
+  {bits: 39, name: 'WPRI'},
+], config:{lanes: 2, hspace:1024}}
 ....
 
 The `VER` field holds the version of the specification implemented by the
@@ -78,14 +79,15 @@ report the number of ways as the number of allocatable capacity blocks.
 If `FRCID` is 1, the controller supports an operation to flush and deallocate
 the capacity blocks occupied by an `RCID`.
 
+
 [[CC_MCTL]]
-=== Usage monitoring control (`cc_mon_ctl`)
+=== Capacity usage monitoring control (`cc_mon_ctl`)
 
 The `cc_mon_ctl` register is used to control monitoring of capacity usage by a
 `MCID`. When the controller does not support capacity usage monitoring the
 `cc_mon_ctl` register is read-only zero.
 
-.Usage monitoring control (`cc_mon_ctl`)
+.Capacity usage monitoring control (`cc_mon_ctl`)
 [wavedrom, , ]
 ....
 {reg: [
@@ -98,7 +100,7 @@ The `cc_mon_ctl` register is used to control monitoring of capacity usage by a
   {bits:  7, name: 'STATUS'},
   {bits:  1, name: 'BUSY'},
   {bits: 24, name: 'WPRI'},
-], config:{lanes: 8, hspace:1024}}
+], config:{lanes: 2, hspace:1024}}
 ....
 
 Capacity controllers that support capacity usage monitoring implement a usage
@@ -107,22 +109,28 @@ be configured to count a monitoring event. When an event matching the event
 configured for the `MCID` occurs then the monitoring counter is updated. The
 event matching may optionally be filtered by the access-type.
 
-The `OP` is a WARL field is used to instruct the controller to perform an
-operation listed in <<CC_MON_OP>>.
+The `OP`, `AT`, `ATV, `MCID`, and `EVT_ID` fields of the register are WARL
+fields.
 
-The `EVT_ID` is a WARL field is used to program the identifier of the event to
-count in the monitoring counter selected by `MCID`. The `AT` is a WARL field
-used to program the access-type to count, and its validity is indicated by the
-`ATV` field. When `ATV` is 0, the counter counts requests with all access-types,
-and the `AT` value is ignored.
+The `OP` field is used to instruct the controller to perform an operation listed
+in <<CC_MON_OP>>. The supported operations of the `OP` field include configuring
+an event to count in the monitoring counter and obtaining a snapshot of the
+counter value.
 
-If the `EVT_ID` for a `MCID` is configured as 0, the counter stops counting but
-retains its current value. When `EVT_ID` is programmed with a non-zero and
-legal value, the counter resets to 0 and starts counting matching events for
-requests with matching `MCID` and `AT`(if `ATV` is 1).
+The `EVT_ID` field is used to program the identifier of the event to count in
+the monitoring counter selected by `MCID`. The `AT` field is used to program the
+access-type to count, and its validity is indicated by the `ATV` field. When
+`ATV` is 0, the counter counts requests with all access-types, and the `AT`
+value is ignored.
 
-A controller that does not support monitoring by access-type may hardwire the
-`ATV` and the `AT` fields to 0.
+When the `EVT_ID` for a `MCID` is programmed with a non-zero and legal value, 
+the counter is reset to 0 and starts counting matching events for requests with 
+the matching `MCID` and `AT` (if `ATV` is 1). However, if the `EVT_ID` is 
+configured as 0, the counter retains its current value but stops counting.
+
+A controller that does not support monitoring by access-type can hardwire the
+`ATV` and the `AT` fields to 0, indicating that the counter counts requests with 
+all access-types.
 
 [[CC_MON_OP]]
 .Usage monitoring operations (`OP`)
@@ -136,7 +144,7 @@ A controller that does not support monitoring by access-type may hardwire the
                              The `EVT_ID` encodings are listed in <<CC_EVT_ID>>.
 |`READ_COUNTER`| 2         | Snapshot the value of the counter selected by
                              `MCID` into `cc_mon_ctr_val` register. The
-                             `EVT_ID`, `AT` and `ATV` fields are not used by
+                             `EVT_ID`, `AT`, and `ATV` fields are not used by
                              this operation.
 | --           | 3-23      | Reserved for future standard use.
 | --           | 24-31     | Designated for custom use.
@@ -162,13 +170,13 @@ When the `cc_mon_ctl` register is written, the controller may need to perform
 several actions that may not complete synchronously with the write. A write to
 the `cc_mon_ctl` sets the read-only `BUSY` bit to 1 indicating the controller
 is performing the requested operation. When the `BUSY` bit reads 0, the operation
-is complete, and the read-only `STATUS` field provides a status value
-(<<CC_MON_STS>>) of the requested operation. Values written to the `BUSY` and the
-`STATUS` fields are always ignored. An implementation that can complete the
-operation synchronously with the write may hardwire the `BUSY` bit to 0. The
-state of the `BUSY` bit, when not hardwired to 0, shall only change in response
-to a write to the register. The `STATUS` field remains valid until a subsequent
-write to the `cc_mon_ctl` register.
+is complete, and the read-only `STATUS` field provides a status value (see
+<<CC_MON_STS>> for  details). Written values to the `BUSY` and the `STATUS`
+fields are ignored. An implementation that can complete the operation
+synchronously with the write may hardwire the `BUSY` bit to 0. The state of the
+ `BUSY` bit, when not hardwired to 0, shall only change in response to a write to
+the register. The `STATUS` field remains valid until a subsequent write to the
+`cc_mon_ctl` register.
 
 [[CC_MON_STS]]
 .`cc_mon_ctl.STATUS` field encodings
@@ -177,18 +185,18 @@ write to the `cc_mon_ctl` register.
 |===
 |`STATUS` | Description
 | 0       | Reserved
-| 1       | Operation was successfully completed.
-| 2       | Invalid operation (`OP`) requested.
-| 3       | Operation requested for an invalid `MCID`.
-| 4       | Operation requested for an invalid `EVT_ID`.
-| 5       | Operation requested for an invalid `AT`.
+| 1       | The operation was successfully completed.
+| 2       | An invalid operation (`OP`) was requested.
+| 3       | An operation was requested for an invalid `MCID`.
+| 4       | An operation was requested for an invalid `EVT_ID`.
+| 5       | An operation was requested for an invalid `AT`.
 | 6-63    | Reserved for future standard use.
 | 64-127  | Designated for custom use.
 |===
 
 When the `BUSY` bit is set to 1, the behavior of writes to the `cc_mon_ctl` is
-`UNSPECIFIED`. Some implementations may ignore the second write and others may
-perform the operation determined by the second write. To ensure proper
+`UNSPECIFIED`. Some implementations may ignore the second write, while others
+may perform the operation determined by the second write. To ensure proper
 operation, software must first verify that the `BUSY` bit is 0 before writing
 the `cc_mon_ctl` register.
 
@@ -196,8 +204,8 @@ the `cc_mon_ctl` register.
 === Monitoring counter value (`cc_mon_ctr_val`)
 
 The `cc_mon_ctr_val` is a read-only register that holds a snapshot of the
-counter requested by the `READ_COUNTER` operation. When the controller does not
-support capacity usage monitoring, the `cc_mon_ctr_val` register is read-only
+counter selected by the `READ_COUNTER` operation. When the controller does not
+support capacity usage monitoring, the `cc_mon_ctr_val` register always reads as
 zero.
 
 .Usage monitoring counter value (`cc_mon_ctr_val`)
@@ -206,7 +214,7 @@ zero.
 {reg: [
   {bits:  63, name: 'CTR'},
   {bits:  1, name: 'INVALID'},
-], config:{lanes: 1, hspace:1024}}
+], config:{lanes: 2, hspace:1024}}
 ....
 
 The counter is valid if the `INVALID` field is 0. The counter may be marked
