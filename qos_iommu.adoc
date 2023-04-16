@@ -2,11 +2,11 @@
 == IOMMU extension for QoS ID
 
 Monitoring or allocation of resources accessed by the IOMMU and devices governed
-by the IOMMU requires a way to assocaite QoS IDs with such requests. This
+by the IOMMU requires a way to associate QoS IDs with such requests. This
 section specifies a RISC-V IOMMU cite:[IOMMU] extension to:
 
 * Configure and associate QoS IDs for device originated requests.
-* Configure and associate QoS IDs for IOMMU originated requests
+* Configure and associate QoS IDs for IOMMU originated requests.
 
 === Register layout
 
@@ -25,14 +25,14 @@ associated with IOMMU originated requests.
 === Reset behavior
 
 If the reset value for `ddtp.iommu_mode` field is `Bare` then the following field
-must have a reset value of 0.
+must have a reset value of 0:
 
 * `iommu_qosid.RCID`
 
 [NOTE]
 ====
-At reset it is suggested that the `RCID` field of `iommu_qosid` be set to 0 if
-the IOMMU will be in `Bare` mode as typically the resource controllers in the
+At reset, it is suggested that the `RCID` field of `iommu_qosid` be set to 0 if
+the IOMMU is in `Bare` mode, as typically the resource controllers in the
 SoC default to a reset behavior of associating all capacity or bandwidth to the
 `RCID` value of 0.
 ====
@@ -141,7 +141,7 @@ devices.
 The `RCID` and `MCID` configured in `DC.ta` are associated with IOMMU initiated
 requests to access the following data structures:
 
-. Process directory table (`PDT`)
+. Process directory table (PDT)
 . Second-stage page table
 . First-stage page table
 . MSI page table
@@ -151,12 +151,10 @@ The `RCID` and `MCID` configured in `DC.ta` are provided to the IO bridge on
 successful address translations. The IO bridge should associate these QoS IDs
 with device initiated requests.
 
-A `DC` with `DC.tc.V=1` is considered as misconfigured if any of the following
-conditions are true. If misconfigured then, stop and report "DDT entry
-misconfigured" (cause = 259).
-
-. If `capabilities.QOSID` is 1 and `DC.ta.RCID` or `DC.ta.MCID` is wider than
-  that supported by the IOMMU.
+A `DC` with `DC.tc.V=1` is considered as misconfigured if `capabilities.QOSID`
+is 1 and `DC.ta.RCID` or `DC.ta.MCID` is wider than that supported by the
+IOMMU. If misconfigured then, stop and report "DDT entry misconfigured" (cause
+= 259).
 
 === IOMMU ATC capacity allocation and monitoring
 

@@ -166,11 +166,11 @@ A controller that does not support monitoring by access-type may hardwire the
 |`Total Read
   byte count`  | 2         | Counter is incremented by the number of bytes
                              transferred by a matching read request as the
-                             requests go past the monitor
+                             requests go past the monitor.
 |`Total Write
   byte count`  | 3         | Counter is incremented by the number of bytes
                              transferred by a matching write request as the
-                             requests go past the monitor
+                             requests go past the monitor.
 | --           | 4-127     | Reserved for future standard use.
 | --           | 128-256   | Designated for custom use.
 |===
