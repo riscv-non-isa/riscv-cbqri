@@ -27,8 +27,8 @@ region.
 
 ==== Reset behavior
 
-If the reset value for `ddtp.iommu_mode` field is `Bare` then the
-`iommu_qosid.RCID` must have a reset value of 0.
+If the reset value for `ddtp.iommu_mode` field is `Bare`, then the
+`iommu_qosid.RCID` field must have a reset value of 0.
 
 [NOTE]
 ====
