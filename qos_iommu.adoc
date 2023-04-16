@@ -5,13 +5,16 @@ Monitoring or allocation of resources accessed by the IOMMU and devices governed
 by the IOMMU requires a way to associate QoS IDs with such requests. This
 section specifies a RISC-V IOMMU cite:[IOMMU] extension to:
 
-* Configure and associate QoS IDs for device originated requests.
-* Configure and associate QoS IDs for IOMMU originated requests.
+* Configure and associate QoS IDs for device-originated requests.
+* Configure and associate QoS IDs for IOMMU-originated requests.
 
 === Register layout
 
-A new IOMMU register - `iommu_qosid` - is defined to configure `RCID` and `MCID`
-associated with IOMMU originated requests.
+The specified memory-mapped register layout defines a new IOMMU register named
+`iommu_qosid`. This register is used to configure the Quality of Service (QoS)
+IDs associated with IOMMU-originated requests. The register has a size of 4
+bytes and is located at an offset of 624 from the beginning of the memory-mapped
+region.
 
 .IOMMU Memory-mapped register layout
 [width=100%]
@@ -39,8 +42,9 @@ SoC default to a reset behavior of associating all capacity or bandwidth to the
 
 ==== IOMMU capabilities (`capabilities`)
 
-The IOMMU capabilities register is extended with a new field - `QOSID` - to enumerate
-support for associating QoS IDs with such requests.
+The IOMMU capabilities register has been extended with a new field, `QOSID`,
+which enumerate support for associating QoS IDs with requests made through the
+IOMMU.
 
 .IOMMU capabilities register fields
 [wavedrom, , ]
@@ -86,14 +90,16 @@ support for associating QoS IDs with such requests.
 
 ==== IOMMU QoS ID (`iommu_qosid`)
 
+The `iommu_qosid` register fields are defined as follows:
+
 .`iommu_qosid` register fields
 
 [wavedrom, , ]
 ....
 {reg: [
-  {bits: 12, name: 'RCID (WARL)'},
+  {bits: 12, name: 'RCID'},
   {bits:  4, name: 'WPRI'},
-  {bits: 12, name: 'MCID (WARL)'},
+  {bits: 12, name: 'MCID'},
   {bits:  4, name: 'WPRI'},
 ], config:{lanes: 1, hspace:1024}}
 ....
@@ -109,21 +115,21 @@ support for associating QoS IDs with such requests.
 |===
 
 The `RCID` and `MCID` in `iommu_qosid` register are associated with following
-IOMMU initiated request to access following data structures:
+IOMMU-initiated requests for access the following data structures:
 
-. Device directory table (`DDT`)
-. Fault queue (`FQ`)
-. Command queue (`CQ`)
-. Page-request queue (`PQ`)
-. IOMMU-originated MSIs
+* Device directory table (`DDT`)
+* Fault queue (`FQ`)
+* Command queue (`CQ`)
+* Page-request queue (`PQ`)
+* IOMMU-initiated MSI (Message-signaled interrupts)
 
-When the `ddtp.iommu_mode == Bare`, all device originated requests are
-associated with the QoS IDs configured in `iommu_qosid` register.
+When `ddtp.iommu_mode == Bare`, all device-originated requests are
+associated with the QoS IDs configured in the `iommu_qosid` register.
 
 === Device-context fields
 
-The translation attributes (`ta`) field is extended with two new fields `RCID`
-and `MCID` to configure the QoS IDs to associate with requests originated by the
+The `ta` field of the device context is extended with two new fields, `RCID`
+and `MCID`, to configure the QoS IDs to associate with requests originated by the
 devices.
 
 .Translation attributes (`ta`) field
@@ -135,26 +141,26 @@ devices.
   {bits:  8, name: 'reserved'},
   {bits: 12, name: 'RCID'},
   {bits: 12, name: 'MCID'},
-], config:{lanes: 2, hspace: 1024, fontsize: 16}}
+], config:{lanes: 1, hspace: 1024, fontsize: 16}}
 ....
 
-The `RCID` and `MCID` configured in `DC.ta` are associated with IOMMU initiated
+The `RCID` and `MCID` configured in `DC.ta` are associated with IOMMU-initiated
 requests to access the following data structures:
 
-. Process directory table (PDT)
-. Second-stage page table
-. First-stage page table
-. MSI page table
-. Memory resident interrupt file (MRIF)
+* Process directory table (`PDT`)
+* Second-stage page table
+* First-stage page table
+* MSI page table
+* Memory-resident interrupt file (`MRIF`)
 
 The `RCID` and `MCID` configured in `DC.ta` are provided to the IO bridge on
 successful address translations. The IO bridge should associate these QoS IDs
-with device initiated requests.
+with device-initiated requests.
 
-A `DC` with `DC.tc.V=1` is considered as misconfigured if `capabilities.QOSID`
-is 1 and `DC.ta.RCID` or `DC.ta.MCID` is wider than that supported by the
-IOMMU. If misconfigured then, stop and report "DDT entry misconfigured" (cause
-= 259).
+If `capabilities.QOSID` is 1 and `DC.ta.RCID` or `DC.ta.MCID` is wider than that
+supported by the IOMMU, a `DC` with `DC.tc.V=1` is considered misconfigured. In
+this case, the IOMMU should stop and report "DDT entry misconfigured" (cause =
+259).
 
 === IOMMU ATC capacity allocation and monitoring
 
