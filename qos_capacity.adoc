@@ -54,8 +54,8 @@ capacity-controller capabilities.
   {bits:  8, name: 'VER'},
   {bits: 16, name: 'NCBLKS'},
   {bits:  1, name: 'FRCID'},
-  {bits: 39, name: '0'},
-], config:{lanes: 1, hspace:1024}}
+  {bits: 39, name: 'WPRI'},
+], config:{lanes: 2, hspace:1024}}
 ....
 
 The `VER` field holds the version of the specification implemented by the
@@ -78,6 +78,7 @@ report the number of ways as the number of allocatable capacity blocks.
 If `FRCID` is 1, the controller supports an operation to flush and deallocate
 the capacity blocks occupied by an `RCID`.
 
+
 [[CC_MCTL]]
 === Usage monitoring control (`cc_mon_ctl`)
 
@@ -98,7 +99,7 @@ The `cc_mon_ctl` register is used to control monitoring of capacity usage by a
   {bits:  7, name: 'STATUS'},
   {bits:  1, name: 'BUSY'},
   {bits: 24, name: 'WPRI'},
-], config:{lanes: 8, hspace:1024}}
+], config:{lanes: 2, hspace:1024}}
 ....
 
 Capacity controllers that support capacity usage monitoring implement a usage
@@ -206,7 +207,7 @@ zero.
 {reg: [
   {bits:  63, name: 'CTR'},
   {bits:  1, name: 'INVALID'},
-], config:{lanes: 1, hspace:1024}}
+], config:{lanes: 2, hspace:1024}}
 ....
 
 The counter is valid if the `INVALID` field is 0. The counter may be marked
