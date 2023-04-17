@@ -433,7 +433,7 @@ always a multiple of 64 bits. The bitmap width in bits (`BMW`) is determined in
 [latexmath#eq-1,reftext="equation ({counter:eqs})"]
 ++++
 \begin{equation}
-BMW = {\frac{NCBLKS + 63}{64}} \times 64
+BMW = \lfloor{\frac{NCBLKS + 63}{64}}\rfloor \times 64
 \end{equation}
 ++++
 
