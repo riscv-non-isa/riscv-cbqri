@@ -368,7 +368,7 @@ an `RCID` and `AT` on successful completion of the `READ_LIMIT` operation.
 Bandwidth is allocated in multiples of bandwidth blocks, and the value in `Rbwb`
 must be at least 1 and must not exceed `MRBWB`. Otherwise, the `CONFIG_LIMIT`
 operation fails with `STATUS=5`. Additionally, the sum of `Rbwb` allocated
-across all `RCID`s must not exceed `MRBWB`, or the `CONFIG_LIMIT` operation
+across all `RCIDs` must not exceed `MRBWB`, or the `CONFIG_LIMIT` operation
 fails with `STATUS=5`.
 
 .Bandwidth allocation configuration (`bc_bw_alloc`)
@@ -400,7 +400,7 @@ allocation of bandwidth.
 
 If there is non-reserved or unused bandwidth available in an accounting
 interval, `RCIDs` may compete for additional bandwidth. The non-reserved or
-unused bandwidth is proportionately shared among the competing RCIDs using the
+unused bandwidth is proportionately shared among the competing `RCIDs` using the
 configured `Mweight` parameter, which is a number between 0 and 255. A larger
 weight implies a greater fraction of the bandwidth. A weight of 0 implies that
 the configured limit is a hard limit, and the use of unused or non-reserved
@@ -432,7 +432,7 @@ unused bandwidth to be used by requestors enabled to use it even if they have
 consumed their `Rbwb`.
 
 When contending for unused bandwidth, the weighted share is typically 
-computed among the `RCID`s that are actively generating requests in that
+computed among the `RCIDs` that are actively generating requests in that
 accounting interval and have a non-zero weight programmed.
 ====
 
