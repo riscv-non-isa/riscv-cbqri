@@ -29,8 +29,8 @@ of the `cc_capabilities` register but is always a multiple of 8 bytes.
 
 The reset value is 0 for the following registers fields.
 
-* `cc_mon_ctl` - `BUSY` field
-* `cc_alloc_ctl` - `BUSY` field
+* `cc_mon_ctl.BUSY` field
+* `cc_alloc_ctl.BUSY` field
 
 The reset value is `UNSPECIFIED` for all other registers and/or fields.
 
@@ -109,7 +109,7 @@ be configured to count a monitoring event. When an event matching the event
 configured for the `MCID` occurs then the monitoring counter is updated. The
 event matching may optionally be filtered by the access-type.
 
-The `OP`, `AT`, `ATV, `MCID`, and `EVT_ID` fields of the register are WARL
+The `OP`, `AT`, `ATV`, `MCID`, and `EVT_ID` fields of the register are WARL
 fields.
 
 The `OP` field is used to instruct the controller to perform an operation listed
@@ -427,7 +427,7 @@ capacity allocation i.e. `NCBLKS` is 0, then this register is read-only 0.
 
 The register has `NCBLKS` bits each corresponding to one allocatable
 capacity block in the controller. The width of this register is variable but
-always a multiple of 64 bits. The bitmap width in bits (`BMW`) is determined in
+always a multiple of 64 bits. The bitmap width in bits (`BMW`) is determined by
 <<eq-1>>. The division operation in this equation is an integer division.
 
 [latexmath#eq-1,reftext="equation ({counter:eqs})"]
