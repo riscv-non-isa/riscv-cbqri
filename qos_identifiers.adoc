@@ -123,5 +123,4 @@ allocation and monitoring for each `AT`.
 | 6-7  | Custom   | Designated for custom use.
 |===
 
-If the `AT` value in a request is unsupported then the resource controller
-behaves as if the `AT` value was 0.
+For unsupported `AT` values the resource controller behaves as if `AT` was 0.
