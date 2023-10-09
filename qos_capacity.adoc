@@ -5,20 +5,21 @@ Controllers, such as cache controllers, that support capacity allocation and
 usage monitoring provide a memory-mapped capacity-controller QoS register
 interface.
 
-The capacity controller allocates memory capacity in multiples of capacity
-units. A group of these units is referred to as a _capacity block_. Capacity
-blocks can be allocated to one or more workloads. When a workload requests
-capacity allocation, the capacity is allocated using capacity units situated
-within the capacity blocks assigned to the workload. Capacity blocks can also be
-shared among one or more workloads. Optionally, the capacity controller may
-allow configuration of a limit on the maximum number of capacity units that can
-be occupied in the capacity blocks allocated to a given workload.
+The capacity controller allocates capacity in fixed multiples of _capacity
+units_. A group of these _capacity units_ is referred to as a _capacity block_.
+One or more _capacity blocks_ may be allocated to a workload. When a workload
+requests capacity allocation, the capacity is allocated using _capacity units_
+situated within the _capacity blocks_ assigned to the workload. Capacity blocks
+can also be shared among one or more workloads. Optionally, the capacity
+controller may allow configuration of a limit on the maximum number of _capacity
+units_ that can be occupied in the _capacity blocks_ allocated to a given
+workload.
 
 [NOTE]
 ====
 For example, a cache controller may allocate capacity in multiples of cache
-blocks. In this context, a cache block serves as a capacity unit, and a group of
-cache blocks forms a _capacity block_. A cache controller supporting capacity
+blocks. In this context, a cache block serves as a _capacity unit_, and a group
+of cache blocks forms a _capacity block_. A cache controller supporting capacity
 allocation by ways might define a _capacity block_ to be the cache blocks in one
 way of the cache.
 ====
@@ -86,23 +87,23 @@ specification and the upper nibble is used to hold the major version of the
 specification. For example, an implementation that supports version 1.0 of the
 specification reports 0x10.
 
-The `NCBLKS` field holds the total number of allocatable capacity blocks in
-the controller. The capacity represented by an allocatable capacity block is
-`UNSPECIFIED`. The capacity controllers support allocating capacity in multiples
-of an allocatable capacity block.
+The `NCBLKS` field holds the total number of allocatable _capacity blocks_ in
+the controller. The capacity represented by an allocatable _capacity block_ is
+`UNSPECIFIED`. The capacity controllers support allocating capacity in fixed
+multiples of an allocatable _capacity block_.
 
 [NOTE]
 ====
 For example, a cache controller that defines a way of the cache as a _capacity
-block_ may report the number of ways as the number of allocatable capacity
-blocks.
+block_ may report the number of ways as the number of allocatable _capacity
+blocks_.
 ====
 
-If `FRCID` is 1, the controller supports an operation to flush and deallocate
-the capacity blocks occupied by an `RCID`.
+If `CUNITS` is 1, the controller supports specifying a limit on the _capacity
+units_ that can be occupied by an `RCID` in _capacity blocks_ allocated to it.
 
-If `CUNITS` is 1, the controller supports specifying a limit on the capacity
-units that can be occupied by an `RCID` in capacity blocks allocated to it.
+If `FRCID` is 1, the controller supports an operation to flush and deallocate
+the _capacity blocks_ occupied by an `RCID`.
 
 [[CC_MCTL]]
 === Capacity usage monitoring control (`cc_mon_ctl`)
@@ -310,10 +311,10 @@ The `OP`, `AT`, and `RCID` are WARL fields.
 
 The `OP` field is used to instruct the capacity controller to perform an
 operation listed in <<CC_ALLOC_OP>>. Some operations necessitate the
-specification of the capacity blocks to act upon. For such operations, the
-targeted capacity blocks are designated in the form of a bitmask in the
-`cc_block_mask` register. Additionally, certain operations require the capacity
-unit limit to be defined in the `cc_cunits` register. To execute operations that
+specification of the _capacity blocks_ to act upon. For such operations, the
+targeted _capacity blocks_ are designated in the form of a bitmask in the
+`cc_block_mask` register. Additionally, certain operations require the _capacity
+unit_ limit to be defined in the `cc_cunits` register. To execute operations that
 require a capacity block mask and/or a capacity unit limit, software must first
 program the `cc_block_mask` and/or the `cc_cunits` register, followed by
 initiating the operation via the `cc_alloc_ctl` register.
@@ -326,16 +327,16 @@ initiating the operation via the `cc_alloc_ctl` register.
 |Operation     | Encoding ^| Description
 |--            | 0         | Reserved for future standard use.
 |`CONFIG_LIMIT`| 1         | Configure a capacity allocation for requests by
-                             `RCID` and of access-type `AT`. The capacity blocks
-                             allocation is specified in the `cc_block_mask`
-                             register, and a limit on capacity units is
-                             specified in the `cc_cunits` register.
+                             `RCID` and of access-type `AT`. The _capacity
+                             blocks_ allocation is specified in the
+                             `cc_block_mask` register, and a limit on capacity
+                             units is specified in the `cc_cunits` register.
 |`READ_LIMIT`  | 2         | Read back the previously configured capacity
                              allocation for requests by `RCID` and of
-                             access-type `AT`. The configured capacity block
+                             access-type `AT`. The configured _capacity block_
                              allocation is returned as a bit-mask in the
                              `cc_block_mask` register, and the configured limit
-                             on capacity units is available in the `cc_cunits`
+                             on _capacity units_ is available in the `cc_cunits`
                              register on successful completion of the operation.
 |`FLUSH_RCID`  | 3         | Deallocate the capacity used by the specified
                              `RCID` and access-type `AT`. This operation is
@@ -344,18 +345,23 @@ initiating the operation via the `cc_alloc_ctl` register.
                              The `cc_block_mask` and `cc_cunits` registers
                              are not used for this operation.                  +
                                                                                +
-                             The configured capacity block allocation or the
-                             capacity unit limit is not changed by this
+                             The configured _capacity_ block allocation or the
+                             _capacity unit_ limit is not changed by this
                              operation.
 | --           | 4-23      | Reserved for future standard use.
 | --           | 24-31     | Designated for custom use.
 |===
 
-Capacity controllers enumerate the allocatable capacity blocks in the `NCBLKS`
+Capacity controllers enumerate the allocatable _capacity blocks_ in the `NCBLKS`
 field of the `cc_capabilities` register. The `cc_block_mask` register is
-programmed with a bit-mask where each bit represents a capacity block for the
-operation. A limit on the capacity unit, if supported, that can be occupied in
-the allocated capacity blocks may be programmed in the `cc_cunits` register.
+programmed with a bit-mask where each bit represents a _capacity block_ for the
+operation. A limit on the _capacity unit_, if configuration of such limits is
+supported (i.e., `cc_capabilities.CUNIT=1`), that can be occupied in the
+allocated _capacity blocks_ may be programmed in the `cc_cunits` register. If
+configuration of a limit  on the _capacity units_ is not supported, then the
+controller allows the use of all _capacity units_ in the allocated _capacity
+blocks_. A value of zero programmed into `cc_cunits` indicates that no limits
+should be enforced on _capacity unit_ allocation.
 
 A capacity allocation must be configured for each supported access-type by the
 controller. An implementation that does not support capacity allocation per
@@ -369,14 +375,14 @@ controller, the behavior is `UNSPECIFIED`.
 [NOTE]
 ====
 A cache controller that supports capacity allocation indicates the number of
-allocatable capacity blocks in `cc_capabilities.NCBLKS` field. For example,
+allocatable _capacity blocks_ in `cc_capabilities.NCBLKS` field. For example,
 let's consider a cache with `NCBLKS=8`. In this example, the `RCID=5` has been
-allocated capacity blocks numbered 0 and 1 for requests with access-type `AT=0`,
-and has been allocated capacity blocks numbered 2 for requests with access-type
-`AT=1`. The `RCID=3` in this example has been allocated capacity blocks
+allocated _capacity blocks_ numbered 0 and 1 for requests with access-type `AT=0`,
+and has been allocated _capacity blocks_ numbered 2 for requests with access-type
+`AT=1`. The `RCID=3` in this example has been allocated _capacity blocks_
 numbered 3 and 4 for both `AT=0` and `AT=1` access-types as separate capacity
 allocation by access-type is not required for this workload. Further in this
-example, the `RCID=6` has been configured with the same capacity block
+example, the `RCID=6` has been configured with the same _capacity block_
 allocations as `RCID=3`. This implies that they share a common capacity
 allocation in this cache but may have been associated with different `RCID` to
 allow differentiated treatment in another capacity and/or bandwidth controller.
@@ -393,7 +399,7 @@ allow differentiated treatment in another capacity and/or bandwidth controller.
 | `RCID=6`, `AT=1` | `0` | `0` | `0` | `1` | `1` | `0` | `0` | `0`
 |===
 
-Some controllers allow setting a limit on capacity units in allocated capacity
+Some controllers allow setting a limit on _capacity units_ in allocated capacity
 blocks. In exclusive allocations, like for `RCID=5`, the limit can be the
 capacity block's maximum capacity. For shared allocations, such as between
 `RCID=3` and `RCID=6`, individual limits can be set. For example, if two
@@ -446,7 +452,7 @@ write to the `cc_alloc_ctl` register.
 | 2       | An invalid or unsupported operation (`OP`) requested.
 | 3       | An operation was requested for an invalid `RCID`.
 | 4       | An operation was requested for an invalid `AT`.
-| 5       | An invalid capacity block mask was specified.
+| 5       | An invalid _capacity block_ mask was specified.
 | 6-63    | Reserved for future standard use.
 | 64-127  | Designated for custom use.
 |===
@@ -464,7 +470,7 @@ The `cc_block_mask` is a WARL register. If the controller does not support
 capacity allocation i.e. `NCBLKS` is 0, then this register is read-only 0.
 
 The register has `NCBLKS` bits each corresponding to one allocatable
-capacity block in the controller. The width of this register is variable but
+_capacity block_ in the controller. The width of this register is variable but
 always a multiple of 64 bits. The bitmap width in bits (`BMW`) is determined by
 <<eq-1>>. The division operation in this equation is an integer division.
 
@@ -480,7 +486,7 @@ have a value of 0.
 
 The process of configuring capacity allocation for an `RCID` and `AT` begins by
 programming the `cc_block_mask` register with a bit-mask that identifies the
-capacity blocks to be allocated and, if supported, the `cc_cunits` register with
+_capacity blocks_ to be allocated and, if supported, the `cc_cunits` register with
 a limit on the capacity units that may be occupied in those capacity blocks.
 Next, the `cc_alloc_ctl register` is written to request a `CONFIG_LIMIT`
 operation for the `RCID` and `AT`. Once a capacity allocation limit has been
@@ -488,7 +494,7 @@ established, a request may be allocated capacity in the capacity blocks
 allocated to the `RCID` and `AT` associated with the request. It is important to
 note that at least one capacity block must be allocated using `cc_block_mask`
 when allocating capacity, or else the operation will fail with `STATUS=5`.
-Overlapping capacity block masks among `RCID` and/or `AT` are allowed to be
+Overlapping _capacity block_ masks among `RCID` and/or `AT` are allowed to be
 configured.
 
 [NOTE]
@@ -500,36 +506,45 @@ selected and mask of the selected ways must be programmed in `cc_block_mask` whe
 requesting the `CONFIG_LIMIT` operation.
 ====
 
-To read the capacity block allocation for an `RCID` and `AT`, the controller
+To read the _capacity block_ allocation for an `RCID` and `AT`, the controller
 provides the `READ_LIMIT` operation which can be requested by writing to the
 `cc_alloc_ctl` register. Upon successful completion of the operation, the
-`cc_block_mask` register holds the configured capacity block allocation.
+`cc_block_mask` register holds the configured _capacity block_ allocation.
 
 [[CC_CUNITS]]
 === Capacity units (`cc_cunits`)
 
 The `cc_cunits` register is a read-write WARL register. If the controller does
 not support capacity allocation (i.e., `NCBLKS` is set to 0), this register
-shall be read-only and return a value of 0. In cases where the controller does
-not support specifying capacity units, it will allow a `RCID` to utilize all
-available capacity units within the allocated capacity blocks. When supported,
-this register sets an upper limit on the number of capacity units that can be
-occupied by an `RCID` for a given `AT`.
+shall be read-only and return a value of 0. 
 
-The sum of the `cc_cunits` configured for the `RCID` sharing a capacity block
-allocation may exceed the capacity units represented by that capacity block
+If the controller does not support configuring limits on _capacity units_ that
+may be occupied in the allocated _capacity blocks_ (i.e.,
+`cc_capabilities.CUNITS=0`) then this register shall be read-only and return a
+value of 0. In such cases the controller will allow utilization of all available
+_capacity units_ by an `RCID` within the _capacity blocks_ allocated to it.
+
+If the controller supports configuring limits on _capacity units_ that may be
+occupied in the allocated _capacity blocks_ (i.e., `cc_capabilities.CUNITS=1`)
+then this register sets an upper limit on the number of _capacity units_ that
+can be occupied by an `RCID` in the _capacity blocks_ allocated for an `AT`. A
+value of zero specified in the `cc_cunits` register indicates that no limit is
+configured.
+
+The sum of the `cc_cunits` configured for the `RCID` sharing a _capacity block_
+allocation may exceed the _capacity units_ represented by that _capacity block_
 allocation.
 
 [NOTE]
 ====
-When multiple `RCID` instances share a capacity block allocation, the
+When multiple `RCID` instances share a _capacity block_ allocation, the
 `cc_cunits` register may be employed to set an upper limit on the number of
-capacity units each `RCID` can occupy.
+_capacity units_ each `RCID` can occupy.
 
 For instance, consider a group of four `RCID` instances configured to share a
-set of capacity blocks, representing a total of 100 capacity units. Each `RCID`
-could be configured with a limit of 30 capacity units, ensuring that no
-individual `RCID` exceeds 30% of the total shared capacity units.
+set of _capacity blocks_, representing a total of 100 capacity units. Each
+`RCID` could be configured with a limit of 30 capacity units, ensuring that no
+individual `RCID` exceeds 30% of the total shared _capacity units_.
 
 The capacity controller may enforce these limits through various techniques.
 Examples include:
@@ -538,13 +553,17 @@ Examples include:
   its limit.
 . Evicting previously allocated capacity units when a new allocation is
   required.
-. Throttling the corresponding workload to reduce its request rate.
 
-These methods are not exhaustive and can be applied individually or in
-combination to maintain capacity unit limits.
+These methods are not exhaustive and can be applied either individually or in
+combination to maintain _capacity unit_ limits.
+
+When the limit on the _capacity units_ is reached or is about to be reached,
+the capacity controller may initiate additional operations. These could include
+throttling certain activities (e.g., prefetches) of the corresponding workload
+requests.
 ====
 
-To read the capacity unit limit for an `RCID` and `AT`, the controller
+To read the _capacity unit_ limit for an `RCID` and `AT`, the controller
 provides the `READ_LIMIT` operation which can be requested by writing to the
 `cc_alloc_ctl` register. Upon successful completion of the operation, the
-`cc_cunits` register holds the configured capacity unit allocation limit.
+`cc_cunits` register holds the configured _capacity unit_ allocation limit.
