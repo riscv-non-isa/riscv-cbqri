@@ -41,7 +41,7 @@ RISC-V CMQRI Task Group
 
 // Preamble
 [WARNING]
-.This document is in the link:http://riscv.org/spec-state[Development state]
+.This document is in the link:http://riscv.org/spec-state[Stable state]
 ====
 Assume everything can change. This draft specification will change before
 being accepted as standard, so implementations made to this draft
