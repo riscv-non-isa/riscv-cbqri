@@ -13,43 +13,14 @@ configure resource usage limits, in the form of capacity or bandwidth,
 per supported access type, for an `RCID` in the resource controllers that
 control accesses to such shared resources.
 
-To monitor the resource utilization by a workload  CBQRI defines a mechanism to
+To monitor the resource utilization by a workload, CBQRI defines a mechanism to
 configure counters identified by the `MCID` to count events in the resource
 controllers that control accesses to such shared resources.
 
+Guidelines for sizing the QoS IDs and need for differentiated IDs for monitoring
+is discussed in <<QOS_SIZING>>.
+
 === Associating `RCID` and `MCID` with requests
-
-==== RISC-V hart initiated requests (Ssqosid)
-
-The Ssqosid extension, introduces a read/write S/HS-mode register (`sqoscfg`) to
-configure QoS Identifiers to be used with requests made by the hart to shared
-resources.
-
-The `sqoscfg` CSR is a 32-bit S/HS-mode read/write WARL register to configure a
-resource control ID (`RCID`) and a monitoring counter ID (`MCID`). The `RCID`
-and `MCID` accompany each request made by the hart to shared resources such
-as interconnects, caches, memory, etc.
-
-.`sqoscfg` register for RV32 and RV64
-
-[wavedrom, , ]
-....
-{reg: [
-  {bits: 12, name: 'RCID'},
-  {bits:  4, name: 'WPRI'},
-  {bits: 12, name: 'MCID'},
-  {bits:  4, name: 'WPRI'},
-], config:{lanes: 1, hspace:1024}}
-....
-
-[NOTE]
-====
-The type of request made to the shared resource controller depends on the type
-of shared resource. In case of resources such as caches or memory these may be
-a memory access request. In case of resources such as CPU dispatch slots and
-retirement bandwidth the request may be to allocate such resources for
-execution.
-====
 
 The `RCID` in the request is used by the resource controllers to determine the
 resource allocations (e.g., cache occupancy limits, memory bandwidth limits,
@@ -57,26 +28,11 @@ etc.) to enforce. The `MCID` in the request is used by the resource controllers
 to identify the ID of a counter to monitor resource usage (e.g., cache
 occupancy, memory bandwidth, etc.).
 
-Access to `sqoscfg` when `V=1` causes a virtual-instruction exception.
+==== RISC-V hart initiated requests (Ssqosid)
 
-[NOTE]
-====
-At reset it is suggested that the `RCID` field of `sqoscfg` be set to 0 as
-typically the resource controllers in the SoC default to a reset behavior
-of associating all capacity or bandwidth to the `RCID` value of 0.
-
-The value of `MCID` at reset, unlike the `RCID`, does not affect functional
-behavior. Implementations may choose a convenient legal value for the `MCID`
-reset value.
-====
-
-The `RCID` and `MCID` configured in the `sqoscfg` CSR apply to all privilege
-modes of software execution on that hart.
-
-The `QOSE` (bit 58) field of the `menvcfg` (and `menvcfgh`) machine-level CSR
-controls if the `sqoscfg` CSR is accessible in modes less privileged than M.
-When `QOSE` is 0, attempts to access `sqoscfg` CSR at privilege modes less
-privileged than M cause an illegal instruction exception.
+The Ssqosid extension introduces a read/write S/HS-mode register (`sqoscfg`) to
+configure QoS Identifiers to be used with requests made by the hart to shared
+resources cite:[SSQOSID].
 
 ==== Device initiated requests
 
