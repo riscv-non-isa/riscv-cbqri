@@ -137,11 +137,11 @@ listed in <<BC_MON_OP>>.
 | --           | 24-31     | Designated for custom use.
 |===
 
-The `EVT_ID` field is used to program the identifier of the event to count in
-the monitoring counter selected by `MCID`. The `AT` field is used to program the
-access-type to count, and its validity is indicated by the `ATV` field. When
-`ATV` is 0, the counter counts requests with all access-types, and the `AT`
-value is ignored.
+The `EVT_ID` field is used to program, using the `CONFIG_EVENT` operation, the
+identifier of the event to count in the monitoring counter selected by `MCID`.
+The `AT` field is used to program the access-type to count, and its validity is
+indicated by the `ATV` field. When `ATV` is 0, the counter counts requests with
+all access-types, and the `AT` value is ignored.
 
 [[BC_EVT_ID]]
 .Bandwidth monitoring event ID (`EVT_ID`)
