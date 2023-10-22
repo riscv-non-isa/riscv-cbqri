@@ -41,7 +41,7 @@ SoC default to a reset behavior of associating all capacity or bandwidth to the
 ==== IOMMU capabilities (`capabilities`)
 
 The IOMMU capabilities register has been extended with a new field, `QOSID`,
-which enumerate support for associating QoS IDs with requests made through the
+which enumerates support for associating QoS IDs with requests made through the
 IOMMU.
 
 .IOMMU capabilities register fields
@@ -113,8 +113,8 @@ The `iommu_qosid` register fields are defined as follows:
 |31:28 |reserved   |WPRI      | Reserved for standard use.
 |===
 
-The `RCID` and `MCID` in `iommu_qosid` register are associated with following
-IOMMU-initiated requests for access the following data structures:
+IOMMU-initiated requests for accessing the following data structures use the
+value programmed in the `RCID` and `MCID` fields of the `iommu_qosid` register.
 
 * Device directory table (`DDT`)
 * Fault queue (`FQ`)
@@ -143,8 +143,8 @@ devices.
 ], config:{lanes: 2, hspace: 1024, fontsize: 16}}
 ....
 
-The `RCID` and `MCID` configured in `DC.ta` are associated with IOMMU-initiated
-requests to access the following data structures:
+IOMMU-initiated requests for accessing the following data structures use the
+value configured in the `RCID` and `MCID` fields of `DC.ta`.
 
 * Process directory table (`PDT`)
 * Second-stage page table
@@ -168,7 +168,7 @@ address translation cache (IOATC) by implementing a capacity controller register
 interface.
 
 Some IOMMU may support multiple IOATC where the capacity of each such IOATC may
-not be the same (e.g., corresponding each page sizes supported). When multiple
-IOATC are implemented, the IOMMU may implement a capacity controller register
-interface for each IOATC to enable capacity allocation in each IOATC.
+not be the same. When multiple IOATC are implemented, (e.g., corresponding to
+each page sizes supported), the IOMMU may implement a capacity controller
+register interface for each IOATC to enable capacity allocation in each IOATC.
 
