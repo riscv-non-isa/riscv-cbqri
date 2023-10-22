@@ -179,10 +179,11 @@ and the `AT` value is ignored.
 | --           | 128-256   | Designated for custom use.
 |===
 
-When the `EVT_ID` for a `MCID` is programmed with a non-zero and legal value,
-the counter is reset to 0 and starts counting matching events for requests with
-the matching `MCID` and `AT` (if `ATV` is 1). However, if the `EVT_ID` is
-configured as 0, the counter retains its current value but stops counting.
+When the `EVT_ID` for a `MCID` is programmed with a non-zero and legal value
+using the `CONFIG_EVENT` operation, the counter is reset to 0 and starts counting
+matching events for requests with the matching `MCID` and `AT` (if `ATV` is 1).
+However, if the `EVT_ID` is programmed to 0, the counter retains its current value
+but stops counting.
 
 A controller that does not support monitoring by access-type can hardwire the
 `ATV` and the `AT` fields to 0, indicating that the counter counts requests with
