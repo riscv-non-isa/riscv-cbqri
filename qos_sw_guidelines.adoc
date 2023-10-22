@@ -22,7 +22,7 @@ new workload (a process or a VM) is not same as that of the old workload.
 
 A context switch usually involves saving the context associated with the
 workload being switched away from and restoring the context of the workload
-being switched to. Such context switch may be invoked in response to an explicit
+being switched to. Such a context switch may be invoked in response to an explicit
 call from the workload (i.e, as a function of an `ECALL` invocation) or may be
 done asynchronously (e.g., in response to a timer interrupt). In such cases the
 scheduler may want to execute with the `sqoscfg` configuration of the
@@ -61,17 +61,17 @@ a set of HS mode CSRs.
 
 The `RCID` and `MCID` configured in `sqoscfg` also apply to execution in
 S/HS-mode, but this is typically not an issue. Usually, S/HS-mode execution
-occurs to provide services, such as through the SBI, to software executing at
+occurs to provide services, such as through an ABI, to software executing at
 lower privilege. Since the S/HS-mode invocation was to provide a service for
-the lower privilege mode, the S/HS-mode software may not modify the `sqoscfg`
-CSR.
+the lower privilege mode, the S/HS-mode software may opt not to modify the
+`sqoscfg` CSR.
 
 Similarly, The `RCID` and `MCID` configured in `sqoscfg` also apply to execution
 in M-mode, but this is typically not an issue either. Usually, M-mode execution
 occurs to provide services, such as through the SBI interface, to software
 executing at lower privilege. Since the M-mode invocation was to provide a
-service for the lower privilege mode, the M-mode software may not modify the
-`sqoscfg` CSR.
+service for the lower privilege mode, the M-mode software may opt not to modify
+the `sqoscfg` CSR.
 
 If separate `RCID` and/or `MCID` are needed during software execution in
 M/S/HS-mode, then the M/S/HS-mode software may update the `sqoscfg` CSR and
