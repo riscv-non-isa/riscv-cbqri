@@ -138,24 +138,7 @@ The `OP`, `AT`, `ATV`, `MCID`, and `EVT_ID` fields of the register are WARL
 fields.
 
 The `OP` field is used to instruct the controller to perform an operation listed
-in <<CC_MON_OP>>. The supported operations of the `OP` field include configuring
-an event to count in the monitoring counter and obtaining a snapshot of the
-counter value.
-
-The `EVT_ID` field is used to program the identifier of the event to count in
-the monitoring counter selected by `MCID`. The `AT` field is used to program the
-access-type to count, and its validity is indicated by the `ATV` field. When
-`ATV` is 0, the counter counts requests with all access-types, and the `AT`
-value is ignored.
-
-When the `EVT_ID` for a `MCID` is programmed with a non-zero and legal value, 
-the counter is reset to 0 and starts counting matching events for requests with 
-the matching `MCID` and `AT` (if `ATV` is 1). However, if the `EVT_ID` is 
-configured as 0, the counter retains its current value but stops counting.
-
-A controller that does not support monitoring by access-type can hardwire the
-`ATV` and the `AT` fields to 0, indicating that the counter counts requests with 
-all access-types.
+in <<CC_MON_OP>>.
 
 [[CC_MON_OP]]
 .Capacity usage monitoring operations (`OP`)
@@ -175,6 +158,11 @@ all access-types.
 | --           | 24-31     | Designated for custom use.
 |===
 
+The `EVT_ID` field is used to program the identifier of the event to count in
+the monitoring counter selected by `MCID`. The `AT` field (See <<AT_ENC>>) is
+used to program the access-type to count, and its validity is indicated by the
+`ATV` field. When `ATV` is 0, the counter counts requests with all access-types,
+and the `AT` value is ignored.
 
 [[CC_EVT_ID]]
 .Capacity usage monitoring event ID (`EVT_ID`)
@@ -190,6 +178,15 @@ all access-types.
 | --           | 2-127     | Reserved for future standard use.
 | --           | 128-256   | Designated for custom use.
 |===
+
+When the `EVT_ID` for a `MCID` is programmed with a non-zero and legal value,
+the counter is reset to 0 and starts counting matching events for requests with
+the matching `MCID` and `AT` (if `ATV` is 1). However, if the `EVT_ID` is
+configured as 0, the counter retains its current value but stops counting.
+
+A controller that does not support monitoring by access-type can hardwire the
+`ATV` and the `AT` fields to 0, indicating that the counter counts requests with
+all access-types.
 
 When the `cc_mon_ctl` register is written, the controller may need to perform
 several actions that may not complete synchronously with the write. A write to
