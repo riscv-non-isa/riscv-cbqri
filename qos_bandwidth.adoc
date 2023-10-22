@@ -229,7 +229,7 @@ as zero.
 ....
 
 The counter is valid if the `INV` field is 0. The counter may be marked
-`INV` if, for `UNSPECIFIED` reasons, the controllerdetermine the count to be
+`INV` if, for `UNSPECIFIED` reasons, the controller determines the count to be
 not valid. Such counters may become valid in the future. Additionally, if an
 unsigned integer overflow of the counter occurs, then the `OVF` bit is set to 1.
 
@@ -253,7 +253,8 @@ Bandwidth = T_{freq} \times \frac{ B2 - B1 }{T2 - T1}
 \end{equation}
 ++++
 
-The width of the counter is `UNSPECIFIED`.
+The width of the counter is `UNSPECIFIED` but the unimplemented bits must be
+read-only zero. 
 
 [NOTE]
 ====
@@ -272,7 +273,7 @@ operation.
 The `bc_alloc_ctl` register is used to control the allocation of bandwidth to an
 `RCID` per `AT`. If a controller does not support bandwidth allocation, then the
 register is read-only zero. If the controller does not support bandwidth
-allocation per access-type, then the `AT` field is also read-only zero.
+allocation per access-type, then the `AT` field is read-only zero.
 
 .Bandwidth allocation control (`bc_alloc_ctl`)
 [wavedrom, , ]
@@ -443,8 +444,8 @@ access-type specified by `sharedAT` does not have unique bandwidth allocation,
 meaning that it has not been configured with `useShared=0`, then the behavior
 is `UNSPECIFIED`.
 
-The `useShared` and `sharedAT` fields are reserved if the bandwidth controller
-does not support bandwidth allocation per access-type.
+The `useShared` and `sharedAT` fields are read-only zero if the bandwidth
+controller does not support bandwidth allocation per access-type.
 
 [NOTE]
 ====
@@ -456,7 +457,7 @@ and the access-type 2 is configured to share bandwidth allocation with
 access-type 1. The example configuration is illustrated as follows:
 
 [width=100%]
-[%header, cols="4,^1,^1,^1,^1"]
+[%header, cols="4,^2,^2,^2,^2"]
 |===
 |                  |  `Rbwb`  |  `Mweight`  |  `useShared`  |  `sharedAT`
 | `RCID=3`, `AT=0` | `100`    |    `16`     |      `0`      |     `N/A`
