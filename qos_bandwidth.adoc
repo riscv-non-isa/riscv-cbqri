@@ -21,12 +21,12 @@ register interface.
                                     allocation>>                | Yes
 |===
 
-The reset value is 0 for the following registers fields.
+The reset value is 0 for the following register fields.
 
 * `bc_mon_ctl.BUSY` field
 * `bc_alloc_ctl.BUSY` field
 
-The reset value is `UNSPECIFIED` for all other registers and/or fields.
+The reset value is `UNSPECIFIED` for all other register fields.
 
 The bandwidth controllers at reset must allocate all available bandwidth to
 `RCID` value of 0. When the bandwidth controller supports bandwidth allocation
@@ -88,7 +88,7 @@ bandwidth controller can handle such transient inaccuracies.
 
 The `bc_mon_ctl` register is used to control monitoring of bandwidth usage by a
 `MCID`. When the controller does not support bandwidth usage monitoring, the
-`bc_mon_ctl` register is read-only and hardwired to zero.
+`bc_mon_ctl` register is read-only zero.
 
 .Bandwidth usage monitoring control (`bc_mon_ctl`)
 [wavedrom, , ]
@@ -117,24 +117,7 @@ matching the monitoring event as the requests go past the monitoring point.
 The `OP`, `AT`, `MCID`, and `EVT_ID` fields of the register are WARL fields.
 
 The `OP` field is used to instruct the controller to perform an operation
-listed in <<BC_MON_OP>>. The supported operations of the `OP` field include
-configuring an event to count in the monitoring counter and obtaining a
-snapshot of the counter value.
-
-The `EVT_ID` field is used to program the identifier of the event to count in 
-the monitoring counter selected by `MCID`. The `AT` field is used to program the
-access-type to count, and its validity is indicated by the `ATV` field. When 
-`ATV` is 0, the counter counts requests with all access-types, and the `AT` 
-value is ignored.
-
-When the `EVT_ID` for a `MCID` is programmed with a non-zero and legal value,
-the counter is reset to 0 and starts counting matching events for requests with
-the matching `MCID` and `AT` (if `ATV` is 1). However, if the `EVT_ID` is
-configured as 0, the counter retains its current value but stops counting.
-
-A controller that does not support monitoring by access-type can hardwire the
-`ATV` and the `AT` fields to 0, indicating that the counter counts requests with
-all access-types.
+listed in <<BC_MON_OP>>.
 
 [[BC_MON_OP]]
 .Usage monitoring operations (`OP`)
@@ -154,6 +137,11 @@ all access-types.
 | --           | 24-31     | Designated for custom use.
 |===
 
+The `EVT_ID` field is used to program the identifier of the event to count in
+the monitoring counter selected by `MCID`. The `AT` field is used to program the
+access-type to count, and its validity is indicated by the `ATV` field. When
+`ATV` is 0, the counter counts requests with all access-types, and the `AT`
+value is ignored.
 
 [[BC_EVT_ID]]
 .Bandwidth monitoring event ID (`EVT_ID`)
@@ -178,6 +166,15 @@ all access-types.
 | --           | 4-127     | Reserved for future standard use.
 | --           | 128-256   | Designated for custom use.
 |===
+
+When the `EVT_ID` for a `MCID` is programmed with a non-zero and legal value,
+the counter is reset to 0 and starts counting matching events for requests with
+the matching `MCID` and `AT` (if `ATV` is 1). However, if the `EVT_ID` is
+configured as 0, the counter retains its current value but stops counting.
+
+A controller that does not support monitoring by access-type can hardwire the
+`ATV` and the `AT` fields to 0, indicating that the counter counts requests with
+all access-types.
 
 When the `bc_mon_ctl` register is written, the controller may need to perform
 several actions that may not complete synchronously with the write. A write to
