@@ -240,22 +240,27 @@ zero.
 ], config:{lanes: 2, hspace:1024}}
 ....
 
-The counter is valid if the `INV` field is 0. The counter may be marked
-`INV` if it underflows or the controller, for `UNSPECIFIED` reasons determine
-the count to be not valid. The counters marked `INV` may become valid in future.
+The counter is valid if the `INV` field is 0. The counter may be marked `INV` if
+the controller, for `UNSPECIFIED` reasons determine the count to be not valid.
+The counters marked `INV` may become valid in future.
+
+The counter shall not decrement below zero. If an event should occur that would
+otherwise result in a negative value, the counter will continue to hold a value
+of 0.
 
 [NOTE]
 ====
-A counter may underflow when capacity is de-allocated following a reset
-of the counter to 0. This may be due to the `MCID` being reallocated to a new
-workload while the capacity controller still holds capacity allocated by
-the workload to which the `MCID` was previously allocated. The counter value
-should typically stabilize to reflect the capacity usage of the new workload
-after the workload has executed for a short duration following the counter
-reset.
+Following a reset of the counter to zero, a capacity de-allocation may attempt
+to drive its value below zero. This scenario may occur when the `MCID` is
+reassigned to a new workload, yet the capacity controller continues to hold
+capacity initially allocated by the previous workload. In such cases, the
+counter shall not decrement below zero and shall remain at zero. After a brief
+period of execution for the new workload post-counter reset, the counter value is
+expected to stabilize to reflect the capacity usage of this new workload.
 ====
 
 [NOTE]
+[%unbreakable]
 ====
 Some implementations may not store the `MCID` of the request that caused the
 capacity to be allocated with every unit of capacity in the controller to
@@ -286,10 +291,10 @@ processes.
 === Capacity allocation control (`cc_alloc_ctl`)
 
 The `cc_alloc_ctl` register is used to configure allocation of capacity to an
-`RCID` per access-type (`AT`). The `RCID` and `AT` fields in this register are
-WARL. If a controller does not support capacity allocation then this register is
-read-only zero. If the controller does not support capacity allocation per
-access-type then the `AT` field is read-only zero.
+`RCID` per access-type (`AT`). The `OP`, `RCID` and `AT` fields in this register
+are WARL. If a controller does not support capacity allocation then this
+register is read-only zero. If the controller does not support capacity
+allocation per access-type then the `AT` field is read-only zero.
 
 .Capacity allocation control (`cc_alloc_ctl`)
 [wavedrom, , ]
