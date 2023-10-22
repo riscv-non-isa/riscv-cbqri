@@ -310,8 +310,6 @@ allocation per access-type then the `AT` field is read-only zero.
 ], config:{lanes: 2, hspace:1024}}
 ....
 
-The `OP`, `AT`, and `RCID` are WARL fields.
-
 The `OP` field is used to instruct the capacity controller to perform an
 operation listed in <<CC_ALLOC_OP>>. Some operations necessitate the
 specification of the _capacity blocks_ to act upon. For such operations, the
@@ -341,14 +339,14 @@ initiating the operation via the `cc_alloc_ctl` register.
                              `cc_block_mask` register, and the configured limit
                              on _capacity units_ is available in the `cc_cunits`
                              register on successful completion of the operation.
-|`FLUSH_RCID`  | 3         | Deallocate the capacity used by the specified
+|`FLUSH_RCID`  | 3         | Flushes the _capacity units_ used by the specified
                              `RCID` and access-type `AT`. This operation is
                              supported if the `capabilities.FRCID` bit is 1.   +
                                                                                +
                              The `cc_block_mask` and `cc_cunits` registers
                              are not used for this operation.                  +
                                                                                +
-                             The configured _capacity_ block allocation or the
+                             The configured _capacity block_ allocation or the
                              _capacity unit_ limit is not changed by this
                              operation.
 | --           | 4-23      | Reserved for future standard use.
