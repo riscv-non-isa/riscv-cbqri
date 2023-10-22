@@ -468,12 +468,13 @@ software must verify that `BUSY` bit  is 0 before writing any of these registers
 === Capacity block mask (`cc_block_mask`)
 
 The `cc_block_mask` is a WARL register. If the controller does not support
-capacity allocation i.e. `NCBLKS` is 0, then this register is read-only 0.
+capacity allocation, i.e., `NCBLKS` is 0, then this register is read-only 0.
 
 The register has `NCBLKS` bits each corresponding to one allocatable
 _capacity block_ in the controller. The width of this register is variable but
 always a multiple of 64 bits. The bitmap width in bits (`BMW`) is determined by
-<<eq-1>>. The division operation in this equation is an integer division.
+the equation below. The division operation in this equation is an integer
+division.
 
 [latexmath#eq-1,reftext="equation ({counter:eqs})"]
 ++++
@@ -482,21 +483,20 @@ BMW = \lfloor{\frac{NCBLKS + 63}{64}}\rfloor \times 64
 \end{equation}
 ++++
 
-Bits `NCBLKS-1:0` are read-write, and the bits `BMW-1:NCBLKS` are read-only and
-have a value of 0.
+Bits `NCBLKS-1:0` are read-write, and the bits `BMW-1:NCBLKS` are read-only zero.
 
 The process of configuring capacity allocation for an `RCID` and `AT` begins by
 programming the `cc_block_mask` register with a bit-mask that identifies the
-_capacity blocks_ to be allocated and, if supported, the `cc_cunits` register with
-a limit on the capacity units that may be occupied in those capacity blocks.
-Next, the `cc_alloc_ctl register` is written to request a `CONFIG_LIMIT`
-operation for the `RCID` and `AT`. Once a capacity allocation limit has been
-established, a request may be allocated capacity in the capacity blocks
-allocated to the `RCID` and `AT` associated with the request. It is important to
-note that at least one capacity block must be allocated using `cc_block_mask`
-when allocating capacity, or else the operation will fail with `STATUS=5`.
-Overlapping _capacity block_ masks among `RCID` and/or `AT` are allowed to be
-configured.
+_capacity blocks_ to be allocated and, if supported, by programming the
+`cc_cunits` register with a limit on the capacity units that may be occupied in
+those capacity blocks. Next, the `cc_alloc_ctl register` is written to request a
+`CONFIG_LIMIT` operation for the `RCID` and `AT`. Once a capacity allocation
+limit has been established, a request may be allocated capacity in the _capacity
+blocks_ allocated to the `RCID` and `AT` associated with the request. It is
+important to note that at least one _capacity block_ must be allocated using
+`cc_block_mask` when allocating capacity, or else the operation will fail with
+`STATUS=5`.  Overlapping _capacity block_ masks among `RCID` and/or `AT` are
+allowed to be configured.
 
 [NOTE]
 ====
@@ -517,13 +517,13 @@ provides the `READ_LIMIT` operation which can be requested by writing to the
 
 The `cc_cunits` register is a read-write WARL register. If the controller does
 not support capacity allocation (i.e., `NCBLKS` is set to 0), this register
-shall be read-only and return a value of 0. 
+shall be read-only zero.
 
 If the controller does not support configuring limits on _capacity units_ that
 may be occupied in the allocated _capacity blocks_ (i.e.,
-`cc_capabilities.CUNITS=0`) then this register shall be read-only and return a
-value of 0. In such cases the controller will allow utilization of all available
-_capacity units_ by an `RCID` within the _capacity blocks_ allocated to it.
+`cc_capabilities.CUNITS=0`) then this register shall be read-only zero. In such
+cases the controller will allow utilization of all available _capacity units_ by
+an `RCID` within the _capacity blocks_ allocated to it.
 
 If the controller supports configuring limits on _capacity units_ that may be
 occupied in the allocated _capacity blocks_ (i.e., `cc_capabilities.CUNITS=1`)
