@@ -30,9 +30,9 @@ occupancy, memory bandwidth, etc.).
 
 ==== RISC-V hart initiated requests (Ssqosid)
 
-The Ssqosid extension introduces a read/write S/HS-mode register (`sqoscfg`) to
-configure QoS Identifiers to be used with requests made by the hart to shared
-resources cite:[SSQOSID].
+The Ssqosid extension cite:[SSQOSID] introduces a read/write S/HS-mode register
+(`sqoscfg`) to configure QoS Identifiers to be used with requests made by the
+hart to shared resources.
 
 ==== Device initiated requests
 
