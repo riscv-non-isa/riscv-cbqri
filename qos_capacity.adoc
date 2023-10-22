@@ -48,12 +48,12 @@ The size and offset in <<CC_REG>> are specified in bytes.
 The size of the `cc_block_mask` register is determined by the `NCBLKS` field
 of the `cc_capabilities` register but is always a multiple of 8 bytes.
 
-The reset value is 0 for the following registers fields.
+The reset value is 0 for the following register fields.
 
 * `cc_mon_ctl.BUSY` field
 * `cc_alloc_ctl.BUSY` field
 
-The reset value is `UNSPECIFIED` for all other registers and/or fields.
+The reset value is `UNSPECIFIED` for all other registers fields.
 
 The capacity controllers at reset must allocate all available capacity to `RCID`
 value of 0. When the capacity controller supports capacity allocation per
