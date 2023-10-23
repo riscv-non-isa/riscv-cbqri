@@ -48,12 +48,12 @@ The size and offset in <<CC_REG>> are specified in bytes.
 The size of the `cc_block_mask` register is determined by the `NCBLKS` field
 of the `cc_capabilities` register but is always a multiple of 8 bytes.
 
-The reset value is 0 for the following registers fields.
+The reset value is 0 for the following register fields.
 
 * `cc_mon_ctl.BUSY` field
 * `cc_alloc_ctl.BUSY` field
 
-The reset value is `UNSPECIFIED` for all other registers and/or fields.
+The reset value is `UNSPECIFIED` for all other registers fields.
 
 The capacity controllers at reset must allocate all available capacity to `RCID`
 value of 0. When the capacity controller supports capacity allocation per
@@ -138,24 +138,7 @@ The `OP`, `AT`, `ATV`, `MCID`, and `EVT_ID` fields of the register are WARL
 fields.
 
 The `OP` field is used to instruct the controller to perform an operation listed
-in <<CC_MON_OP>>. The supported operations of the `OP` field include configuring
-an event to count in the monitoring counter and obtaining a snapshot of the
-counter value.
-
-The `EVT_ID` field is used to program the identifier of the event to count in
-the monitoring counter selected by `MCID`. The `AT` field is used to program the
-access-type to count, and its validity is indicated by the `ATV` field. When
-`ATV` is 0, the counter counts requests with all access-types, and the `AT`
-value is ignored.
-
-When the `EVT_ID` for a `MCID` is programmed with a non-zero and legal value, 
-the counter is reset to 0 and starts counting matching events for requests with 
-the matching `MCID` and `AT` (if `ATV` is 1). However, if the `EVT_ID` is 
-configured as 0, the counter retains its current value but stops counting.
-
-A controller that does not support monitoring by access-type can hardwire the
-`ATV` and the `AT` fields to 0, indicating that the counter counts requests with 
-all access-types.
+in <<CC_MON_OP>>.
 
 [[CC_MON_OP]]
 .Capacity usage monitoring operations (`OP`)
@@ -175,6 +158,11 @@ all access-types.
 | --           | 24-31     | Designated for custom use.
 |===
 
+The `EVT_ID` field is used to program the identifier of the event to count in
+the monitoring counter selected by `MCID`. The `AT` field (See <<AT_ENC>>) is
+used to program the access-type to count, and its validity is indicated by the
+`ATV` field. When `ATV` is 0, the counter counts requests with all access-types,
+and the `AT` value is ignored.
 
 [[CC_EVT_ID]]
 .Capacity usage monitoring event ID (`EVT_ID`)
@@ -190,6 +178,16 @@ all access-types.
 | --           | 2-127     | Reserved for future standard use.
 | --           | 128-256   | Designated for custom use.
 |===
+
+When the `EVT_ID` for a `MCID` is programmed with a non-zero and legal value
+using the `CONFIG_EVENT` operation, the counter is reset to 0 and starts counting
+matching events for requests with the matching `MCID` and `AT` (if `ATV` is 1).
+However, if the `EVT_ID` is programmed to 0, the counter retains its current value
+but stops counting.
+
+A controller that does not support monitoring by access-type can hardwire the
+`ATV` and the `AT` fields to 0, indicating that the counter counts requests with
+all access-types.
 
 When the `cc_mon_ctl` register is written, the controller may need to perform
 several actions that may not complete synchronously with the write. A write to
@@ -242,22 +240,27 @@ zero.
 ], config:{lanes: 2, hspace:1024}}
 ....
 
-The counter is valid if the `INV` field is 0. The counter may be marked
-`INV` if it underflows or the controller, for `UNSPECIFIED` reasons determine
-the count to be not valid. The counters marked `INV` may become valid in future.
+The counter is valid if the `INV` field is 0. The counter may be marked `INV` if
+the controller, for `UNSPECIFIED` reasons determine the count to be not valid.
+The counters marked `INV` may become valid in future.
+
+The counter shall not decrement below zero. If an event should occur that would
+otherwise result in a negative value, the counter will continue to hold a value
+of 0.
 
 [NOTE]
 ====
-A counter may underflow when capacity is de-allocated following a reset
-of the counter to 0. This may be due to the `MCID` being reallocated to a new
-workload while the capacity controller still holds capacity allocated by
-the workload to which the `MCID` was previously allocated. The counter value
-should typically stabilize to reflect the capacity usage of the new workload
-after the workload has executed for a short duration following the counter
-reset.
+Following a reset of the counter to zero, a capacity de-allocation may attempt
+to drive its value below zero. This scenario may occur when the `MCID` is
+reassigned to a new workload, yet the capacity controller continues to hold
+capacity initially allocated by the previous workload. In such cases, the
+counter shall not decrement below zero and shall remain at zero. After a brief
+period of execution for the new workload post-counter reset, the counter value is
+expected to stabilize to reflect the capacity usage of this new workload.
 ====
 
 [NOTE]
+[%unbreakable]
 ====
 Some implementations may not store the `MCID` of the request that caused the
 capacity to be allocated with every unit of capacity in the controller to
@@ -288,10 +291,10 @@ processes.
 === Capacity allocation control (`cc_alloc_ctl`)
 
 The `cc_alloc_ctl` register is used to configure allocation of capacity to an
-`RCID` per access-type (`AT`). The `RCID` and `AT` fields in this register are
-WARL. If a controller does not support capacity allocation then this register is
-read-only zero. If the controller does not support capacity allocation per
-access-type then the `AT` field is read-only zero.
+`RCID` per access-type (`AT`). The `OP`, `RCID` and `AT` fields in this register
+are WARL. If a controller does not support capacity allocation then this
+register is read-only zero. If the controller does not support capacity
+allocation per access-type then the `AT` field is read-only zero.
 
 .Capacity allocation control (`cc_alloc_ctl`)
 [wavedrom, , ]
@@ -306,8 +309,6 @@ access-type then the `AT` field is read-only zero.
   {bits: 24, name: 'WPRI'},
 ], config:{lanes: 2, hspace:1024}}
 ....
-
-The `OP`, `AT`, and `RCID` are WARL fields.
 
 The `OP` field is used to instruct the capacity controller to perform an
 operation listed in <<CC_ALLOC_OP>>. Some operations necessitate the
@@ -338,14 +339,14 @@ initiating the operation via the `cc_alloc_ctl` register.
                              `cc_block_mask` register, and the configured limit
                              on _capacity units_ is available in the `cc_cunits`
                              register on successful completion of the operation.
-|`FLUSH_RCID`  | 3         | Deallocate the capacity used by the specified
+|`FLUSH_RCID`  | 3         | Flushes the _capacity units_ used by the specified
                              `RCID` and access-type `AT`. This operation is
                              supported if the `capabilities.FRCID` bit is 1.   +
                                                                                +
                              The `cc_block_mask` and `cc_cunits` registers
                              are not used for this operation.                  +
                                                                                +
-                             The configured _capacity_ block allocation or the
+                             The configured _capacity block_ allocation or the
                              _capacity unit_ limit is not changed by this
                              operation.
 | --           | 4-23      | Reserved for future standard use.
@@ -467,12 +468,13 @@ software must verify that `BUSY` bit  is 0 before writing any of these registers
 === Capacity block mask (`cc_block_mask`)
 
 The `cc_block_mask` is a WARL register. If the controller does not support
-capacity allocation i.e. `NCBLKS` is 0, then this register is read-only 0.
+capacity allocation, i.e., `NCBLKS` is 0, then this register is read-only 0.
 
 The register has `NCBLKS` bits each corresponding to one allocatable
 _capacity block_ in the controller. The width of this register is variable but
 always a multiple of 64 bits. The bitmap width in bits (`BMW`) is determined by
-<<eq-1>>. The division operation in this equation is an integer division.
+the equation below. The division operation in this equation is an integer
+division.
 
 [latexmath#eq-1,reftext="equation ({counter:eqs})"]
 ++++
@@ -481,21 +483,20 @@ BMW = \lfloor{\frac{NCBLKS + 63}{64}}\rfloor \times 64
 \end{equation}
 ++++
 
-Bits `NCBLKS-1:0` are read-write, and the bits `BMW-1:NCBLKS` are read-only and
-have a value of 0.
+Bits `NCBLKS-1:0` are read-write, and the bits `BMW-1:NCBLKS` are read-only zero.
 
 The process of configuring capacity allocation for an `RCID` and `AT` begins by
 programming the `cc_block_mask` register with a bit-mask that identifies the
-_capacity blocks_ to be allocated and, if supported, the `cc_cunits` register with
-a limit on the capacity units that may be occupied in those capacity blocks.
-Next, the `cc_alloc_ctl register` is written to request a `CONFIG_LIMIT`
-operation for the `RCID` and `AT`. Once a capacity allocation limit has been
-established, a request may be allocated capacity in the capacity blocks
-allocated to the `RCID` and `AT` associated with the request. It is important to
-note that at least one capacity block must be allocated using `cc_block_mask`
-when allocating capacity, or else the operation will fail with `STATUS=5`.
-Overlapping _capacity block_ masks among `RCID` and/or `AT` are allowed to be
-configured.
+_capacity blocks_ to be allocated and, if supported, by programming the
+`cc_cunits` register with a limit on the capacity units that may be occupied in
+those capacity blocks. Next, the `cc_alloc_ctl register` is written to request a
+`CONFIG_LIMIT` operation for the `RCID` and `AT`. Once a capacity allocation
+limit has been established, a request may be allocated capacity in the _capacity
+blocks_ allocated to the `RCID` and `AT` associated with the request. It is
+important to note that at least one _capacity block_ must be allocated using
+`cc_block_mask` when allocating capacity, or else the operation will fail with
+`STATUS=5`.  Overlapping _capacity block_ masks among `RCID` and/or `AT` are
+allowed to be configured.
 
 [NOTE]
 ====
@@ -516,13 +517,13 @@ provides the `READ_LIMIT` operation which can be requested by writing to the
 
 The `cc_cunits` register is a read-write WARL register. If the controller does
 not support capacity allocation (i.e., `NCBLKS` is set to 0), this register
-shall be read-only and return a value of 0. 
+shall be read-only zero.
 
 If the controller does not support configuring limits on _capacity units_ that
 may be occupied in the allocated _capacity blocks_ (i.e.,
-`cc_capabilities.CUNITS=0`) then this register shall be read-only and return a
-value of 0. In such cases the controller will allow utilization of all available
-_capacity units_ by an `RCID` within the _capacity blocks_ allocated to it.
+`cc_capabilities.CUNITS=0`) then this register shall be read-only zero. In such
+cases the controller will allow utilization of all available _capacity units_ by
+an `RCID` within the _capacity blocks_ allocated to it.
 
 If the controller supports configuring limits on _capacity units_ that may be
 occupied in the allocated _capacity blocks_ (i.e., `cc_capabilities.CUNITS=1`)

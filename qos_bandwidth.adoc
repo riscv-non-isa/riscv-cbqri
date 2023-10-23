@@ -21,12 +21,12 @@ register interface.
                                     allocation>>                | Yes
 |===
 
-The reset value is 0 for the following registers fields.
+The reset value is 0 for the following register fields.
 
 * `bc_mon_ctl.BUSY` field
 * `bc_alloc_ctl.BUSY` field
 
-The reset value is `UNSPECIFIED` for all other registers and/or fields.
+The reset value is `UNSPECIFIED` for all other register fields.
 
 The bandwidth controllers at reset must allocate all available bandwidth to
 `RCID` value of 0. When the bandwidth controller supports bandwidth allocation
@@ -88,7 +88,7 @@ bandwidth controller can handle such transient inaccuracies.
 
 The `bc_mon_ctl` register is used to control monitoring of bandwidth usage by a
 `MCID`. When the controller does not support bandwidth usage monitoring, the
-`bc_mon_ctl` register is read-only and hardwired to zero.
+`bc_mon_ctl` register is read-only zero.
 
 .Bandwidth usage monitoring control (`bc_mon_ctl`)
 [wavedrom, , ]
@@ -117,24 +117,7 @@ matching the monitoring event as the requests go past the monitoring point.
 The `OP`, `AT`, `MCID`, and `EVT_ID` fields of the register are WARL fields.
 
 The `OP` field is used to instruct the controller to perform an operation
-listed in <<BC_MON_OP>>. The supported operations of the `OP` field include
-configuring an event to count in the monitoring counter and obtaining a
-snapshot of the counter value.
-
-The `EVT_ID` field is used to program the identifier of the event to count in 
-the monitoring counter selected by `MCID`. The `AT` field is used to program the
-access-type to count, and its validity is indicated by the `ATV` field. When 
-`ATV` is 0, the counter counts requests with all access-types, and the `AT` 
-value is ignored.
-
-When the `EVT_ID` for a `MCID` is programmed with a non-zero and legal value,
-the counter is reset to 0 and starts counting matching events for requests with
-the matching `MCID` and `AT` (if `ATV` is 1). However, if the `EVT_ID` is
-configured as 0, the counter retains its current value but stops counting.
-
-A controller that does not support monitoring by access-type can hardwire the
-`ATV` and the `AT` fields to 0, indicating that the counter counts requests with
-all access-types.
+listed in <<BC_MON_OP>>.
 
 [[BC_MON_OP]]
 .Usage monitoring operations (`OP`)
@@ -154,6 +137,11 @@ all access-types.
 | --           | 24-31     | Designated for custom use.
 |===
 
+The `EVT_ID` field is used to program, using the `CONFIG_EVENT` operation, the
+identifier of the event to count in the monitoring counter selected by `MCID`.
+The `AT` field is used to program the access-type to count, and its validity is
+indicated by the `ATV` field. When `ATV` is 0, the counter counts requests with
+all access-types, and the `AT` value is ignored.
 
 [[BC_EVT_ID]]
 .Bandwidth monitoring event ID (`EVT_ID`)
@@ -178,6 +166,15 @@ all access-types.
 | --           | 4-127     | Reserved for future standard use.
 | --           | 128-256   | Designated for custom use.
 |===
+
+When the `EVT_ID` for a `MCID` is programmed with a non-zero and legal value,
+the counter is reset to 0 and starts counting matching events for requests with
+the matching `MCID` and `AT` (if `ATV` is 1). However, if the `EVT_ID` is
+configured as 0, the counter retains its current value but stops counting.
+
+A controller that does not support monitoring by access-type can hardwire the
+`ATV` and the `AT` fields to 0, indicating that the counter counts requests with
+all access-types.
 
 When the `bc_mon_ctl` register is written, the controller may need to perform
 several actions that may not complete synchronously with the write. A write to
@@ -232,7 +229,7 @@ as zero.
 ....
 
 The counter is valid if the `INV` field is 0. The counter may be marked
-`INV` if, for `UNSPECIFIED` reasons, the controllerdetermine the count to be
+`INV` if, for `UNSPECIFIED` reasons, the controller determines the count to be
 not valid. Such counters may become valid in the future. Additionally, if an
 unsigned integer overflow of the counter occurs, then the `OVF` bit is set to 1.
 
@@ -256,7 +253,8 @@ Bandwidth = T_{freq} \times \frac{ B2 - B1 }{T2 - T1}
 \end{equation}
 ++++
 
-The width of the counter is `UNSPECIFIED`.
+The width of the counter is `UNSPECIFIED` but the unimplemented bits must be
+read-only zero. 
 
 [NOTE]
 ====
@@ -275,7 +273,7 @@ operation.
 The `bc_alloc_ctl` register is used to control the allocation of bandwidth to an
 `RCID` per `AT`. If a controller does not support bandwidth allocation, then the
 register is read-only zero. If the controller does not support bandwidth
-allocation per access-type, then the `AT` field is also read-only zero.
+allocation per access-type, then the `AT` field is read-only zero.
 
 .Bandwidth allocation control (`bc_alloc_ctl`)
 [wavedrom, , ]
@@ -446,8 +444,8 @@ access-type specified by `sharedAT` does not have unique bandwidth allocation,
 meaning that it has not been configured with `useShared=0`, then the behavior
 is `UNSPECIFIED`.
 
-The `useShared` and `sharedAT` fields are reserved if the bandwidth controller
-does not support bandwidth allocation per access-type.
+The `useShared` and `sharedAT` fields are read-only zero if the bandwidth
+controller does not support bandwidth allocation per access-type.
 
 [NOTE]
 ====
@@ -459,7 +457,7 @@ and the access-type 2 is configured to share bandwidth allocation with
 access-type 1. The example configuration is illustrated as follows:
 
 [width=100%]
-[%header, cols="4,^1,^1,^1,^1"]
+[%header, cols="4,^2,^2,^2,^2"]
 |===
 |                  |  `Rbwb`  |  `Mweight`  |  `useShared`  |  `sharedAT`
 | `RCID=3`, `AT=0` | `100`    |    `16`     |      `0`      |     `N/A`

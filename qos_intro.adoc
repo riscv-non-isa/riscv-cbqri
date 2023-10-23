@@ -3,7 +3,7 @@
 
 Quality of Service (QoS) is defined as the minimal end-to-end performance that
 is guaranteed in advance by a service level agreement (SLA) to a workload. A
-workload may be a single application, a group of application, a virtual machine,
+workload may be a single application, a group of applications, a virtual machine,
 a group of virtual machines, or a combination of those. The performance may
 be measured in the form of metrics such as instructions per cycle (IPC), latency
 of servicing work, etc.
@@ -12,7 +12,7 @@ Various factors such as the available cache capacity, memory bandwidth,
 interconnect bandwidth, CPU cycles, system memory, etc. affect the performance
 in a computing system that runs multiple workloads concurrently. Furthermore,
 when there is arbitration for shared resources, the prioritization of the
-workloads requests against other competing requests may also affect the
+workloads' requests against other competing requests may also affect the
 performance of the workload. Such interference due to resource sharing may lead
 to unpredictable workload performance cite:[PTCAMP].
 
@@ -20,8 +20,8 @@ When multiple workloads are running concurrently on modern processors with large
 core counts, multiple cache hierarchies, and multiple memory controllers, the
 performance of a workload becomes less deterministic or even non-deterministic.
 This is because the performance depends on the behavior of all the other
-workloads in the machine that contend for the shared resources leading to
-interference. In many deployment scenarios such as public cloud servers the
+workloads in the machine that contend for the shared resources, leading to
+interference. In many deployment scenarios, such as public cloud servers, the
 workload owner may not be in control of the type and placement of other
 workloads in the platform.
 
@@ -32,9 +32,9 @@ for execution, etc.
 
 System software needs additional tools to control interference to a workload
 and thereby reduce the variability in performance experienced by one workload
-due to other workload’s cache capacity usage, memory bandwidth usage,
-interconnect bandwidth usage, etc. through a resource allocation capability. The
-resource allocation capability enables system software to reserve capacity
+due to other workloads' cache capacity usage, memory bandwidth usage,
+interconnect bandwidth usage, etc. through a resource allocation capability.
+The resource allocation capability enables system software to reserve capacity
 and/or bandwidth to meet the performance goals of the workload. Such controls
 enable improving the utilization of the system by collocating workloads while
 minimizing the interference caused by one workload to another cite:[HERACLES].
@@ -46,9 +46,9 @@ typical use model involves profiling the resource usage of the workload using
 the resource monitoring capability and to establish resource allocations for the
 workload using the resource allocation capability.
 
-The allocation may be in the form of capacity or bandwidth depending on the type
+The allocation may be in the form of capacity or bandwidth, depending on the type
 of resource. For caches, TLBs, and directories, the resource allocation is in
-the form of storage capacity. For interconnects and memory controllers the
+the form of storage capacity. For interconnects and memory controllers, the
 resource allocation is in the form of bandwidth.
 
 Workloads generate different types of accesses to shared resources. For example,
@@ -88,11 +88,11 @@ range of physical address space that is a multiple of 4-KiB and the lowest
 address of the range is aligned to 4-KiB. The memory-mapped registers may be
 accessed using naturally aligned 4-byte or 8-byte memory accesses. The
 controller behavior for register accesses where the address is not aligned to
-the size of the access, or if the access spans multiple registers, of if the
-size of the access is not 4-bytes or 8-bytes, is `UNSPECIFIED`. A 4-byte access
-to a register must be single-copy atomic. Whether an 8 byte access to an CBQRI
+the size of the access, or if the access spans multiple registers, or if the
+size of the access is not 4 bytes or 8 bytes, is `UNSPECIFIED`. A 4-byte access
+to a register must be single-copy atomic. Whether an 8-byte access to a CBQRI
 register is single-copy atomic is `UNSPECIFIED`, and such an access may appear,
-internally to the CBQRI implementation, as if two separate 4 byte accesses were
+internally to the CBQRI implementation, as if two separate 4-byte accesses were
 performed.
 
 [NOTE]
