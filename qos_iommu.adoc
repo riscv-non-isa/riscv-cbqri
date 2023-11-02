@@ -35,7 +35,9 @@ If the reset value for `ddtp.iommu_mode` field is `Bare`, then the
 At reset, it is required that the `RCID` field of `iommu_qosid` be set to 0 if
 the IOMMU is in `Bare` mode, as typically the resource controllers in the
 SoC default to a reset behavior of associating all capacity or bandwidth to the
-`RCID` value of 0.
+`RCID` value of 0. When the reset value of the `ddtp.iommu_mode` is not `Bare`,
+the `iommu_qosid` register should be initialized by software prior to changing
+the mode to allow DMA.
 ====
 
 ==== IOMMU capabilities (`capabilities`)
