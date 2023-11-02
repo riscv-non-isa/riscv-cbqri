@@ -32,7 +32,9 @@ occupancy, memory bandwidth, etc.).
 
 The Ssqosid extension cite:[SSQOSID] introduces a read/write S/HS-mode register
 (`sqoscfg`) to configure QoS Identifiers to be used with requests made by the
-hart to shared resources.
+hart to shared resources. If extension Smstateen cite:[STATEEN] is implemented
+then bit (TBA) of `mstateen0` controls access to `sqoscfg` from privilege modes
+less than M.
 
 ==== Device initiated requests
 
