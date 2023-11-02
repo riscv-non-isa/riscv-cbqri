@@ -24,6 +24,26 @@ allocation by ways might define a _capacity block_ to be the cache blocks in one
 way of the cache.
 ====
 
+The capacity allocation affects the decision regarding which _capacity blocks_
+to use when a new _capacity unit_ is requested by a workload but usually does
+not affect other operations of the controller.
+
+[NOTE]
+====
+For example, when a request is made to a cache controller, the request involves
+scanning the entire cache to determine if the requested data is present. If the
+data is located, then the request is fulfilled using this data, even if the
+cache block containing the data was initially allocated for a different
+workload. The data continues to reside in the same cache block. Consequently,
+the cache lookup function remains unaffected by the capacity allocation
+constraints set for the workload initiating the request. Conversely, if the data
+is not found, a new cache block must be allocated. This allocation is executed
+using the _capacity blocks_ assigned to the workload that made the request.
+Hence, a workload may only trigger evictions within _capacity blocks_ designated
+to it but can access shared data in _capacity blocks_ allocated to other
+workloads.
+====
+
 [[CC_REG]]
 .Capacity-controller QoS register layout
 [width=100%]
