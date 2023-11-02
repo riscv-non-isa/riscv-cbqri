@@ -27,7 +27,7 @@ way of the cache.
 [[CC_REG]]
 .Capacity-controller QoS register layout
 [width=100%]
-[%header, cols="^3,10,^3, 18, 5"]
+[%header, cols="^3,10,^4, 18, 5"]
 |===
 |Offset|Name              |Size    |Description                 | Optional?
 |0     |`cc_capabilities` |8       |<<CC_CAP, Capabilities >>   | No
@@ -37,7 +37,7 @@ way of the cache.
                                     counter value>>             | Yes
 |24    |`cc_alloc_ctl`    |8       |<<CC_ALLOC, Capacity
                                     allocation control >>       | Yes
-|32    |`cc_block_mask`   |`M` * 8 |<<CC_BMASK, Capacity
+|32    |`cc_block_mask`   |`BMW`/8 |<<CC_BMASK, Capacity
                                     block mask >>               | Yes
 |N     |`cc_cunits`       |8       |<<CC_CUNITS, Capacity units
                                     count>>                     | Yes
@@ -46,7 +46,9 @@ way of the cache.
 The size and offset in <<CC_REG>> are specified in bytes.
 
 The size of the `cc_block_mask` register is determined by the `NCBLKS` field
-of the `cc_capabilities` register but is always a multiple of 8 bytes.
+of the `cc_capabilities` register but is always a multiple of 8 bytes. The
+formula for determination of `BMW` is defined in <<CC_BMASK>>. The offset `N` is
+determined as `32 + BMW/8`.
 
 The reset value is 0 for the following register fields.
 
