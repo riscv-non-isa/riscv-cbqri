@@ -49,10 +49,12 @@ bandwidth-controller capabilities.
 {reg: [
   {bits:  8, name: 'VER'},
   {bits: 16, name: 'NBWBLKS'},
-  {bits:  8, name: 'WPRI'},
+  {bits:  1, name: 'RPFX'},
+  {bits:  4, name: 'P'},
+  {bits:  3, name: 'WPRI'},
   {bits: 16, name: 'MRBWB'},
   {bits: 16, name: 'WPRI'},
-], config:{lanes: 2, hspace:1024}}
+], config:{lanes: 4, hspace:1024}}
 ....
 
 The `VER` field holds the version of the specification implemented by the
@@ -82,6 +84,12 @@ designed to enforce the configured bandwidth over larger time windows. By not
 allowing all available bandwidth blocks to be reserved for allocation, the
 bandwidth controller can handle such transient inaccuracies.
 ====
+
+If `RPFX` is 1, the controller uses `RCID` in the requests along with `P` least
+significant bits of the `MCID` carried in the request to compute an effective
+`MCID` (<<EMCID>>) to identify the monitoring counter. Legal values of `P` range
+from 0 to 12. If `RPFX` is 0, `P` is set to 0, and the effective `MCID` is the
+same as the `MCID` in the request.
 
 [[BC_MCTL]]
 === Bandwidth usage monitoring control (`bc_mon_ctl`)

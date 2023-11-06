@@ -20,13 +20,28 @@ controllers that control accesses to such shared resources.
 Guidelines for sizing the QoS IDs and need for differentiated IDs for monitoring
 is discussed in <<QOS_SIZING>>.
 
+[[EMCID]]
 === Associating `RCID` and `MCID` with requests
 
 The `RCID` in the request is used by the resource controllers to determine the
 resource allocations (e.g., cache occupancy limits, memory bandwidth limits,
-etc.) to enforce. The `MCID` in the request is used by the resource controllers
-to identify the ID of a counter to monitor resource usage (e.g., cache
-occupancy, memory bandwidth, etc.).
+etc.) to enforce.
+
+The `MCID` in the request is used by the resource controllers to identify the ID
+of a counter to monitor resource usage (e.g., cache occupancy, memory bandwidth,
+etc.). Two modes of operation are supported by CBQRI. In the direct mode, the
+`MCID` carried with the request is directly used by the controller to identify
+the counter and is the effective `MCID`. In the RCID-prefixed mode, the
+controller identifies the counter for monitoring using an effective `MCID`
+computed as:
+
+----
+    Effective MCID = (RCID << P) | (MCID & ((1 << P) - 1))
+----
+
+Legal values of `P` range from 0 to 12 and are enumerated in the capability
+register of the controller. Software should use the effective `MCID` as the
+`MCID` operand to the controller for operations on the monitoring counters.
 
 ==== RISC-V hart initiated requests (Ssqosid)
 

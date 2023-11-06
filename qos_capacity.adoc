@@ -99,7 +99,9 @@ capacity-controller capabilities.
   {bits: 16, name: 'NCBLKS'},
   {bits:  1, name: 'FRCID'},
   {bits:  1, name: 'CUNITS'},
-  {bits: 38, name: 'WPRI'},
+  {bits:  1, name: 'RPFX'},
+  {bits:  4, name: 'P'},
+  {bits: 33, name: 'WPRI'},
 ], config:{lanes: 4, hspace:1024}}
 ....
 
@@ -126,6 +128,12 @@ units_ that can be occupied by an `RCID` in _capacity blocks_ allocated to it.
 
 If `FRCID` is 1, the controller supports an operation to flush and deallocate
 the _capacity blocks_ occupied by an `RCID`.
+
+If `RPFX` is 1, the controller uses `RCID` in the requests along with `P` least
+significant bits of the `MCID` carried in the request to compute an effective
+`MCID` (<<EMCID>>) to identify the monitoring counter. Legal values of `P` range
+from 0 to 12. If `RPFX` is 0, `P` is set to 0, and the effective `MCID` is the
+same as the `MCID` in the request.
 
 [[CC_MCTL]]
 === Capacity usage monitoring control (`cc_mon_ctl`)
