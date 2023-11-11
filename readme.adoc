@@ -1,6 +1,6 @@
 = RISC-V Capacity and Bandwidth Controller QoS Register Interface
 
-This document is capturing discussions at the CMQRI TG and attempts to document the baseline.
+This document is capturing discussions at the CBQRI TG and attempts to document the baseline.
 This is not official specification and everything in this document may change. 
 
 Quality of Service (QoS) is the minimal end-to-end performance that is guaranteed in advance

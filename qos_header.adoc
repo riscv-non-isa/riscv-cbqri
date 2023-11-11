@@ -37,7 +37,7 @@ endif::[]
 :xrefstyle: short
 
 = RISC-V Capacity and Bandwidth QoS Register Interface
-RISC-V CMQRI Task Group
+RISC-V CBQRI Task Group
 
 // Preamble
 [WARNING]

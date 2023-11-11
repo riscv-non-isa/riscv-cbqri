@@ -24,10 +24,30 @@ allocation by ways might define a _capacity block_ to be the cache blocks in one
 way of the cache.
 ====
 
+The capacity allocation affects the decision regarding which _capacity blocks_
+to use when a new _capacity unit_ is requested by a workload but usually does
+not affect other operations of the controller.
+
+[NOTE]
+====
+For example, when a request is made to a cache controller, the request involves
+scanning the entire cache to determine if the requested data is present. If the
+data is located, then the request is fulfilled using this data, even if the
+cache block containing the data was initially allocated for a different
+workload. The data continues to reside in the same cache block. Consequently,
+the cache lookup function remains unaffected by the capacity allocation
+constraints set for the workload initiating the request. Conversely, if the data
+is not found, a new cache block must be allocated. This allocation is executed
+using the _capacity blocks_ assigned to the workload that made the request.
+Hence, a workload may only trigger evictions within _capacity blocks_ designated
+to it but can access shared data in _capacity blocks_ allocated to other
+workloads.
+====
+
 [[CC_REG]]
 .Capacity-controller QoS register layout
 [width=100%]
-[%header, cols="^3,10,^3, 18, 5"]
+[%header, cols="^3,10,^4, 18, 5"]
 |===
 |Offset|Name              |Size    |Description                 | Optional?
 |0     |`cc_capabilities` |8       |<<CC_CAP, Capabilities >>   | No
@@ -37,7 +57,7 @@ way of the cache.
                                     counter value>>             | Yes
 |24    |`cc_alloc_ctl`    |8       |<<CC_ALLOC, Capacity
                                     allocation control >>       | Yes
-|32    |`cc_block_mask`   |`M` * 8 |<<CC_BMASK, Capacity
+|32    |`cc_block_mask`   |`BMW`/8 |<<CC_BMASK, Capacity
                                     block mask >>               | Yes
 |N     |`cc_cunits`       |8       |<<CC_CUNITS, Capacity units
                                     count>>                     | Yes
@@ -46,7 +66,9 @@ way of the cache.
 The size and offset in <<CC_REG>> are specified in bytes.
 
 The size of the `cc_block_mask` register is determined by the `NCBLKS` field
-of the `cc_capabilities` register but is always a multiple of 8 bytes.
+of the `cc_capabilities` register but is always a multiple of 8 bytes. The
+formula for determination of `BMW` is defined in <<CC_BMASK>>. The offset `N` is
+determined as `32 + BMW/8`.
 
 The reset value is 0 for the following register fields.
 
@@ -77,7 +99,9 @@ capacity-controller capabilities.
   {bits: 16, name: 'NCBLKS'},
   {bits:  1, name: 'FRCID'},
   {bits:  1, name: 'CUNITS'},
-  {bits: 38, name: 'WPRI'},
+  {bits:  1, name: 'RPFX'},
+  {bits:  4, name: 'P'},
+  {bits: 33, name: 'WPRI'},
 ], config:{lanes: 4, hspace:1024}}
 ....
 
@@ -104,6 +128,12 @@ units_ that can be occupied by an `RCID` in _capacity blocks_ allocated to it.
 
 If `FRCID` is 1, the controller supports an operation to flush and deallocate
 the _capacity blocks_ occupied by an `RCID`.
+
+If `RPFX` is 1, the controller uses `RCID` in the requests along with `P` least
+significant bits of the `MCID` carried in the request to compute an effective
+`MCID` (<<EMCID>>) to identify the monitoring counter. Legal values of `P` range
+from 0 to 12. If `RPFX` is 0, `P` is set to 0, and the effective `MCID` is the
+same as the `MCID` in the request.
 
 [[CC_MCTL]]
 === Capacity usage monitoring control (`cc_mon_ctl`)
