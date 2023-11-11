@@ -1,12 +1,16 @@
 [[QOS_IOMMU]]
 == IOMMU extension for QoS ID
 
-Monitoring or allocation of resources accessed by the IOMMU and devices governed
-by the IOMMU requires a way to associate QoS IDs with such requests. This
-section specifies a RISC-V IOMMU cite:[IOMMU] extension to:
+A method to associate QoS IDs with requests to access resources by the IOMMU, as
+well as with devices governed by it, is required for effective monitoring and
+allocation. This section specifies a RISC-V IOMMU cite:[IOMMU] extension to:
 
 * Configure and associate QoS IDs for device-originated requests.
 * Configure and associate QoS IDs for IOMMU-originated requests.
+
+The size (or width) of `RCID` and `MCID`, as fields in registers or in data
+structures, supported by the IOMMU must be at least as large as that supported
+by any RISC-V application processor hart in the system.
 
 === IOMMU registers
 
@@ -109,9 +113,9 @@ The `iommu_qosid` register fields are defined as follows:
 [%header, cols="^1,2,^1,5"]
 |===
 |Bits  |Field      |Attribute | Description
-|11:0  |`RCID`     |WARL      | RCID for IOMMU initiated requests.
+|11:0  |`RCID`     |WARL      | `RCID` for IOMMU-initiated requests.
 |15:12 |reserved   |WPRI      | Reserved for standard use.
-|27:16 |`MCID`     |WARL      | MCID for IOMMU initiated requests.
+|27:16 |`MCID`     |WARL      | `MCID` for IOMMU-initiated requests.
 |31:28 |reserved   |WPRI      | Reserved for standard use.
 |===
 
