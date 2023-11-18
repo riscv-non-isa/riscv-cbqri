@@ -169,12 +169,13 @@ this case, the IOMMU should stop and report "DDT entry misconfigured" (cause =
 
 === IOMMU ATC capacity allocation and monitoring
 
-The IOMMU may support capacity allocation and usage monitoring in the IOMMU
-address translation cache (IOATC) by implementing a capacity controller register
-interface.
+Some IOMMUs may support capacity allocation and usage monitoring in the IOMMU
+address translation cache (IOATC) by implementing the capacity controller
+register interface.
 
-Some IOMMU may support multiple IOATC where the capacity of each such IOATC may
-not be the same. When multiple IOATC are implemented, (e.g., corresponding to
-each page sizes supported), the IOMMU may implement a capacity controller
-register interface for each IOATC to enable capacity allocation in each IOATC.
+Additionally, some IOMMUs may support multiple IOATCs, each potentially having
+different capacities. In scenarios where multiple IOATCs are implemented, such
+as an IOATC for each supported page size, the IOMMU may implement a
+capacity controller register interface for each IOATC to facilitate individual
+capacity allocation.
 
