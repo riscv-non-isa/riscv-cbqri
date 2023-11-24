@@ -83,17 +83,16 @@ specification specifies:
 
 The capacity and bandwidth controller register interfaces for resource
 allocation and usage monitoring are defined as memory-mapped registers. Each
-controller that supports CBQRI provides a set of registers that are located at a
-range of physical address space that is a multiple of 4-KiB and the lowest
-address of the range is aligned to 4-KiB. The memory-mapped registers may be
-accessed using naturally aligned 4-byte or 8-byte memory accesses. The
-controller behavior for register accesses where the address is not aligned to
-the size of the access, or if the access spans multiple registers, or if the
-size of the access is not 4 bytes or 8 bytes, is `UNSPECIFIED`. A 4-byte access
-to a register must be single-copy atomic. Whether an 8-byte access to a CBQRI
-register is single-copy atomic is `UNSPECIFIED`, and such an access may appear,
-internally to the CBQRI implementation, as if two separate 4-byte accesses were
-performed.
+controller that supports CBQRI provides a set of registers that are
+memory-mapped starting at an 8-byte aligned physical address. The memory-mapped
+registers may be accessed using naturally aligned 4-byte or 8-byte memory
+accesses. The controller behavior for register accesses where the address is not
+aligned to the size of the access, or if the access spans multiple registers, or
+if the size of the access is not 4 bytes or 8 bytes, is `UNSPECIFIED`. A 4-byte
+access to a register must be single-copy atomic. Whether an 8-byte access to a
+CBQRI register is single-copy atomic is `UNSPECIFIED`, and such an access may
+appear, internally to the CBQRI implementation, as if two separate 4-byte
+accesses were performed.
 
 [NOTE]
 ====
