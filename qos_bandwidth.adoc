@@ -326,6 +326,8 @@ before requesting the operation.
 | --           | 24-31     | Designated for custom use.
 |===
 
+<<<
+
 A bandwidth allocation must be configured for each access-type supported by 
 the controller. When differentiated bandwidth allocation based on access-type
 is not required, one of the access-types may be designated to hold a default

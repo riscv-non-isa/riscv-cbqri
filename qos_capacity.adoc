@@ -170,8 +170,10 @@ fields.
 The `OP` field is used to instruct the controller to perform an operation listed
 in <<CC_MON_OP>>.
 
+<<<
+
 [[CC_MON_OP]]
-.Capacity usage monitoring operations (`OP`)
+.Capacity Usage Monitoring Operations (`OP`)
 [width=100%]
 [%header, cols="16,^12,70"]
 |===
@@ -195,7 +197,7 @@ used to program the access-type to count, and its validity is indicated by the
 and the `AT` value is ignored.
 
 [[CC_EVT_ID]]
-.Capacity usage monitoring event ID (`EVT_ID`)
+.Capacity Usage Monitoring Event ID (`EVT_ID`)
 [width=100%]
 [%header, cols="12,^12,70"]
 |===
@@ -232,7 +234,7 @@ the register. The `STATUS` field remains valid until a subsequent write to the
 `cc_mon_ctl` register.
 
 [[CC_MON_STS]]
-.`cc_mon_ctl.STATUS` field encodings
+.`cc_mon_ctl.STATUS` Field Encodings
 [width=100%]
 [%header, cols="12,70"]
 |===
@@ -252,6 +254,8 @@ When the `BUSY` bit is set to 1, the behavior of writes to the `cc_mon_ctl` is
 may perform the operation determined by the second write. To ensure proper
 operation, software must first verify that the `BUSY` bit is 0 before writing
 the `cc_mon_ctl` register.
+
+<<<
 
 [[CC_MCTR]]
 === Capacity Usage Monitoring Counter Value
@@ -287,11 +291,7 @@ capacity initially allocated by the previous workload. In such cases, the
 counter shall not decrement below zero and shall remain at zero. After a brief
 period of execution for the new workload post-counter reset, the counter value is
 expected to stabilize to reflect the capacity usage of this new workload.
-====
 
-[NOTE]
-[%unbreakable]
-====
 Some implementations may not store the `MCID` of the request that caused the
 capacity to be allocated with every unit of capacity in the controller to
 optimize on the storage overheads. Such controllers may in turn rely on
@@ -349,8 +349,6 @@ unit_ limit to be defined in the `cc_cunits` register. To execute operations tha
 require a capacity block mask and/or a capacity unit limit, software must first
 program the `cc_block_mask` and/or the `cc_cunits` register, followed by
 initiating the operation via the `cc_alloc_ctl` register.
-
-<<<
 
 [[CC_ALLOC_OP]]
 .Capacity Allocation Operations (`OP`)
