@@ -57,6 +57,8 @@ bandwidth-controller capabilities.
 ], config:{lanes: 4, hspace:1024}}
 ....
 
+<<<
+
 The `VER` field holds the version of the specification implemented by the
 bandwidth controller. The low nibble is used to hold the minor version of the
 specification and the upper nibble is used to hold the major version of the

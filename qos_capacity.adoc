@@ -170,8 +170,6 @@ fields.
 The `OP` field is used to instruct the controller to perform an operation listed
 in <<CC_MON_OP>>.
 
-<<<
-
 [[CC_MON_OP]]
 .Capacity Usage Monitoring Operations (`OP`)
 [width=100%]
@@ -254,8 +252,6 @@ When the `BUSY` bit is set to 1, the behavior of writes to the `cc_mon_ctl` is
 may perform the operation determined by the second write. To ensure proper
 operation, software must first verify that the `BUSY` bit is 0 before writing
 the `cc_mon_ctl` register.
-
-<<<
 
 [[CC_MCTR]]
 === Capacity Usage Monitoring Counter Value
@@ -402,8 +398,6 @@ allocation per access-type is supported, identical limits may be configured for
 two or more access-types if different capacity allocation per access-type is not
 required. If capacity is not allocated for each access-type supported by the
 controller, the behavior is `UNSPECIFIED`.
-
-<<<
 
 [NOTE]
 ====
