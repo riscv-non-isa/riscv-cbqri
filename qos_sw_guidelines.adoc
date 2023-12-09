@@ -16,7 +16,7 @@ reported using these methods:
 
 === Context switching QoS Identifiers
 
-Typically, the contents of the `sqoscfg` CSR are updated with a new `RCID`
+Typically, the contents of the `srmcfg` CSR are updated with a new `RCID`
 and/or `MCID` by the HS/S-mode scheduler if the `RCID` and/or `MCID` of the
 new workload (a process or a VM) is not same as that of the old workload.
 
@@ -25,15 +25,15 @@ workload being switched away from and restoring the context of the workload
 being switched to. Such a context switch may be invoked in response to an explicit
 call from the workload (i.e, as a function of an `ECALL` invocation) or may be
 done asynchronously (e.g., in response to a timer interrupt). In such cases the
-scheduler may want to execute with the `sqoscfg` configuration of the
+scheduler may want to execute with the `srmcfg` configuration of the
 workload being switched away from such that this execution is attributed to the
 workload being switched away from and then prior to restoring the new workloads
-context, first switch to the `sqoscfg` configuration appropriate for the
+context, first switch to the `srmcfg` configuration appropriate for the
 workload being switched to such that all of that execution is attributed to
 the new workload. Further in this context switch process, if the scheduler
 intends some of its execution to be attributed to neither the outgoing
 workload nor the incoming workload, then the scheduler may switch to a new
-`sqoscfg` configuration that is different from that of either of the workloads
+`srmcfg` configuration that is different from that of either of the workloads
 for the duration of such execution.
 
 === QoS configurations for virtual machines
@@ -45,12 +45,12 @@ platform or the resource allocations for other virtual machines in the system.
 
 If a use case requires it, a hypervisor may virtualize the QoS capability to a
 VM by virtualizing the memory-mapped CBQRI register interface and virtualizing
-the virtual-instruction exception on access to `sqoscfg` CSR by the Guest OS.
+the virtual-instruction exception on access to `srmcfg` CSR by the Guest OS.
 
 [NOTE]
 ====
 If the use of directly selecting among a set of `RCID` and/or `MCID` by a VM
-becomes more prevalent and the overhead of virtualizing the `sqoscfg` CSR using
+becomes more prevalent and the overhead of virtualizing the `srmcfg` CSR using
 the virtual instruction exception is not acceptable then a future extension may
 be introduced where the `RCID`/`MCID` attempted to be written by VS mode are
 used as a selector for a set of `RCID`/`MCID` that the hypervisor configures in
@@ -59,22 +59,22 @@ a set of HS mode CSRs.
 
 === QoS Identifiers for supervisor and machine mode
 
-The `RCID` and `MCID` configured in `sqoscfg` also apply to execution in
+The `RCID` and `MCID` configured in `srmcfg` also apply to execution in
 S/HS-mode, but this is typically not an issue. Usually, S/HS-mode execution
 occurs to provide services, such as through an ABI, to software executing at
 lower privilege. Since the S/HS-mode invocation was to provide a service for
 the lower privilege mode, the S/HS-mode software may opt not to modify the
-`sqoscfg` CSR.
+`srmcfg` CSR.
 
-Similarly, The `RCID` and `MCID` configured in `sqoscfg` also apply to execution
+Similarly, The `RCID` and `MCID` configured in `srmcfg` also apply to execution
 in M-mode, but this is typically not an issue either. Usually, M-mode execution
 occurs to provide services, such as through the SBI interface, to software
 executing at lower privilege. Since the M-mode invocation was to provide a
 service for the lower privilege mode, the M-mode software may opt not to modify
-the `sqoscfg` CSR.
+the `srmcfg` CSR.
 
 If separate `RCID` and/or `MCID` are needed during software execution in
-M/S/HS-mode, then the M/S/HS-mode software may update the `sqoscfg` CSR and
+M/S/HS-mode, then the M/S/HS-mode software may update the `srmcfg` CSR and
 restore it before returning to lower privilege mode execution. The statistical
 nature of QoS capabilities means that the brief duration, such as the few
 instructions in the M/S/HS-mode trap handler entry point, during which the trap

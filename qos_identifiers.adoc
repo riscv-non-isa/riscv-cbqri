@@ -46,10 +46,10 @@ register of the controller. Software should use the effective `MCID` as the
 ==== RISC-V hart initiated requests (Ssqosid)
 
 The Ssqosid extension cite:[SSQOSID] introduces a read/write S/HS-mode register
-(`sqoscfg`) to configure QoS Identifiers to be used with requests made by the
+(`srmcfg`) to configure QoS Identifiers to be used with requests made by the
 hart to shared resources. If extension Smstateen cite:[STATEEN] is implemented
-then bit (TBA) of `mstateen0` controls access to `sqoscfg` from privilege modes
-less than M.
+then bit 55 of `mstateen0` controls access to `srmcfg` from privilege modes less
+than M.
 
 ==== Device initiated requests
 
