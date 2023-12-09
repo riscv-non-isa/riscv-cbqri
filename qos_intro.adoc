@@ -104,8 +104,8 @@ respected between the two software accesses, or two hardware transactions,
 respectively.
 ====
 
-The controller registers have little-endian byte order (even for systems where
-all harts are big-endian-only).
+The controller registers have little-endian byte order (even if all harts are
+big-endian-only).
 
 [NOTE]
 ====

@@ -1,5 +1,5 @@
 [[QOS_IOMMU]]
-== IOMMU extension for QoS ID
+== IOMMU Extension for QoS ID
 
 A method to associate QoS IDs with requests to access resources by the IOMMU, as
 well as with devices governed by it, is required for effective monitoring and
@@ -12,7 +12,7 @@ The size (or width) of `RCID` and `MCID`, as fields in registers or in data
 structures, supported by the IOMMU must be at least as large as that supported
 by any RISC-V application processor hart in the system.
 
-=== IOMMU registers
+=== IOMMU Registers
 
 The specified memory-mapped register layout defines a new IOMMU register named
 `iommu_qosid`. This register is used to configure the Quality of Service (QoS)
@@ -20,7 +20,7 @@ IDs associated with IOMMU-originated requests. The register has a size of 4
 bytes and is located at an offset of 624 from the beginning of the memory-mapped
 region.
 
-.IOMMU Memory-mapped register layout
+.IOMMU Memory-mapped Register Layout
 [width=100%]
 [%header, cols="^3,6,^3, 12, 10"]
 |===
@@ -29,7 +29,7 @@ region.
 |628   |Reserved        |60  |Reserved for future use (`WPRI`)| 
 |===
 
-==== Reset behavior
+==== Reset Behavior
 
 If the reset value for `ddtp.iommu_mode` field is `Bare`, then the
 `iommu_qosid.RCID` field must have a reset value of 0.
@@ -44,13 +44,15 @@ the `iommu_qosid` register should be initialized by software prior to changing
 the mode to allow DMA.
 ====
 
-==== IOMMU capabilities (`capabilities`)
+<<<
+
+==== IOMMU Capabilities (`capabilities`)
 
 The IOMMU capabilities register has been extended with a new field, `QOSID`,
 which enumerates support for associating QoS IDs with requests made through the
 IOMMU.
 
-.IOMMU capabilities register fields
+.IOMMU Capabilities Register
 [wavedrom, , ]
 ....
 {reg: [
@@ -131,13 +133,13 @@ value programmed in the `RCID` and `MCID` fields of the `iommu_qosid` register.
 When `ddtp.iommu_mode == Bare`, all device-originated requests are
 associated with the QoS IDs configured in the `iommu_qosid` register.
 
-=== Device-context fields
+=== Device-context Fields
 
 The `ta` field of the device context is extended with two new fields, `RCID`
 and `MCID`, to configure the QoS IDs to associate with requests originated by the
 devices.
 
-.Translation attributes (`ta`) field
+.Translation Attributes (`ta`) Field
 [wavedrom, , ]
 ....
 {reg: [
@@ -167,7 +169,7 @@ supported by the IOMMU, a `DC` with `DC.tc.V=1` is considered misconfigured. In
 this case, the IOMMU should stop and report "DDT entry misconfigured" (cause =
 259).
 
-=== IOMMU ATC capacity allocation and monitoring
+=== IOMMU ATC Capacity Allocation and Monitoring
 
 Some IOMMUs may support capacity allocation and usage monitoring in the IOMMU
 address translation cache (IOATC) by implementing the capacity controller

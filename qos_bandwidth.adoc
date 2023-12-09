@@ -5,7 +5,7 @@ Controllers, such as memory controllers, that support bandwidth allocation and
 bandwidth usage monitoring provide a memory-mapped bandwidth-controller QoS
 register interface.
 
-.Bandwidth-controller QoS register layout
+.Bandwidth-controller QoS Register Layout (size and offset are in bytes)
 [width=100%]
 [%header, cols="^3,10,^3, 18, 5"]
 |===
@@ -38,12 +38,12 @@ handling a request with a non-zero `RCID` value before configuring the bandwidth
 controller with bandwidth allocation for that `RCID` is also `UNSPECIFIED`.
 
 [[BC_CAP]]
-=== Capabilities (`bc_capabilities`)
+=== Bandwidth-controller Capabilities (`bc_capabilities`)
 
 The `bc_capabilities` register is a read-only register that holds the
 bandwidth-controller capabilities.
 
-.Capabilities register fields
+.Bandwidth-controller Capabilities Register
 [wavedrom, , ]
 ....
 {reg: [
@@ -92,13 +92,13 @@ from 0 to 12. If `RPFX` is 0, `P` is set to 0, and the effective `MCID` is the
 same as the `MCID` in the request.
 
 [[BC_MCTL]]
-=== Bandwidth usage monitoring control (`bc_mon_ctl`)
+=== Bandwidth Usage Monitoring Control (`bc_mon_ctl`)
 
 The `bc_mon_ctl` register is used to control monitoring of bandwidth usage by a
 `MCID`. When the controller does not support bandwidth usage monitoring, the
 `bc_mon_ctl` register is read-only zero.
 
-.Bandwidth usage monitoring control (`bc_mon_ctl`)
+.Bandwidth Usage Monitoring Control Register (`bc_mon_ctl`)
 [wavedrom, , ]
 ....
 {reg: [
@@ -127,8 +127,10 @@ The `OP`, `AT`, `MCID`, and `EVT_ID` fields of the register are WARL fields.
 The `OP` field is used to instruct the controller to perform an operation
 listed in <<BC_MON_OP>>.
 
+<<<
+
 [[BC_MON_OP]]
-.Usage monitoring operations (`OP`)
+.Bandwidth Usage Monitoring Operations (`OP`)
 [width=100%]
 [%header, cols="16,^12,70"]
 |===
@@ -152,9 +154,9 @@ indicated by the `ATV` field. When `ATV` is 0, the counter counts requests with
 all access-types, and the `AT` value is ignored.
 
 [[BC_EVT_ID]]
-.Bandwidth monitoring event ID (`EVT_ID`)
+.Bandwidth Monitoring Event ID (`EVT_ID`)
 [width=100%]
-[%header, cols="15,^10,40"]
+[%header, cols="30,^10,40"]
 |===
 |Event ID      | Encoding ^| Description
 |`None`        | 0         | Counter does not count and retains its value.
@@ -197,7 +199,7 @@ the register. The `STATUS` field remains valid until a subsequent write to the
 `bc_mon_ctl` register.
 
 [[BC_MON_STS]]
-.`bc_mon_ctl.STATUS` field encodings
+.`bc_mon_ctl.STATUS` Field Encodings
 [width=100%]
 [%header, cols="12,70"]
 |===
@@ -219,14 +221,14 @@ operation, software must first verify that the `BUSY` bit is 0 before writing
 the `bc_mon_ctl` register.
 
 [[BC_MCTR]]
-=== Bandwidth monitoring counter value (`bc_mon_ctr_val`)
+=== Bandwidth Monitoring Counter Value (`bc_mon_ctr_val`)
 
 The `bc_mon_ctr_val` is a read-only register that holds a snapshot of the
 counter selected by a `READ_COUNTER` operation. When the controller does not
 support bandwidth usage monitoring, the `bc_mon_ctr_val` register always reads
 as zero.
 
-.Bandwidth monitoring counter value (`bc_mon_ctr_val`)
+.Bandwidth Monitoring Counter Value Register (`bc_mon_ctr_val`)
 [wavedrom, , ]
 ....
 {reg: [
@@ -276,14 +278,14 @@ operation.
 ====
 
 [[BC_ALLOC]]
-=== Bandwidth allocation control (`bc_alloc_ctl`)
+=== Bandwidth Allocation Control (`bc_alloc_ctl`)
 
 The `bc_alloc_ctl` register is used to control the allocation of bandwidth to an
 `RCID` per `AT`. If a controller does not support bandwidth allocation, then the
 register is read-only zero. If the controller does not support bandwidth
 allocation per access-type, then the `AT` field is read-only zero.
 
-.Bandwidth allocation control (`bc_alloc_ctl`)
+.Bandwidth Allocation Control Register (`bc_alloc_ctl`)
 [wavedrom, , ]
 ....
 {reg: [
@@ -305,7 +307,7 @@ first program the `bc_bw_alloc` register with the operands for the operation
 before requesting the operation.
 
 [[BC_ALLOC_OP]]
-.Bandwidth allocation operations (`OP`)
+.Bandwidth Allocation Operations (`OP`)
 [width=100%]
 [%header, cols="16,^12,70"]
 |===
@@ -345,7 +347,7 @@ the register. The `STATUS` field remains valid until a subsequent write to the
 
 
 [[BC_ALLOC_STS]]
-.`bc_alloc_ctl.STATUS` field encodings
+.`bc_alloc_ctl.STATUS` Field Encodings
 [width=100%]
 [%header, cols="12,70"]
 |===
@@ -361,7 +363,7 @@ the register. The `STATUS` field remains valid until a subsequent write to the
 |===
 
 [[BC_BMASK]]
-=== Bandwidth allocation configuration (`bc_bw_alloc`)
+=== Bandwidth Allocation Configuration (`bc_bw_alloc`)
 
 The `bc_bw_alloc` is used to program reserved bandwidth blocks (`Rbwb`) for an
 `RCID` for requests of access-type `AT` using the `CONFIG_LIMIT` operation. If a
@@ -377,7 +379,7 @@ operation fails with `STATUS=5`. Additionally, the sum of `Rbwb` allocated
 across all `RCIDs` must not exceed `MRBWB`, or the `CONFIG_LIMIT` operation
 fails with `STATUS=5`.
 
-.Bandwidth allocation configuration (`bc_bw_alloc`)
+.Bandwidth Allocation Configuration Register (`bc_bw_alloc`)
 [wavedrom, , ]
 ....
 {reg: [

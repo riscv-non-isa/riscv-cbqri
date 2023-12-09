@@ -1,7 +1,7 @@
 [[QOS_SW_GUIDE]]
 == Software Guidelines
 
-=== Reporting capacity and bandwidth controllers
+=== Reporting Capacity and Bandwidth Controllers
 
 The capability and bandwidth controllers that are present in the system should
 be reported to operating systems using methods such as ACPI and/or device tree.
@@ -14,7 +14,7 @@ reported using these methods:
   resources controlled by the controller
 * The number of QoS identifiers supported by the controller
 
-=== Context switching QoS Identifiers
+=== Context Switching QoS Identifiers
 
 Typically, the contents of the `srmcfg` CSR are updated with a new `RCID`
 and/or `MCID` by the HS/S-mode scheduler if the `RCID` and/or `MCID` of the
@@ -36,7 +36,7 @@ workload nor the incoming workload, then the scheduler may switch to a new
 `srmcfg` configuration that is different from that of either of the workloads
 for the duration of such execution.
 
-=== QoS configurations for virtual machines
+=== QoS Configurations for Virtual Machines
 
 Usually for virtual machines the resource allocations are configured by the
 hypervisor. Usually the Guest OS in a virtual machine does not participate in
@@ -46,6 +46,8 @@ platform or the resource allocations for other virtual machines in the system.
 If a use case requires it, a hypervisor may virtualize the QoS capability to a
 VM by virtualizing the memory-mapped CBQRI register interface and virtualizing
 the virtual-instruction exception on access to `srmcfg` CSR by the Guest OS.
+
+<<<
 
 [NOTE]
 ====
@@ -57,7 +59,7 @@ used as a selector for a set of `RCID`/`MCID` that the hypervisor configures in
 a set of HS mode CSRs.
 ====
 
-=== QoS Identifiers for supervisor and machine mode
+=== QoS Identifiers for Supervisor and Machine Mode
 
 The `RCID` and `MCID` configured in `srmcfg` also apply to execution in
 S/HS-mode, but this is typically not an issue. Usually, S/HS-mode execution
