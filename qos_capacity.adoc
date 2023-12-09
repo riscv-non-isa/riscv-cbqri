@@ -194,6 +194,8 @@ used to program the access-type to count, and its validity is indicated by the
 `ATV` field. When `ATV` is 0, the counter counts requests with all access-types,
 and the `AT` value is ignored.
 
+<<<
+
 [[CC_EVT_ID]]
 .Capacity Usage Monitoring Event ID (`EVT_ID`)
 [width=100%]
