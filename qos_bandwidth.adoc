@@ -256,7 +256,7 @@ determined by reading the byte count value at two instances of time `T1` and
 time `T2` is `B2`, then the bandwidth can be calculated as follows. The
 frequency of the time source is represented by latexmath:[T_{freq}].
 
-[latexmath#eq-2,reftext="equation ({counter:eqs})"]
+[latexmath#eq-3,reftext="equation ({counter:eqs})"]
 ++++
 \begin{equation}
 Bandwidth = T_{freq} \times \frac{ B2 - B1 }{T2 - T1}
@@ -426,7 +426,7 @@ permitted to use unused bandwidth is determined by dividing the `Mweight` of
 `RCID=x` by the sum of the `Mweight` of all other contending `RCIDs`. This
 ratio `P` is determined by <<eq-3>>.
 
-[latexmath#eq-3,reftext="equation ({counter:eqs})"]
+[latexmath#eq-4,reftext="equation ({counter:eqs})"]
 ++++
 \begin{equation}
 P = \frac{Mweight_{x}}{\sum_{r=1}^{r=n} Mweight_{r}}
