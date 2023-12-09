@@ -84,7 +84,7 @@ value before configuring the capacity controller with capacity allocation for
 that `RCID` is `UNSPECIFIED`.
 
 [[CC_CAP]]
-=== Capacity-controller Capabilities (`cc_capabilities`)
+=== Capacity-controller Capabilities
 
 The `cc_capabilities` register is a read-only register that holds the
 capacity-controller capabilities.
@@ -136,7 +136,7 @@ from 0 to 12. If `RPFX` is 0, `P` is set to 0, and the effective `MCID` is the
 same as the `MCID` in the request.
 
 [[CC_MCTL]]
-=== Capacity Usage Monitoring Control (`cc_mon_ctl`)
+=== Capacity Usage Monitoring Control
 
 The `cc_mon_ctl` register is used to control monitoring of capacity usage by a
 `MCID`. When the controller does not support capacity usage monitoring the
@@ -254,7 +254,7 @@ operation, software must first verify that the `BUSY` bit is 0 before writing
 the `cc_mon_ctl` register.
 
 [[CC_MCTR]]
-=== Capacity Usage Monitoring Counter Value (`cc_mon_ctr_val`)
+=== Capacity Usage Monitoring Counter Value
 
 The `cc_mon_ctr_val` is a read-only register that holds a snapshot of the
 counter selected by the `READ_COUNTER` operation. When the controller does not
@@ -318,7 +318,7 @@ processes.
 ====
 
 [[CC_ALLOC]]
-=== Capacity Allocation Control (`cc_alloc_ctl`)
+=== Capacity Allocation Control
 
 The `cc_alloc_ctl` register is used to configure allocation of capacity to an
 `RCID` per access-type (`AT`). The `OP`, `RCID` and `AT` fields in this register
@@ -547,7 +547,7 @@ provides the `READ_LIMIT` operation which can be requested by writing to the
 `cc_block_mask` register holds the configured _capacity block_ allocation.
 
 [[CC_CUNITS]]
-=== Capacity Units (`cc_cunits`)
+=== Capacity Units
 
 The `cc_cunits` register is a read-write WARL register. If the controller does
 not support capacity allocation (i.e., `NCBLKS` is set to 0), this register
@@ -580,7 +580,12 @@ For instance, consider a group of four `RCID` instances configured to share a
 set of _capacity blocks_, representing a total of 100 capacity units. Each
 `RCID` could be configured with a limit of 30 capacity units, ensuring that no
 individual `RCID` exceeds 30% of the total shared _capacity units_.
+====
 
+<<<
+
+[NOTE]
+====
 The capacity controller may enforce these limits through various techniques.
 Examples include:
 

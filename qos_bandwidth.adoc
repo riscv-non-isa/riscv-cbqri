@@ -38,7 +38,7 @@ handling a request with a non-zero `RCID` value before configuring the bandwidth
 controller with bandwidth allocation for that `RCID` is also `UNSPECIFIED`.
 
 [[BC_CAP]]
-=== Bandwidth-controller Capabilities (`bc_capabilities`)
+=== Bandwidth-controller Capabilities
 
 The `bc_capabilities` register is a read-only register that holds the
 bandwidth-controller capabilities.
@@ -92,7 +92,7 @@ from 0 to 12. If `RPFX` is 0, `P` is set to 0, and the effective `MCID` is the
 same as the `MCID` in the request.
 
 [[BC_MCTL]]
-=== Bandwidth Usage Monitoring Control (`bc_mon_ctl`)
+=== Bandwidth Usage Monitoring Control
 
 The `bc_mon_ctl` register is used to control monitoring of bandwidth usage by a
 `MCID`. When the controller does not support bandwidth usage monitoring, the
@@ -221,7 +221,7 @@ operation, software must first verify that the `BUSY` bit is 0 before writing
 the `bc_mon_ctl` register.
 
 [[BC_MCTR]]
-=== Bandwidth Monitoring Counter Value (`bc_mon_ctr_val`)
+=== Bandwidth Monitoring Counter Value
 
 The `bc_mon_ctr_val` is a read-only register that holds a snapshot of the
 counter selected by a `READ_COUNTER` operation. When the controller does not
@@ -278,7 +278,7 @@ operation.
 ====
 
 [[BC_ALLOC]]
-=== Bandwidth Allocation Control (`bc_alloc_ctl`)
+=== Bandwidth Allocation Control
 
 The `bc_alloc_ctl` register is used to control the allocation of bandwidth to an
 `RCID` per `AT`. If a controller does not support bandwidth allocation, then the
@@ -363,7 +363,7 @@ the register. The `STATUS` field remains valid until a subsequent write to the
 |===
 
 [[BC_BMASK]]
-=== Bandwidth Allocation Configuration (`bc_bw_alloc`)
+=== Bandwidth Allocation Configuration
 
 The `bc_bw_alloc` is used to program reserved bandwidth blocks (`Rbwb`) for an
 `RCID` for requests of access-type `AT` using the `CONFIG_LIMIT` operation. If a

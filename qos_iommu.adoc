@@ -46,11 +46,10 @@ the mode to allow DMA.
 
 <<<
 
-==== IOMMU Capabilities (`capabilities`)
+==== IOMMU Capabilities
 
-The IOMMU capabilities register has been extended with a new field, `QOSID`,
-which enumerates support for associating QoS IDs with requests made through the
-IOMMU.
+The IOMMU `capabilities` register is extended with a new field, `QOSID`, which
+enumerates support for associating QoS IDs with requests made through the IOMMU.
 
 .IOMMU Capabilities Register
 [wavedrom, , ]
@@ -95,7 +94,7 @@ IOMMU.
 |41    |`QOSID`    |RO        | Associating QoS IDs with requests is supported.
 |===
 
-==== IOMMU QoS ID (`iommu_qosid`)
+==== IOMMU QoS ID
 
 The `iommu_qosid` register fields are defined as follows:
 
