@@ -381,6 +381,8 @@ initiating the operation via the `cc_alloc_ctl` register.
 | --           | 24-31     | Designated for custom use.
 |===
 
+<<<
+
 Capacity controllers enumerate the allocatable _capacity blocks_ in the `NCBLKS`
 field of the `cc_capabilities` register. The `cc_block_mask` register is
 programmed with a bit-mask where each bit represents a _capacity block_ for the
@@ -436,6 +438,8 @@ capacity blocks represent 100 units and `RCID=3` has a 30-unit limit while
 `RCID=6` has a 70-unit limit, they can use 30% and 70% of the shared capacity
 blocks, respectively.
 ====
+
+<<<
 
 The `FLUSH_RCID` operation may incur a long latency to complete. New requests to
 the controller by the `RCID` being flushed are allowed. Additionally, the
@@ -575,8 +579,6 @@ set of _capacity blocks_, representing a total of 100 capacity units. Each
 `RCID` could be configured with a limit of 30 capacity units, ensuring that no
 individual `RCID` exceeds 30% of the total shared _capacity units_.
 ====
-
-<<<
 
 [NOTE]
 ====
