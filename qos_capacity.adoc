@@ -557,6 +557,8 @@ may be occupied in the allocated _capacity blocks_ (i.e.,
 cases the controller will allow utilization of all available _capacity units_ by
 an `RCID` within the _capacity blocks_ allocated to it.
 
+<<<
+
 If the controller supports configuring limits on _capacity units_ that may be
 occupied in the allocated _capacity blocks_ (i.e., `cc_capabilities.CUNITS=1`)
 then this register sets an upper limit on the number of _capacity units_ that
@@ -578,10 +580,7 @@ For instance, consider a group of four `RCID` instances configured to share a
 set of _capacity blocks_, representing a total of 100 capacity units. Each
 `RCID` could be configured with a limit of 30 capacity units, ensuring that no
 individual `RCID` exceeds 30% of the total shared _capacity units_.
-====
 
-[NOTE]
-====
 The capacity controller may enforce these limits through various techniques.
 Examples include:
 
