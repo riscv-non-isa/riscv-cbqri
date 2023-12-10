@@ -30,7 +30,7 @@ support when requests are processed by multiple controllers, such as caches,
 fabrics, and memory controllers.
 ====
 
-=== Sizing monitoring counters
+=== Sizing Monitoring Counters
 
 Typically software samples the monitoring counters periodically to monitor
 capacity and bandwidth usage. The width of the monitoring counters is

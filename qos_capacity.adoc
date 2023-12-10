@@ -45,7 +45,7 @@ workloads.
 ====
 
 [[CC_REG]]
-.Capacity-controller QoS register layout
+.Capacity-controller QoS Register Layout (size and offset are in bytes)
 [width=100%]
 [%header, cols="^3,10,^4, 18, 5"]
 |===
@@ -62,8 +62,6 @@ workloads.
 |N     |`cc_cunits`       |8       |<<CC_CUNITS, Capacity units
                                     count>>                     | Yes
 |===
-
-The size and offset in <<CC_REG>> are specified in bytes.
 
 The size of the `cc_block_mask` register is determined by the `NCBLKS` field
 of the `cc_capabilities` register but is always a multiple of 8 bytes. The
@@ -86,12 +84,12 @@ value before configuring the capacity controller with capacity allocation for
 that `RCID` is `UNSPECIFIED`.
 
 [[CC_CAP]]
-=== Capacity-controller capabilities (`cc_capabilities`)
+=== Capacity-controller Capabilities
 
 The `cc_capabilities` register is a read-only register that holds the
 capacity-controller capabilities.
 
-.Capacity-controller capabilities register fields
+.Capacity-controller Capabilities Register
 [wavedrom, , ]
 ....
 {reg: [
@@ -129,6 +127,8 @@ units_ that can be occupied by an `RCID` in _capacity blocks_ allocated to it.
 If `FRCID` is 1, the controller supports an operation to flush and deallocate
 the _capacity blocks_ occupied by an `RCID`.
 
+<<<
+
 If `RPFX` is 1, the controller uses `RCID` in the requests along with `P` least
 significant bits of the `MCID` carried in the request to compute an effective
 `MCID` (<<EMCID>>) to identify the monitoring counter. Legal values of `P` range
@@ -136,13 +136,13 @@ from 0 to 12. If `RPFX` is 0, `P` is set to 0, and the effective `MCID` is the
 same as the `MCID` in the request.
 
 [[CC_MCTL]]
-=== Capacity usage monitoring control (`cc_mon_ctl`)
+=== Capacity Usage Monitoring Control
 
 The `cc_mon_ctl` register is used to control monitoring of capacity usage by a
 `MCID`. When the controller does not support capacity usage monitoring the
 `cc_mon_ctl` register is read-only zero.
 
-.Capacity usage monitoring control (`cc_mon_ctl`)
+.Capacity Usage Monitoring Control Register (`cc_mon_ctl`)
 [wavedrom, , ]
 ....
 {reg: [
@@ -171,7 +171,7 @@ The `OP` field is used to instruct the controller to perform an operation listed
 in <<CC_MON_OP>>.
 
 [[CC_MON_OP]]
-.Capacity usage monitoring operations (`OP`)
+.Capacity Usage Monitoring Operations (`OP`)
 [width=100%]
 [%header, cols="16,^12,70"]
 |===
@@ -194,8 +194,10 @@ used to program the access-type to count, and its validity is indicated by the
 `ATV` field. When `ATV` is 0, the counter counts requests with all access-types,
 and the `AT` value is ignored.
 
+<<<
+
 [[CC_EVT_ID]]
-.Capacity usage monitoring event ID (`EVT_ID`)
+.Capacity Usage Monitoring Event ID (`EVT_ID`)
 [width=100%]
 [%header, cols="12,^12,70"]
 |===
@@ -232,7 +234,7 @@ the register. The `STATUS` field remains valid until a subsequent write to the
 `cc_mon_ctl` register.
 
 [[CC_MON_STS]]
-.`cc_mon_ctl.STATUS` field encodings
+.`cc_mon_ctl.STATUS` Field Encodings
 [width=100%]
 [%header, cols="12,70"]
 |===
@@ -254,14 +256,14 @@ operation, software must first verify that the `BUSY` bit is 0 before writing
 the `cc_mon_ctl` register.
 
 [[CC_MCTR]]
-=== Capacity usage monitoring counter value (`cc_mon_ctr_val`)
+=== Capacity Usage Monitoring Counter Value
 
 The `cc_mon_ctr_val` is a read-only register that holds a snapshot of the
 counter selected by the `READ_COUNTER` operation. When the controller does not
 support capacity usage monitoring, the `cc_mon_ctr_val` register always reads as
 zero.
 
-.Capacity usage monitoring counter value (`cc_mon_ctr_val`)
+.Capacity Usage Monitoring Counter Value Register (`cc_mon_ctr_val`)
 [wavedrom, , ]
 ....
 {reg: [
@@ -287,11 +289,7 @@ capacity initially allocated by the previous workload. In such cases, the
 counter shall not decrement below zero and shall remain at zero. After a brief
 period of execution for the new workload post-counter reset, the counter value is
 expected to stabilize to reflect the capacity usage of this new workload.
-====
 
-[NOTE]
-[%unbreakable]
-====
 Some implementations may not store the `MCID` of the request that caused the
 capacity to be allocated with every unit of capacity in the controller to
 optimize on the storage overheads. Such controllers may in turn rely on
@@ -318,7 +316,7 @@ processes.
 ====
 
 [[CC_ALLOC]]
-=== Capacity allocation control (`cc_alloc_ctl`)
+=== Capacity Allocation Control
 
 The `cc_alloc_ctl` register is used to configure allocation of capacity to an
 `RCID` per access-type (`AT`). The `OP`, `RCID` and `AT` fields in this register
@@ -326,7 +324,7 @@ are WARL. If a controller does not support capacity allocation then this
 register is read-only zero. If the controller does not support capacity
 allocation per access-type then the `AT` field is read-only zero.
 
-.Capacity allocation control (`cc_alloc_ctl`)
+.Capacity Allocation Control Register (`cc_alloc_ctl`)
 [wavedrom, , ]
 ....
 {reg: [
@@ -351,7 +349,7 @@ program the `cc_block_mask` and/or the `cc_cunits` register, followed by
 initiating the operation via the `cc_alloc_ctl` register.
 
 [[CC_ALLOC_OP]]
-.Capacity allocation operations (`OP`)
+.Capacity Allocation Operations (`OP`)
 [width=100%]
 [%header, cols="16,^12,70"]
 |===
@@ -382,6 +380,8 @@ initiating the operation via the `cc_alloc_ctl` register.
 | --           | 4-23      | Reserved for future standard use.
 | --           | 24-31     | Designated for custom use.
 |===
+
+<<<
 
 Capacity controllers enumerate the allocatable _capacity blocks_ in the `NCBLKS`
 field of the `cc_capabilities` register. The `cc_block_mask` register is
@@ -439,6 +439,8 @@ capacity blocks represent 100 units and `RCID=3` has a 30-unit limit while
 blocks, respectively.
 ====
 
+<<<
+
 The `FLUSH_RCID` operation may incur a long latency to complete. New requests to
 the controller by the `RCID` being flushed are allowed. Additionally, the
 controller is allowed to deallocate capacity that was allocated after the
@@ -473,7 +475,7 @@ to a write to the register. The `STATUS` field remains valid until a subsequent
 write to the `cc_alloc_ctl` register.
 
 [[CC_ALLOC_STS]]
-.`cc_alloc_ctl.STATUS` field encodings
+.`cc_alloc_ctl.STATUS` Field Encodings
 [width=100%]
 [%header, cols="12,70"]
 |===
@@ -495,7 +497,7 @@ perform the operation determined by the second write. To ensure proper operation
 software must verify that `BUSY` bit  is 0 before writing any of these registers.
 
 [[CC_BMASK]]
-=== Capacity block mask (`cc_block_mask`)
+=== Capacity Block Mask (`cc_block_mask`)
 
 The `cc_block_mask` is a WARL register. If the controller does not support
 capacity allocation, i.e., `NCBLKS` is 0, then this register is read-only 0.
@@ -506,7 +508,7 @@ always a multiple of 64 bits. The bitmap width in bits (`BMW`) is determined by
 the equation below. The division operation in this equation is an integer
 division.
 
-[latexmath#eq-1,reftext="equation ({counter:eqs})"]
+[latexmath#eq-2,reftext="equation ({counter:eqs})"]
 ++++
 \begin{equation}
 BMW = \lfloor{\frac{NCBLKS + 63}{64}}\rfloor \times 64
@@ -543,7 +545,7 @@ provides the `READ_LIMIT` operation which can be requested by writing to the
 `cc_block_mask` register holds the configured _capacity block_ allocation.
 
 [[CC_CUNITS]]
-=== Capacity units (`cc_cunits`)
+=== Capacity Units
 
 The `cc_cunits` register is a read-write WARL register. If the controller does
 not support capacity allocation (i.e., `NCBLKS` is set to 0), this register
@@ -554,6 +556,8 @@ may be occupied in the allocated _capacity blocks_ (i.e.,
 `cc_capabilities.CUNITS=0`) then this register shall be read-only zero. In such
 cases the controller will allow utilization of all available _capacity units_ by
 an `RCID` within the _capacity blocks_ allocated to it.
+
+<<<
 
 If the controller supports configuring limits on _capacity units_ that may be
 occupied in the allocated _capacity blocks_ (i.e., `cc_capabilities.CUNITS=1`)
