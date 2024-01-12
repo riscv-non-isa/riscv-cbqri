@@ -202,7 +202,7 @@ and the `AT` value is ignored.
 [%header, cols="12,^12,70"]
 |===
 |Event ID      | Encoding ^| Description
-|`None`        | 0         | Counter does not count and retains its value.
+|`None`        | 0         | Counter does not count.
 |`Occupancy`   | 1         | Counter is incremented by 1 when a request with a
                              matching `MCID` and `AT` allocates a unit of
                              capacity. The counter is decremented by 1 when a
@@ -214,8 +214,7 @@ and the `AT` value is ignored.
 When the `EVT_ID` for a `MCID` is programmed with a non-zero and legal value
 using the `CONFIG_EVENT` operation, the counter is reset to 0 and starts counting
 matching events for requests with the matching `MCID` and `AT` (if `ATV` is 1).
-However, if the `EVT_ID` is programmed to 0, the counter retains its current value
-but stops counting.
+However, if the `EVT_ID` is programmed to 0, the counter stops counting.
 
 A controller that does not support monitoring by access-type can hardwire the
 `ATV` and the `AT` fields to 0, indicating that the counter counts requests with
