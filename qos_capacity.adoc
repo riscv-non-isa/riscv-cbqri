@@ -524,10 +524,10 @@ those capacity blocks. Next, the `cc_alloc_ctl register` is written to request a
 `CONFIG_LIMIT` operation for the `RCID` and `AT`. Once a capacity allocation
 limit has been established, a request may be allocated capacity in the _capacity
 blocks_ allocated to the `RCID` and `AT` associated with the request. It is
-important to note that at least one _capacity block_ must be allocated using
-`cc_block_mask` when allocating capacity, or else the operation will fail with
-`STATUS=5`.  Overlapping _capacity block_ masks among `RCID` and/or `AT` are
-allowed to be configured.
+important to note that some implementations may require at least one _capacity
+block_ to be allocated using `cc_block_mask` when allocating capacity;
+otherwise, the operation will fail with `STATUS=5`.  Overlapping _capacity block_
+masks among `RCID` and/or `AT` are allowed to be configured.
 
 [NOTE]
 ====
