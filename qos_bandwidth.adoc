@@ -428,7 +428,7 @@ When the `Mweight` parameter is not set to 0, the amount of unused bandwidth
 allocated to `RCID=x` during contention with another `RCID` that is also
 permitted to use unused bandwidth is determined by dividing the `Mweight` of
 `RCID=x` by the sum of the `Mweight` of all other contending `RCIDs`. This
-ratio `P` is determined by <<eq-3>>.
+ratio `P` is determined by <<eq-4>>.
 
 [latexmath#eq-4,reftext="equation ({counter:eqs})"]
 ++++
