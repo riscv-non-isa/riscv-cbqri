@@ -18,7 +18,8 @@ configure counters identified by the `MCID` to count events in the resource
 controllers that control accesses to such shared resources.
 
 <<QOS_SIZING>> discusses guidelines for sizing the QoS IDs and the need for
-differentiated IDs for monitoring.
+differentiated IDs for monitoring. All supported `RCID` and `MCID` may be
+actively used in the system at any instance.
 
 [[EMCID]]
 === Associating `RCID` and `MCID` with requests
