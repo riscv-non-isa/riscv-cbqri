@@ -408,7 +408,8 @@ the bandwidth usage over a few accounting intervals.
 
 The `Rbwb` represents the bandwidth that is made available to a `RCID` for
 requests matching `AT`, even when all other `RCID` are using their full
-allocation of bandwidth.
+allocation of bandwidth. The bandwidth allocation scales linearly with the
+number of bandwidth blocks programmed into `Rbwb`.
 
 If there is non-reserved or unused bandwidth available in an accounting
 interval, `RCIDs` may compete for additional bandwidth. The non-reserved or
