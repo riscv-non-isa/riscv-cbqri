@@ -38,7 +38,7 @@ computed as:
 [latexmath#eq-1,reftext="equation ({counter:eqs})"]
 ++++
 \begin{equation}
-Effective-MCID = (RCID << P) | (MCID & ((1 << P) - 1))
+Effective-MCID = (RCID << P) | (MCID \& ((1 << P) - 1))
 \end{equation}
 ++++
 
