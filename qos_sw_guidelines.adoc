@@ -13,6 +13,13 @@ reported using these methods:
 * Placement and topology describing the hart and IO bridges that share the
   resources controlled by the controller
 * The number of QoS identifiers supported by the controller
+* For memory bandwidth controllers, the controlled memory regions. These may be
+  described in the form of NUMA domains or proximity domains
+* If a controller is part of a set of controllers that collectively control a
+  shared resource such as memory bandwidth of a memory region, then information
+  to identify all members of the set should be reported
+* Constraints imposed by the controllers, such as the minimum number of capacity
+  or bandwidth blocks per RCID
 
 === Context Switching QoS Identifiers
 
