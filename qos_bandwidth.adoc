@@ -254,9 +254,9 @@ establish an accurate counter value for the monitored event.
 The counter provides the number of bytes transferred by requests matching the
 `EVT_ID` as they go past the monitoring point. A bandwidth value may be
 determined by reading the byte count value at two instances of time `T1` and
-`T2` (see <<eq-2>>). If the value of the counter at time `T1` was `B1`, and at
-time `T2` is `B2`, then the bandwidth can be calculated as follows. The
-frequency of the time source is represented by latexmath:[T_{freq}].
+`T2`. If the value of the counter at time `T1` was `B1`, and at time `T2` is
+`B2`, then the bandwidth can be calculated using <<eq-3>>. The frequency of the
+time source is represented by latexmath:[T_{freq}].
 
 [latexmath#eq-3,reftext="equation ({counter:eqs})"]
 ++++
