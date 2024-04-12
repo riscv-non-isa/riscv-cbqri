@@ -18,7 +18,8 @@ configure counters identified by the `MCID` to count events in the resource
 controllers that control accesses to such shared resources.
 
 <<QOS_SIZING>> discusses guidelines for sizing the QoS IDs and the need for
-differentiated IDs for monitoring.
+differentiated IDs for monitoring. All supported `RCID` and `MCID` may be
+actively used in the system at any instance.
 
 [[EMCID]]
 === Associating `RCID` and `MCID` with requests
@@ -38,7 +39,7 @@ computed as:
 [latexmath#eq-1,reftext="equation ({counter:eqs})"]
 ++++
 \begin{equation}
-Effective-MCID = (RCID << P) | (MCID & ((1 << P) - 1))
+Effective-MCID = (RCID << P) | (MCID \& ((1 << P) - 1))
 \end{equation}
 ++++
 
@@ -57,20 +58,26 @@ of `mstateen0` controls access to `srmcfg` from privilege modes less than M.
 
 ==== Device initiated requests
 
-Devices may be configured with an `RCID` and `MCID` for requests originated 
-from the device if the device implementation supports such capability. The 
-method to configure the QoS identifiers into devices is `UNSPECIFIED`.
+A RISC-V IOMMU cite:[IOMMU] extension to support configuring QoS identifiers is
+specified in <<QOS_IOMMU>>. If the system supports an IOMMU with this extension,
+the IOMMU may be configured with the `RCID` and `MCID` to associate with requests
+from devices and from the IOMMU itself.
 
-Where the device does not natively support being configured with an `RCID`
-and `MCID`, the implementation may provide a shim at the device interface that
-may be configured with the `RCID` and `MCID` that are associated with requests
-originating from the device. The method to configure such QoS identifiers into
-a shim is `UNSPECIFIED`.
+If the system does not support an IOMMU with this extension, then the
+association of `RCID` and `MCID` with requests from devices becomes
+implementation-defined. Such methods may include, but are not limited to, one of
+the following:
 
-If the system supports an IOMMU, then the IOMMU may be configured with the
-`RCID` and `MCID` to associate requests from the device with QoS identifiers.
-The RISC-V IOMMU cite:[IOMMU] extension to support configuring QoS identifiers
-is specified in <<QOS_IOMMU>>.
+* Devices may be configured with an `RCID` and `MCID` for requests originating
+  from the device, provided the device implementation and the bus protocol used
+  by the device support such capabilities. The method to configure the QoS
+  identifiers into devices remains `UNSPECIFIED`.
+
+* Where the device does not natively support being configured with an `RCID`
+  and `MCID`, the implementation may provide a shim at the device interface. This
+  shim may be configured with the `RCID` and `MCID` to associate with requests
+  originating from the device. The method to configure such QoS identifiers into
+  a shim is `UNSPECIFIED`.
 
 === Access-type (`AT`)
 
