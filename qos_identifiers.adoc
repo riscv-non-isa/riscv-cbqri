@@ -34,7 +34,7 @@ etc.). Two modes of operation are supported by CBQRI. In the direct mode, the
 `MCID` carried with the request is directly used by the controller to identify
 the counter and is the effective `MCID`. In the RCID-prefixed mode, the
 controller identifies the counter for monitoring using an effective `MCID`
-computed as: latexmath:[Effective-MCID = (RCID \ll P) | (MCID \text{&} ((1 \ll P) - 1))].
+computed as: latexmath:[Effective-MCID = (RCID \ll P) \mid (MCID \, \text{&} \, ((1 \ll P) - 1))].
 
 Legal values of `P` range from 0 to 12 and are enumerated in the capability
 register of the controller. Software should use the effective `MCID` as the
