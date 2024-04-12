@@ -39,7 +39,7 @@ computed as: latexmath:[Effective-MCID = (RCID \ll P) \mid (MCID \, \text{&} \, 
 Legal values of `P` range from 0 to 12 and are enumerated in the capability
 register of the controller. Software should use the effective `MCID` as the
 `MCID` operand to the controller for operations on the monitoring counters.
-
+ 
 ==== RISC-V hart initiated requests (Ssqosid)
 
 The Ssqosid extension cite:[SSQOSID] introduces a read/write S/HS-mode register
