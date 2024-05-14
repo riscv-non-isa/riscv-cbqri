@@ -30,7 +30,7 @@ The reset value is `UNSPECIFIED` for all other register fields.
 
 The bandwidth controllers at reset must allocate all available bandwidth to
 `RCID` value of 0. When the bandwidth controller supports bandwidth allocation
-per access-type, the access-type value of 0 of `RCID=0` is allocated all
+per access-type, the access-type value of 0 of `RCID=0` is allocated to all
 available bandwidth, while all other access-types associated with that `RCID`
 share the bandwidth allocation with `AT=0`. The bandwidth allocation for all
 other `RCID` values is `UNSPECIFIED`. The bandwidth controller behavior in
@@ -63,7 +63,7 @@ The `VER` field holds the version of the specification implemented by the
 bandwidth controller. The low nibble is used to hold the minor version of the
 specification and the upper nibble is used to hold the major version of the
 specification. For example, an implementation that supports version 1.0 of the
-specification reports 0x10.
+specification reports `0x10`.
 
 The `NBWBLKS` field holds the total number of available bandwidth blocks in 
 the controller. The bandwidth represented by each bandwidth block is
@@ -71,16 +71,16 @@ the controller. The bandwidth represented by each bandwidth block is
 multiples of a bandwidth block, which enables proportional allocation of
 bandwidth.
 
-Bandwidth controllers may limit the maximum bandwidth that may be reserved to
-a value smaller than `NBWBLKS`. The `MRBWB` field reports the maximum number of
+Bandwidth controllers can limit the maximum bandwidth that can be reserved to
+a value smaller than the `NBWBLKS` value. The `MRBWB` field reports the maximum number of
 bandwidth blocks that can be reserved.
 
 [NOTE]
 ====
-The bandwidth controller needs to meter the bandwidth usage by a workload to
-determine if it is exceeding its allocations and, if necessary, take necessary
+The bandwidth controller meters the bandwidth usage by a workload to
+determine if it is exceeding its allocations and, if necessary, take 
 measures to throttle the workload's bandwidth usage. Therefore, the instantaneous
-bandwidth used by a workload may either exceed or fall short of  the configured
+bandwidth used by a workload either exceeds or falls short of the configured
 allocation. QoS capabilities are statistical in nature and are typically
 designed to enforce the configured bandwidth over larger time windows. By not
 allowing all available bandwidth blocks to be reserved for allocation, the
@@ -89,14 +89,14 @@ bandwidth controller can handle such transient inaccuracies.
 
 If `RPFX` is 1, the controller uses `RCID` in the requests along with `P` least
 significant bits of the `MCID` carried in the request to compute an effective
-`MCID` (<<EMCID>>) to identify the monitoring counter. Legal values of `P` range
+`MCID` (<<EMCID>>) to identify the monitoring counter. Valid values of `P` range
 from 0 to 12. If `RPFX` is 0, `P` is set to 0, and the effective `MCID` is the
 same as the `MCID` in the request.
 
 [[BC_MCTL]]
 === Bandwidth Usage Monitoring Control
 
-The `bc_mon_ctl` register is used to control monitoring of bandwidth usage by a
+The `bc_mon_ctl` register controls the monitoring of bandwidth usage by a
 `MCID`. When the controller does not support bandwidth usage monitoring, the
 `bc_mon_ctl` register is read-only zero.
 
@@ -117,10 +117,10 @@ The `bc_mon_ctl` register is used to control monitoring of bandwidth usage by a
 ....
 
 Bandwidth controllers that support bandwidth usage monitoring implement a usage
-monitoring counter for each supported `MCID`. The usage monitoring counter may
+monitoring counter for each supported `MCID`. The usage monitoring counter might
 be configured to count a monitoring event. When an event matching the event
-configured for the `MCID` occurs then the monitoring counter is updated. The
-event matching may optionally be filtered by the access-type. The monitoring 
+configured for the `MCID` occurs, then the monitoring counter is updated. The
+event matching can optionally be filtered by the access-type. The monitoring 
 counter for bandwidth usage counts the number of bytes transferred by requests
 matching the monitoring event as the requests go past the monitoring point.
 
@@ -149,8 +149,8 @@ listed in <<BC_MON_OP>>.
 | --           | 24-31     | Designated for custom use.
 |===
 
-The `EVT_ID` field is used to program, using the `CONFIG_EVENT` operation, the
-identifier of the event to count in the monitoring counter selected by `MCID`.
+The `EVT_ID` field uses the `CONFIG_EVENT` operation to program the
+identifier of the event to count in the monitoring counter, selected by `MCID`.
 The `AT` field is used to program the access-type to count, and its validity is
 indicated by the `ATV` field. When `ATV` is 0, the counter counts requests with
 all access-types, and the `AT` value is ignored.
@@ -190,8 +190,8 @@ all access-types.
 
 When the `bc_mon_ctl` register is written, the controller may need to perform
 several actions that may not complete synchronously with the write. A write to
-the `bc_mon_ctl` sets the read-only `BUSY` bit to 1 indicating the controller
-is performing the requested operation. When the `BUSY` bit reads 0, the
+the `bc_mon_ctl` register sets the read-only `BUSY` bit to 1, indicating that the 
+controller is performing the requested operation. When the `BUSY` bit reads 0, the
 operation is complete, and the read-only `STATUS` field provides a status value
 (see <<BC_MON_STS>> for details). Written values to the `BUSY` and the `STATUS`
 fields are ignored. An implementation that can complete the operation
@@ -378,9 +378,9 @@ The `bc_bw_alloc` holds the previously configured reserved bandwidth blocks for
 an `RCID` and `AT` on successful completion of the `READ_LIMIT` operation.
 
 Bandwidth is allocated in multiples of bandwidth blocks, and the value in `Rbwb`
-must be at least 1 and must not exceed `MRBWB`. Otherwise, the `CONFIG_LIMIT`
+must be at least 1 and must not exceed `MRBWB` value. Otherwise, the `CONFIG_LIMIT`
 operation fails with `STATUS=5`. Additionally, the sum of `Rbwb` allocated
-across all `RCIDs` must not exceed `MRBWB`, or the `CONFIG_LIMIT` operation
+across all `RCIDs` must not exceed `MRBWB` value, or the `CONFIG_LIMIT` operation
 fails with `STATUS=5`.
 
 .Bandwidth Allocation Configuration Register (`bc_bw_alloc`)
@@ -400,30 +400,30 @@ The `Rbwb`, `Mweight`, `sharedAT`, and `useShared` are all WARL fields.
 
 Bandwidth allocation is typically enforced by the bandwidth controller over
 finite accounting windows. The process involves measuring the bandwidth
-consumption over an accounting window and using the measured bandwidth to
-determine if an `RCID` is exceeding its bandwidth allocations for each
-access-types. The specifics of how the accounting window is implemented are
-`UNSPECIFIED`, but is expected to provide a statistically accurate control of 
-the bandwidth usage over a few accounting intervals.
+consumption over an accounting window and determining if an `RCID` is exceeding 
+its bandwidth allocations for each access-types. The specifics of how the 
+accounting window is implemented are `UNSPECIFIED`, but is expected to provide 
+a statistically accurate control of the bandwidth usage over a few accounting 
+intervals.
 
-The `Rbwb` represents the bandwidth that is made available to a `RCID` for
-requests matching `AT`, even when all other `RCID` are using their full
+The `Rbwb` field represents the bandwidth that is made available to an `RCID` for
+requests that match `AT`, even when all other `RCID` are using their full
 allocation of bandwidth. The bandwidth allocation scales linearly with the
 number of bandwidth blocks programmed into `Rbwb`.
 
 If there is non-reserved or unused bandwidth available in an accounting
 interval, `RCIDs` may compete for additional bandwidth. The non-reserved or
-unused bandwidth is proportionately shared among the competing `RCIDs` using the
+unused bandwidth is proportionately shared among the competing `RCIDs` by using the
 configured `Mweight` parameter, which is a number between 0 and 255. A larger
 weight implies a greater fraction of the bandwidth. A weight of 0 implies that
 the configured limit is a hard limit, and the use of unused or non-reserved
 bandwidth is not allowed.
 
-The sharing of non-reserved bandwidth is not differentiated by access-type.
+Sharing of non-reserved bandwidth is not differentiated by access-type identifier.
 Therefore, the `Mweight` parameter must be programmed identically for all
-access-types. If this parameter is programmed differently for each access-type,
-then the controller may use the parameter configured for any of the
-access-types, but the behavior is otherwise well defined.
+access-type identifiers. If this parameter is programmed differently for each access-type 
+identifier, then the controller can use the parameter configured for any of the
+identifiers, but the behavior is otherwise well defined.
 
 When the `Mweight` parameter is not set to 0, the amount of unused bandwidth
 allocated to `RCID=x` during contention with another `RCID` that is also
@@ -440,36 +440,36 @@ P = \frac{Mweight_{x}}{\sum_{r=1}^{r=n} Mweight_{r}}
 
 [NOTE]
 ====
-The bandwidth enforcement is typically work-conserving, meaning that it allows
-unused bandwidth to be used by requestors enabled to use it even if they have
-consumed their `Rbwb`.
+The bandwidth enforcement is typically work-conserving, allowing unused bandwidth 
+ to be used by requestors that are enabled to use it, even if they have
+consumed their `Rbwb` allotment.
 
 When contending for unused bandwidth, the weighted share is typically 
 computed among the `RCIDs` that are actively generating requests in that
 accounting interval and have a non-zero weight programmed.
 ====
 
-If unique bandwidth allocation is not required for an access-type, then the
-`useShared` parameter may be set to 1 for a `CONFIG_LIMIT` operation. When
-`useShared` is set to 1, the `sharedAT` field specifies the access-type with
-which the bandwidth allocation is shared by the access-type in
+If unique bandwidth allocation is not required for an access-type identifier, then the
+`useShared` parameter can be set to 1 for a `CONFIG_LIMIT` operation. When
+`useShared` is set to 1, the `sharedAT` field specifies the access-type identifer with
+which the bandwidth allocation is shared by the access-type identifier in
 `bc_alloc_ctl.AT`. In this case, the `Rbwb` and `Mweight` fields are ignored,
-and the configurations of the access-type in `sharedAT` are applied. If the
-access-type specified by `sharedAT` does not have unique bandwidth allocation,
+and the configurations of the access-type identifier in `sharedAT` are applied. If the
+access-type identifier specified by `sharedAT` does not have unique bandwidth allocation,
 meaning that it has not been configured with `useShared=0`, then the behavior
 is `UNSPECIFIED`.
 
 The `useShared` and `sharedAT` fields are read-only zero if the bandwidth
-controller does not support bandwidth allocation per access-type.
+controller does not support bandwidth allocation per access-type identifier.
 
 [NOTE]
 ====
-When unique bandwidth allocation for an access-type is not required then one or
-more access-types may be configured with a shared bandwidth allocation. For
-example, consider a bandwidth controller that supports 3 access-types. The
-access-type 0 and 1 of `RCID` 3 are configured with unique bandwidth allocations
-and the access-type 2 is configured to share bandwidth allocation with
-access-type 1. The example configuration is illustrated as follows:
+When unique bandwidth allocation for an access-type identifier is not required, then one or
+more identifiers might be configured with a shared bandwidth allocation. For
+example, consider a bandwidth controller that supports 3 access-type identifers. The
+access-type identifier 0 and 1 of `RCID` 3 are configured with unique bandwidth allocations
+and the access-type identifier 2 is configured to share bandwidth allocation with
+identifier 1. The example configuration is illustrated in the following table:
 
 [width=100%]
 [%header, cols="4,^2,^2,^2,^2"]
