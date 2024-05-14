@@ -4,19 +4,19 @@
 [[QOS_SIZING]]
 === Sizing QoS Identifiers
 
-In a typical implementation the number of `RCID` bits implemented (e.g., to
-support 10s of `RCIDs`) may be smaller than the number of `MCID` bits
-implemented (e.g., to support 100s of `MCIDs`). 
+In a typical implementation, the number of `RCID` bits implemented (for example, to
+support 10s of `RCIDs`) might be smaller than the number of `MCID` bits
+implemented (for example, to support 100s of `MCIDs`). 
 
 It is a typical usage to associate a group of applications/VMs with a common
 `RCID` and thus sharing a common pool of resource allocations. The resource
 allocations for the `RCID` is established to meet the SLA objectives of all
 members of the group. If SLA objectives of one or more members of the group
-stop being met, the resource usage of one or more members of the group may be
+stop being met, the resource usage of one or more members of the group might be
 monitored by associating them with a unique `MCID` and this iterative analysis
 process used to determine the optimal strategy - increasing resources allocated
 to the `RCID`, moving some members to a different `RCID`, migrating some members
-away to another machine, etc. - for restoring the SLA. Having a sufficiently
+away to another machine, and so on - for restoring the SLA. Having a sufficiently
 large pool of `MCID` speeds up this analysis.
 
 [NOTE]
