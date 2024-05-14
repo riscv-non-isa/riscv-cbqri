@@ -3,24 +3,24 @@
 
 === Sizing QoS Identifiers
 
-In a typical implementation the number of `RCID` bits implemented (e.g., to
-support 10s of `RCIDs`) may be smaller than the number of `MCID` bits
-implemented (e.g., to support 100s of `MCIDs`). 
+In a typical implementation, the number of `RCID` bits implemented (for example, to
+support 10s of `RCIDs`) might be smaller than the number of `MCID` bits
+implemented (for example, to support 100s of `MCIDs`). 
 
 It is a typical usage to associate a group of applications/VMs with a common
 `RCID` and thus sharing a common pool of resource allocations. The resource
 allocations for the `RCID` is established to meet the SLA objectives of all
 members of the group. If SLA objectives of one or more members of the group
-stop being met, the resource usage of one or more members of the group may be
+stop being met, the resource usage of one or more members of the group might be
 monitored by associating them with a unique `MCID` and this iterative analysis
 process used to determine the optimal strategy - increasing resources allocated
 to the `RCID`, moving some members to a different `RCID`, migrating some members
-away to another machine, etc. - for restoring the SLA. Having a sufficiently
+away to another machine, and so on. - for restoring the SLA. Having a sufficiently
 large pool of `MCID` speeds up this analysis.
 
 [NOTE]
 ====
-To support maximal flexibility in allocation of QoS IDs to workloads it is
+To support maximal flexibility in allocation of QoS IDs to workloads, it is
 recommended for all resource controllers in the system to support an identical
 number of `RCID` and `MCID`.
 ====
@@ -45,7 +45,7 @@ To differential requests to shared resources originating from TEEs from
 non-TEEs a confidential-access indicator accompanies requests made to the shared
 resources. 
 
-The resource controller may then use the confidential-access indicator along
+The resource controller might then use the confidential-access indicator along
 with the QoS identifiers that accompany the request to determine the resource
 allocations and the monitoring counters to use.
 
@@ -56,36 +56,36 @@ Supporting confidential computing thus requires following additional capabilitie
 
 ==== Secure register programming interface
 
-To support secure execution a CBQRI capable controller may provide a second
+To support secure execution, a CBQRI capable controller might provide a second
 register programming interface that is used to establish resource allocations
 and resource usage monitoring for secure execution. The secure register 
-programming interface has the same register layout and behavior defined as
+programming interface includes the same register layout and behavior defined as
 specified in this specification.
 
 Access to the secure register programming interfaces should be restricted to the
-secure execution supervisor (e.g., secure M-mode) using the PMP.
+secure execution supervisor (for example, secure M-mode) by using the PMP.
 
 The resource controllers that support confidential computing thus support two
 set of resource allocation configurations - confidential and non-confidential -
 for each `RCID` and `AT`. The confidential resource allocation configurations
-may on only be accessed through the secure register programming interface.
+can be accessed only through the secure register programming interface.
 
 The resource controllers that support confidential computing thus support two
 set of resource usage monitoring events and counters - confidential and
 non-confidential - for each `MCID` and `AT`. The confidential monitoring events
-and counters may on only be accessed through the secure register programming
+and counters can be accessed only through the secure register programming
 interface.
 
-An implementation may restrict number of `RCID` and `MCID` that may be used for
+An implementation can restrict number of `RCID` and `MCID` that might be used for
 confidential computing and thereby implement a smaller number of entries in the
-configuration tables that may be programmed through the secure register
+configuration tables that can be programmed through the secure register
 programming interface.
 
 [NOTE]
 ====
-To support maximal flexibility in allocation of QoS IDs to TEEs it is
+To support maximal flexibility in allocation of QoS IDs to TEEs, it is
 recommended for all resource controllers in the system to support an identical
-number of `RCID` and `MCID` that may be associated with TEEs.
+number of `RCID` and `MCID` that might be associated with TEEs.
 ====
 
 ==== Confidential-access indication
@@ -96,33 +96,33 @@ and `AT`.
 
 The `C` bit associated with the request indicates whether the access is to a
 confidential resources (`C=1`) or to a non-confidential resource. For memory
-controllers and caches, for example, the `C` bit may be determined as a property
+controllers and caches, for example, the `C` bit can be determined as a property
 of the memory region accessed. 
 
-Execution in a TEE may generate requests associated with both settings of `C`
+Execution in a TEE generates requests associated with both settings of `C`
 bit. For example, when a TEE accesses its confidential memory the `C` bit
 associated with such requests will be 1 and when the TEE accesses
-non-confidential memory (e.g., memory buffers used by the TEE for communication
-with agents outside the TEE) then the `C` bit associated the request will be 0.
+non-confidential memory (for example, memory buffers used by the TEE for communication
+with agents outside the TEE), then the `C` bit associated the request will be 0.
 
-Execution outside of a TEE may only be requests with `C=0` as access to
+Execution outside of a TEE might only be requests with `C=0`, as access to
 confidential resources is restricted to TEEs.
 
 For requests with `C=1`, resource controllers use the confidential resource
-allocation configurations that were established using the secure register
+allocation configurations that were established by using the secure register
 programming interface for the associated `RCID` and `AT`. For requests with
-`C=0`, resource controllers use the configurations that were established using
+`C=0`, resource controllers use the configurations that were established by using
 the non-secure register programming interface.
 
 For requests with `C=1`, the monitoring events programmed through the secure
 register programming events for the associated `MCID` and `AT` are triggered and
-are counted in monitoring counters that may only be accessed using the secure
+are counted in monitoring counters that can be accessed only by using the secure
 register programming interface.
 
 [NOTE]
 ====
-The confidential-access indicator may be determined at the originator of the
-request and thus be carried along with the request or may be determined at the
+The confidential-access indicator can be determined at the originator of the
+request and thus be carried along with the request or can be determined at the
 resource controller itself based on the properties of the address space
 accessed.
 ====
@@ -133,72 +133,71 @@ accessed.
 
 Typically, the contents of the `sqoscfg` CSR is updated with a new `RCID`
 and/or `MCID` by the HS/S-mode scheduler if the `RCID` and/or `MCID` of the
-new process/VM is not same as that of the old process/VM.
+new process/VM is not same as that of the previous process/VM.
 
-Usually for virtual machines the resource allocations are configured by the
-hypervisor. Usually the Guest OS in a virtual machine does not participate in
+Usually, for virtual machines, the resource allocations are configured by the
+hypervisor. Usually, the Guest OS in a virtual machine does not participate in
 the QoS flows as the Guest OS does not know the physical capabilities of the
 platform or the resource allocations for other virtual machines in the system.
-If a use case requires it, a hypervisor may virtualize the QoS capability to a
-VM by virtualizing the memory-mapped CBQRI register interface and using the
+If a use case requires it, a hypervisor can virtualize the QoS capability to a
+VM by virtualizing the memory-mapped CBQRI register interface and by using the
 virtual-instruction exception on access to `sqoscfg` CSR.
 
 [NOTE]
 ====
 If the use of directly selecting among a set of `RCID` and/or `MCID` by a VM
-becomes more prevalent and the overhead of virtualizing the `sqoscfg` CSR using
-the virtual instruction exception is not acceptable then a future extension may
+becomes more prevalent and the overhead of virtualizing the `sqoscfg` CSR by using
+the virtual instruction exception is not acceptable, then a future extension might
 be introduced where the `RCID`/`MCID` attempted to be written by VS mode are
 used as a selector for a set of `RCID`/`MCID` that the hypervisor configures in
 a set of HS mode CSRs.
 ====
 
-A Hypervisor may cause a context switch from one virtual machine to another. The
-context switch usually involves saving the context associated with the VM being
-switched away from and restoring the context of the VM being switched to. Such
-context switch may be invoked in response to an explicit call from the VM (i.e,
-as a function of an `ECALL` invocation) or may be done asynchronously (e.g., in
-response to a timer interrupt). In such cases the hypervisor may want to execute
-with the `sqoscfg` configurations of the VM being switched away from such that
-the execution is attributed to the VM being switched from and then prior to
-executing the context switch code associated with restoring the new VMs context
-first switch to the `sqoscfg` appropriate for the new VM being switched to such
-that all of that execution is attributed to the new VM. Further in this context
-switch process, if the hypervisor intends some of the execution to be attributed
-to neither the outgoing VM nor the incoming VM, then the hypervisor may switch
-to a new configuration that is different from the configuration of either of the
-VMs for the duration of such execution. QoS capabilities are statistical in
-nature and the small duration, such as the few instructions in the hypervisor
-trap handler entrypoint, for which the HS-mode may execute with the `RCID`/
-`MCID` established for lower privilege mode operation may not be statistically
-significant.
+A Hypervisor might cause a context switch from one virtual machine to another. The
+context switch usually involves saving the context associated with the VM that is being
+switched away from and restoring the context of the VM that is being switched to. Such
+context switch might be invoked in response to an explicit call from the VM (for example,
+as a function of an `ECALL` invocation) or might be done asynchronously (for example, in
+response to a timer interrupt). In such cases, the hypervisor might want to execute
+with the `sqoscfg` configurations of the VM that is being switched away from so that
+the execution is attributed to that VM. Then, before executing the context switch code
+associated with restoring the new VMs context, first switch to the `sqoscfg` tht is 
+appropriate for the new VM that is being switched to so that all of that execution 
+is attributed to the new VM. Further in this context switch process, if the hypervisor 
+intends some of the execution to be attributed to neither the outgoing VM nor the 
+incoming VM, then the hypervisor can switch to a new configuration that is different from 
+the configuration of either of the VMs for the duration of such execution. QoS 
+capabilities are statistical in nature and the small duration, such as the few 
+instructions in the hypervisor trap handler entrypoint for which the HS-mode can 
+execute with the `RCID`/`MCID` values established for lower privilege mode operation,
+might not be statistically significant.
 
 === QoS Identifiers for supervisor and machine mode
 
-The `RCID` and `MCID` configured in `sqoscfg` also apply to execution in
-S/HS-mode but is typically not an issue. Usually, S/HS-mode execution occurs to
+The `RCID` and `MCID` values configured in `sqoscfg` also apply to execution in
+S/HS-mode, but is typically not an issue. Usually, S/HS-mode execution occurs to
 provide services, such as through the SBI, to software executing at lower
-privilege. Since the S/HS-mode invocation was to provide a service for the
-lower privilege mode, the S/HS-mode software may not modify the `sqoscfg` CSR.
+privilege. Because the S/HS-mode invocation was to provide a service for the
+lower privilege mode, the S/HS-mode software cannot modify the `sqoscfg` CSR.
 
 If a use case requires use of separate `RCID` and/or `MCID` for software
-execution in S/HS-mode, then the S/HS-mode SW may update the `sqoscfg` CSR and
-restore it prior to returning to the lower privilege mode execution.
+execution in S/HS-mode, then the S/HS-mode SW might update the `sqoscfg` CSR and
+restore it before returning to the lower privilege mode execution.
 
 The `RCID` and `MCID` configured in `sqoscfg` also apply to execution in M-mode
 but is typically not an issue. Usually, M-mode execution occurs to provide
 services, such as through the SBI interface, to software executing at lower
-privilege. Since the M-mode invocation was to provide a service for the lower
-privilege mode, the M-mode software may not modify the `sqoscfg` CSR. If a use
-case requires use of a separate `RCID` and/or `MCID` for software execution in
-M-mode, then the M-mode SW may update the `sqoscfg` CSR and restore it prior to
+privilege. Because the M-mode invocation provides a service for the lower
+privilege mode, the M-mode software might not modify the `sqoscfg` CSR. If a use
+case requires the use of a separate `RCID` and/or `MCID` for software execution in
+M-mode, then the M-mode SW can update the `sqoscfg` CSR and restore it before
 returning to lower privilege mode execution.
 
 === Secure register programming interface
 
 Security monitors such as the TEE security monitor must protect the secure
 register programming interface from read or write access by non-secure entities.
-Methods such as PMPs, page tables, etc. may be employed to implementation such
+Methods such as PMPs, page tables, and so on can be employed to implementation such
 protection mechanisms.
 
 When multiple security domains exists the control of the secure register
