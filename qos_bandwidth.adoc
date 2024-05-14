@@ -30,7 +30,7 @@ The reset value is `UNSPECIFIED` for all other register fields.
 
 The bandwidth controllers at reset must allocate all available bandwidth to
 `RCID` value of 0. When the bandwidth controller supports bandwidth allocation
-per access-type, the access-type value of 0 of `RCID=0` is allocated to all
+per access-type, the access-type value of 0 of `RCID=0` is allocated all
 available bandwidth, while all other access-types associated with that `RCID`
 share the bandwidth allocation with `AT=0`. The bandwidth allocation for all
 other `RCID` values is `UNSPECIFIED`. The bandwidth controller behavior in
