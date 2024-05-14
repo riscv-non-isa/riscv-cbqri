@@ -20,7 +20,7 @@ When multiple workloads are running concurrently on modern processors with large
 core counts, multiple cache hierarchies, and multiple memory controllers, the
 performance of a workload can become less deterministic or even non-deterministic.
 This situation occurs because the worload performance depends on the behavior of the 
-other workloads in the machine that contend for the shared resources, whcih can lead to
+other workloads in the machine that contend for the shared resources, which can lead to
 interference. In many deployment scenarios, such as public cloud servers, the
 workload owner might not be in control of the type and placement of other
 workloads in the platform.
