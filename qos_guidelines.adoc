@@ -161,7 +161,7 @@ as a function of an `ECALL` invocation) or might be done asynchronously (for exa
 response to a timer interrupt). In such cases, the hypervisor might want to execute
 with the `sqoscfg` configurations of the VM that is being switched away from so that
 the execution is attributed to that VM. Then, before executing the context switch code
-associated with restoring the new VMs context, first switch to the `sqoscfg` tht is 
+associated with restoring the new VMs context, first switch to the `sqoscfg` that is 
 appropriate for the new VM that is being switched to so that all of that execution 
 is attributed to the new VM. Further in this context switch process, if the hypervisor 
 intends some of the execution to be attributed to neither the outgoing VM nor the 
@@ -178,7 +178,7 @@ The `RCID` and `MCID` values configured in `sqoscfg` also apply to execution in
 S/HS-mode, but is typically not an issue. Usually, S/HS-mode execution occurs to
 provide services, such as through the SBI, to software executing at lower
 privilege. Because the S/HS-mode invocation was to provide a service for the
-lower privilege mode, the S/HS-mode software cannot modify the `sqoscfg` CSR.
+lower privilege mode, the S/HS-mode software might not modify the `sqoscfg` CSR.
 
 If a use case requires use of separate `RCID` and/or `MCID` for software
 execution in S/HS-mode, then the S/HS-mode SW might update the `sqoscfg` CSR and
