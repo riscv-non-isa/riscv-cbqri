@@ -20,7 +20,7 @@ workload.
 For example, a cache controller allocates capacity in multiples of cache
 blocks. In this context, a cache block serves as a _capacity unit_, and a group
 of cache blocks forms a _capacity block_. A cache controller supporting capacity
-allocation might define a _capacity block_ to be the cache blocks in one
+allocation _by ways_ might define a _capacity block_ to be the cache blocks in one
 way of the cache.
 ====
 
@@ -386,11 +386,12 @@ Capacity controllers enumerate the allocatable _capacity blocks_ in the `NCBLKS`
 field of the `cc_capabilities` register. The `cc_block_mask` register is
 programmed with a bit-mask value, where each bit represents a _capacity block_ for the
 operation. If configuring _capacity unit_ limits is supported (for example, 
-`cc_capabilities.CUNIT=1`), then the number of allocated capacity blocks can 
-be programmed in the `cc_cunits` register. If configuring limits is not supported, 
-then the controller allows the use of all _capacity units_ in the allocated _capacity
-blocks_. A value of zero programmed into `cc_cunits` indicates that no limits
-shall be enforced on _capacity unit_ allocation.
+`cc_capabilities.CUNIT=1`), then a limit on the _capacity unit_ that can be 
+occupied in the allocated capacity blocks can be programmed in the `cc_cunits` 
+register. If configuring limits is not supported, then the controller allows 
+the use of all _capacity units_ in the allocated _capacity blocks_. A value of 
+zero programmed into `cc_cunits` indicates that no limits shall be enforced on 
+_capacity unit_ allocation.
 
 A capacity allocation must be configured for each supported access type by the
 controller. An implementation that does not support capacity allocation per
@@ -439,10 +440,10 @@ blocks, respectively.
 
 <<<
 
-The `FLUSH_RCID` operation can incur a long latency to complete. New requests to
-the controller by flushing the `RCID` are allowed. Additionally, the
-controller is allowed to deallocate capacity that was allocated after the
-operation was initiated.
+The `FLUSH_RCID` operation can incur a long latency to complete. However, the 
+`RCID` can submit new requests to the controller while it is being flushed. 
+Additionally, the controller is allowed to deallocate capacity that was allocated 
+after the operation was initiated.
 
 [NOTE]
 ====
@@ -530,8 +531,8 @@ masks among `RCID` and/or `AT` are allowed to be configured.
 
 [NOTE]
 ====
-A set-associative cache controller that supports capacity allocation
-can advertise `NCBLKS` as the number of ways per set in the cache. To allocate
+A multiway set-associative cache controller that supports capacity allocation _by 
+ways_ can advertise `NCBLKS` as the number of ways per set in the cache. To allocate
 capacity in such a cache for an `RCID` and `AT`, a subset of ways must be
 selected and a mask of the selected ways must be programmed in `cc_block_mask` field when
 the `CONFIG_LIMIT` operation is requested.
