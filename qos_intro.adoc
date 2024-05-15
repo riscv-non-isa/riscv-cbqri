@@ -110,7 +110,7 @@ implement the `REV8` byte-reversal instruction defined by the Zbb extension. If
 sequence of instructions.
 ====
 
-A controller can support a subset of capabilities tht are defined by CBQRI. When a 
+A controller can support a subset of capabilities that are defined by CBQRI. When a 
 capability is not supported, the registers and/or fields used to configure and/or
 control such capabilities are hardwired to `0`. Each controller supports a
 capabilities register to enumerate the supported capabilities.
