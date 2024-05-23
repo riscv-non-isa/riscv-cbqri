@@ -18,19 +18,19 @@ configure counters identified by the `MCID` to count events in the resource
 controllers that control accesses to such shared resources.
 
 <<QOS_SIZING>> discusses guidelines for sizing the QoS IDs and the need for
-differentiated IDs for monitoring. All supported `RCID` and `MCID` may be
+differentiated IDs for monitoring. All supported `RCID` and `MCID` can be
 actively used in the system at any instance.
 
 [[EMCID]]
 === Associating `RCID` and `MCID` with requests
 
 The `RCID` in the request is used by the resource controllers to determine the
-resource allocations (e.g., cache occupancy limits, memory bandwidth limits,
-etc.) to enforce.
+resource allocations (for example, cache occupancy limits, memory bandwidth limits,
+and so on) to enforce.
 
 The `MCID` in the request is used by the resource controllers to identify the ID
-of a counter to monitor resource usage (e.g., cache occupancy, memory bandwidth,
-etc.). Two modes of operation are supported by CBQRI. In the direct mode, the
+of a counter to monitor resource usage (for example, cache occupancy, memory bandwidth,
+and so on). Two modes of operation are supported by CBQRI. In the direct mode, the
 `MCID` carried with the request is directly used by the controller to identify
 the counter and is the effective `MCID`. In the RCID-prefixed mode, the
 controller identifies the counter for monitoring using an effective `MCID`
@@ -53,38 +53,38 @@ of `mstateen0` controls access to `srmcfg` from privilege modes less than M.
 
 A RISC-V IOMMU cite:[IOMMU] extension to support configuring QoS identifiers is
 specified in <<QOS_IOMMU>>. If the system supports an IOMMU with this extension,
-the IOMMU may be configured with the `RCID` and `MCID` to associate with requests
+the IOMMU can be configured with the `RCID` and `MCID` to associate with requests
 from devices and from the IOMMU itself.
 
 If the system does not support an IOMMU with this extension, then the
 association of `RCID` and `MCID` with requests from devices becomes
-implementation-defined. Such methods may include, but are not limited to, one of
-the following:
+implementation-defined. Such methods can include, but are not limited to, one of
+the following examples:
 
-* Devices may be configured with an `RCID` and `MCID` for requests originating
+* Devices can be configured with an `RCID` and `MCID` for requests originating
   from the device, provided the device implementation and the bus protocol used
   by the device support such capabilities. The method to configure the QoS
   identifiers into devices remains `UNSPECIFIED`.
 
 * Where the device does not natively support being configured with an `RCID`
-  and `MCID`, the implementation may provide a shim at the device interface. This
-  shim may be configured with the `RCID` and `MCID` to associate with requests
+  and `MCID`, the implementation might provide a shim at the device interface. This
+  shim can be configured with the `RCID` and `MCID` to associate with requests
   originating from the device. The method to configure such QoS identifiers into
   a shim is `UNSPECIFIED`.
 
-=== Access-type (`AT`)
+=== Access type (`AT`)
 
 In some usages, in addition to providing differentiated service among workloads,
 the ability to differentiate between resource usage for accesses made by the
-same workload may be required. For example, the capacity allocated in a shared
-cache for code storage may be differentiated from the capacity allocated for
+same workload might be required. For example, the capacity allocated in a shared
+cache for code storage might be differentiated from the capacity allocated for
 data storage and thereby avoid code from being evicted from such shared cache
 due to a data access.
 
-When differentiation based on access type (e.g. code vs. data) is supported the
+When differentiation based on access type (for example, code vs. data) is supported the
 requests also carry an access-type (`AT`) indicator. The resource controllers
-may be configured with separate capacity and/or bandwidth allocations for each
-supported access-type. CBQRI defines a 3-bit `AT` field, encoded as specified in
+can be configured with separate capacity and/or bandwidth allocations for each
+supported access type. CBQRI defines a 3-bit `AT` field, encoded as specified in
 <<AT_ENC>>, in the register interface to configure differentiated resource
 allocation and monitoring for each `AT`.
 

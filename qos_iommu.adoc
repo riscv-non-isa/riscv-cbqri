@@ -1,9 +1,10 @@
 [[QOS_IOMMU]]
 == IOMMU Extension for QoS ID
 
-A method to associate QoS IDs with requests to access resources by the IOMMU, as
-well as with devices governed by it, is required for effective monitoring and
-allocation. This section specifies a RISC-V IOMMU cite:[IOMMU] extension to:
+A method to associate QoS IDs with requests to access resources by the Input-Output 
+Memory Management Unit (IOMMU), as well as with devices governed by it, is required 
+for effective monitoring and allocation. This section specifies a RISC-V I
+OMMU cite:[IOMMU] extension for the following goals:
 
 * Configure and associate QoS IDs for device-originated requests.
 * Configure and associate QoS IDs for IOMMU-originated requests.
@@ -16,9 +17,8 @@ by any RISC-V application processor hart in the system.
 
 The specified memory-mapped register layout defines a new IOMMU register named
 `iommu_qosid`. This register is used to configure the Quality of Service (QoS)
-IDs associated with IOMMU-originated requests. The register has a size of 4
-bytes and is located at an offset of 624 from the beginning of the memory-mapped
-region.
+IDs associated with IOMMU-originated requests. The register is 4 bytes in size
+and is located at an offset of 624 from the beginning of the memory-mapped region.
 
 .IOMMU Memory-mapped Register Layout
 [width=100%]
@@ -36,11 +36,11 @@ If the reset value for `ddtp.iommu_mode` field is `Bare`, then the
 
 [NOTE]
 ====
-At reset, it is required that the `RCID` field of `iommu_qosid` be set to 0 if
+At reset, it is required that the `RCID` field of `iommu_qosid` is set to 0 if
 the IOMMU is in `Bare` mode, as typically the resource controllers in the
 SoC default to a reset behavior of associating all capacity or bandwidth to the
 `RCID` value of 0. When the reset value of the `ddtp.iommu_mode` is not `Bare`,
-the `iommu_qosid` register should be initialized by software prior to changing
+the `iommu_qosid` register should be initialized by software before changing
 the mode to allow DMA.
 ====
 
@@ -170,13 +170,13 @@ this case, the IOMMU should stop and report "DDT entry misconfigured" (cause =
 
 === IOMMU ATC Capacity Allocation and Monitoring
 
-Some IOMMUs may support capacity allocation and usage monitoring in the IOMMU
+Some IOMMUs might support capacity allocation and usage monitoring in the IOMMU
 address translation cache (IOATC) by implementing the capacity controller
 register interface.
 
-Additionally, some IOMMUs may support multiple IOATCs, each potentially having
+Additionally, some IOMMUs might support multiple IOATCs, each potentially having
 different capacities. In scenarios where multiple IOATCs are implemented, such
-as an IOATC for each supported page size, the IOMMU may implement a
+as an IOATC for each supported page size, the IOMMU can implement a
 capacity controller register interface for each IOATC to facilitate individual
 capacity allocation.
 
