@@ -133,8 +133,6 @@ The `OP`, `AT`, `MCID`, and `EVT_ID` fields of the register are WARL fields.
 The `OP` field is used to instruct the controller to perform an operation
 listed in <<BC_MON_OP>>.
 
-<<<
-
 [[BC_MON_OP]]
 .Bandwidth Usage Monitoring Operations (`OP`)
 [width=100%]
