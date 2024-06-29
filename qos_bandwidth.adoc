@@ -319,13 +319,12 @@ before requesting the operation.
 |--            | 0         | Reserved for future standard use.
 |`CONFIG_LIMIT`| 1         | Establishes reserved bandwidth allocation for
                              requests by `RCID` and of access-type `AT`. The
-                             bandwidth allocation is specified in `bc_bw_alloc`
-                             register.
+                             bandwidth allocation is specified in `bc_bw_alloc`.
 |`READ_LIMIT`  | 2         | Reads back the previously configured bandwidth
                              allocation for requests by `RCID` and of
                              access-type `AT`. The current configured allocation
-                             is written to `bc_bw_alloc` register on completion
-                             of the operation.
+                             is written to `bc_bw_alloc` on completion of the
+                             operation.
 | --           | 3-23      | Reserved for future standard use.
 | --           | 24-31     | Designated for custom use.
 |===
