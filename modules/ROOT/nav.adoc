@@ -7,4 +7,3 @@
 * xref:qos_iommu.adoc[IOMMU Extension for QoS ID]
 * xref:qos_hw_guidelines.adoc[Hardware Guidelines]
 * xref:qos_sw_guidelines.adoc[Software Guidelines]
-* xref:qos_biblio.adoc[Bibliography]
