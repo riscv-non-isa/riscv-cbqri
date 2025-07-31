@@ -7,4 +7,4 @@
 * xref:qos_iommu.adoc[IOMMU Extension for QoS ID]
 * xref:qos_hw_guidelines.adoc[Hardware Guidelines]
 * xref:qos_sw_guidelines.adoc[Software Guidelines]
-.https://github.com/riscv-non-isa/riscv-cbqri/releases/download/v1.0/riscv-cbqri.pdf[Download PDF]
+* https://github.com/riscv-non-isa/riscv-cbqri/releases/download/v1.0/riscv-cbqri.pdf[Download PDF]
