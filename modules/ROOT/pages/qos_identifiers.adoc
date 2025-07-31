@@ -1,1 +1,1 @@
-../../../qos_hw_identifiers.adoc
+../../../qos_identifiers.adoc
