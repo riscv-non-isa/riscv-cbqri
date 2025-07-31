@@ -1,4 +1,4 @@
-name: QOS Register Interface
+name: qos
 title: RISC-V Capacity and Bandwidth QoS Register Interface
 version: v1.0
 nav:
