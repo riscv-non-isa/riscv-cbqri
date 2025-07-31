@@ -1,1 +1,1 @@
-qos_hw_guidelines.adoc
+../../../qos_hw_guidelines.adoc

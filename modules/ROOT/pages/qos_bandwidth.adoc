@@ -1,1 +1,1 @@
-qos_bandwidth.adoc
+../../../qos_bandwidth.adoc
