@@ -1,5 +1,5 @@
 name: QOS Register Interface
 title: RISC-V Capacity and Bandwidth QoS Register Interface
-version: v1.0  <- assuming that 1.0 is the absolute latest version (it should be)
+version: v1.0
 nav:
 - modules/ROOT/nav.adoc
