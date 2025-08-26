@@ -1,3 +1,5 @@
+image:risc-v_logo.svg[]
+
 = RISC-V Capacity and Bandwidth QoS Register Interface
 
-QOS placeholder.
+Version v1.0, 2024-07-02: Ratified
