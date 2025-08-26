@@ -1,5 +1,5 @@
 image:risc-v_logo.svg[]
 
-= RISC-V Capacity and Bandwidth QoS Register Interface
+== RISC-V Capacity and Bandwidth QoS Register Interface
 
 Version v1.0, 2024-07-02: Ratified
