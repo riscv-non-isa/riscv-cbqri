@@ -6,5 +6,6 @@ nav:
 
 asciidoc:
   attributes:
-    page-pdf_url: https://github.com/riscv/docs.riscv.org/blob/main/static/pdf/riscv-cbqri.pdf
+    page-pdf_url: _attachments/riscv-cbqri.pdf
+    more_details_url: https://riscv.atlassian.net/wiki/external/YmYxMjUzMmYyOTIxNGIzMmJiZjNiYWY0MGVhNjBkYTc    
     page-group: debug-trace-ras
