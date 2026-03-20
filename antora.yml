@@ -1,11 +1,13 @@
 name: qos
-title: RISC-V Capacity and Bandwidth QoS Register Interface
+title: QoS Register Interface
 version: v1.0
 nav:
 - modules/ROOT/nav.adoc
 
 asciidoc:
   attributes:
+    page-group: debug-trace-ras
+    page-card-description: 'QoS register interface for capacity and bandwidth control.'
+    page-release-date: 'June 2024'
     page-pdf_url: _attachments/riscv-cbqri.pdf
     more_details_url: https://riscv.atlassian.net/wiki/external/YmYxMjUzMmYyOTIxNGIzMmJiZjNiYWY0MGVhNjBkYTc    
-    page-group: debug-trace-ras

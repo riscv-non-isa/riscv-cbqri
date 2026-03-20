@@ -1,5 +1,5 @@
-.RISC-V Capacity and Bandwidth Controller QoS Register Interface
-* xref:index.adoc[QoS Register Interface]
+.QoS Register Interface
+* xref:index.adoc[Title Page]
 * xref:qos_preamble.adoc[Copyright and license information]
 * xref:qos_contributors.adoc[Contributors]
 * xref:qos_intro.adoc[Introduction]
