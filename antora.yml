@@ -1,12 +1,12 @@
-name: qos
+name: qos-dev
 title: QoS Register Interface
-version: v1.0
+version: frozen
 nav:
 - modules/ROOT/nav.adoc
 
 asciidoc:
   attributes:
-    page-group: debug-trace-ras
+    page-group: under-development
     page-card-description: 'QoS register interface for capacity and bandwidth control.'
     page-release-date: 'June 2024'
     page-pdf_url: _attachments/riscv-cbqri.pdf
