@@ -178,7 +178,7 @@ all access-types, and the `AT` value is ignored.
                              transferred by a matching write request as the
                              requests go past the monitor.
 | --           | 4-127     | Reserved for future standard use.
-| --           | 128-256   | Designated for custom use.
+| --           | 128-255   | Designated for custom use.
 |===
 
 When the `EVT_ID` for a `MCID` is programmed with a non-zero and legal value,
